@@ -1,0 +1,75 @@
+#payment-method-box {
+  height: 17.5%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+#first-row {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+}
+
+#second-row {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+}
+
+.payment-method-button {
+  width: 33.33%;
+  height: 100%;
+  line-height: 400%;
+  box-shadow: 0 0 0 0.5px #000 inset;
+  text-align: center;
+  cursor: pointer;
+}
+
+#amount-box {
+  display: flex;
+  width: 100%;
+  height: 17.5%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+#amount {
+  box-shadow: 0 0 0 0.5px #000 inset;
+  width: 66.66%;
+  height: 100%;
+  text-align: center;
+  line-height: 127.5px;
+  font-size: 20px;
+}
+
+#payment-buttons {
+  width: 33.33%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#payment-complete-button {
+  box-shadow: 0 0 0 0.5px #000 inset;
+  width: 100%;
+  height: 50%;
+  line-height: 400%;
+  text-align: center;
+  cursor: pointer;
+}
+
+#initiate-button {
+  box-shadow: 0 0 0 0.5px #000 inset;
+  width: 100%;
+  height: 50%;
+  line-height: 400%;
+  text-align: center;
+  cursor: pointer;
+}

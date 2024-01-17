@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style/header.css" />
+    <link rel="stylesheet" href="./style/productContainerByCategory.css" />
+    <link rel="stylesheet" href="./style/shoppingCartContainer.css" />
+    <link rel="stylesheet" href="./style/productContainerTotal.css" />
+    <link rel="stylesheet" href="./style/paymentContainer.css" />
+    <link rel="stylesheet" href="./style/Containers.css" />
+    <title>pos</title>
+  </head>
+  <body>
+    <div id="background"></div>
+    <div id="modal-container"></div>
+    <div id="wrapper">
+      <div id="header-container">
+        <header>
+          <div id="view-container">
+            <div id="view-mode-button">보기 모드</div>
+            <div id="hidden-view-list">
+              <div id="category-mode">카테고리별 보기</div>
+              <div id="total-mode">전체 보기</div>
+            </div>
+          </div>
+          <div id="button-container">
+            <div id="product-management-container">
+              <div id="product-management-button" class="header-button">상품관리 메뉴</div>
+              <div id="hidden-product-management-list">
+                <div id="product-management" class="modal-button">상품 관리</div>
+                <div id="product-registration" class="modal-button">상품 등록</div>
+                <div id="category-management" class="modal-button">카테고리 관리</div>
+              </div>
+            </div>
+            <div class="header-button modal-button" id="sales-history-button">판매내역</div>
+            <div class="header-button modal-button" id="cash-check-button">현금점검</div>
+            <div class="header-button modal-button" id="dashboard-button">대시보드</div>
+          </div>
+          <div id="payment-number-container">
+            <span>결제번호</span>
+            <br />
+            <span id="payment-number">3</span>
+          </div>
+        </header>
+      </div>
+      <div id="main-section">
+        <div id="product-container"></div>
+        <div id="payment-box">
+          <div id="shopping-cart-box">
+            <div class="cart-row">
+              <div class="cart-product">윈드브레이커 실버</div>
+              <div class="quantity-box">
+                <div class="minus">-</div>
+                <div class="quantity">50</div>
+                <div class="plus">+</div>
+              </div>
+            </div>
+          </div>
+          <div id="payment-method-box">
+            <div id="first-row">
+              <div class="payment-method-button" id="card">카드결제</div>
+              <div class="payment-method-button" id="seperate">분할결제</div>
+              <div class="payment-method-button" id="discount">할인적용</div>
+            </div>
+            <div id="second-row">
+              <div class="payment-method-button" id="etcetera">기타결제</div>
+              <div class="payment-method-button" id="cash">현금결제</div>
+              <div class="payment-method-button" id="wire-transfer">계좌이체</div>
+            </div>
+          </div>
+          <div id="amount-box">
+            <div id="amount">0</div>
+            <div id="payment-buttons">
+              <div id="payment-complete-button">결제완료</div>
+              <div id="initiate-button">초기화</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

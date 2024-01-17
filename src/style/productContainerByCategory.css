@@ -1,0 +1,39 @@
+#category-container {
+  width: 100%;
+  padding-right: 20px;
+  overflow-y: scroll;
+}
+
+.scroll-container {
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  margin-bottom: 20px;
+}
+
+.product-list {
+  display: flex;
+}
+
+.product-by-category {
+  flex: 0 0 auto;
+  width: 175px;
+  height: 70px;
+  margin-right: 10px;
+  border-style: solid;
+  border-width: 0.5px;
+  scroll-snap-align: start;
+  text-align: center;
+  cursor: pointer;
+}
+
+.product-by-category span {
+  line-height: 35px;
+}
+
+.category-text {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
