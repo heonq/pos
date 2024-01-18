@@ -1,12 +1,12 @@
-import HeaderController from './Header.js';
+import HeaderController from './HeaderController.js';
 
 class App {
   constructor() {
-    this.header = new HeaderController();
+    this.headerController = new HeaderController();
   }
 
   play() {
-    this.header.init();
+    this.headerController.init();
   }
 }
 

@@ -1,6 +1,6 @@
 import $ from '../utils/index.js';
-import categoryModeComponent from '../\bViews/categoryModeComponent.js';
-import totalModeComponent from '../\bViews/totalModeComponent.js';
+import categoryMode from './\bViews/categoryMode.js';
+import totalMode from './\bViews/totalMode.js';
 
 class HeaderController {
   init() {
@@ -33,11 +33,11 @@ class HeaderController {
   }
 
   #renderCategoryMode() {
-    $('#product-container').innerHTML = categoryModeComponent();
+    $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent();
   }
 
   #renderTotalMode() {
-    $('#product-container').innerHTML = totalModeComponent();
+    $('#product-container').innerHTML = totalMode.renderTotalModeComponent();
   }
 
   #toggleSelected(e) {
