@@ -1,18 +1,20 @@
 import $ from '../utils/index.js';
-import categoryMode from './\bViews/categoryMode.js';
-import totalMode from './\bViews/totalMode.js';
+import categoryMode from './Views/categoryMode.js';
+import totalMode from './Views/totalMode.js';
 
 class HeaderController {
   init() {
     this.#hideComponentNotUsing();
     this.#addToggleViewMode();
     this.#addToggleViewModeMenu();
+    this.#addToggleProductManagement();
   }
 
   #hideComponentNotUsing() {
     $('body').addEventListener('click', (e) => {
       const targetId = e.target.id;
       this.#foldViewModeList(targetId);
+      this.#foldProductManagementList(targetId);
     });
   }
 
@@ -52,6 +54,22 @@ class HeaderController {
     if (!IDS.includes(targetId)) {
       $('#view-container').classList.remove('expanded');
     }
+  }
+
+  #addToggleProductManagement() {
+    $('#product-management-button').addEventListener('click', () => {
+      $('#product-management-container').classList.toggle('expanded');
+    });
+  }
+
+  #foldProductManagementList(targetId) {
+    const IDS = [
+      'product-management-button',
+      'product-management',
+      'product-registration',
+      'category-management',
+    ];
+    if (!IDS.includes(targetId)) $('#product-management-container').classList.remove('expanded');
   }
 }
 
