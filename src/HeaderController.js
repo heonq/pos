@@ -43,9 +43,19 @@ class HeaderController {
     return viewMode === 'categoryMode' ? this.#renderCategoryMode() : this.#renderTotalMode();
   }
 
-  #renderCategoryMode() {
+  #setButtonCategoryMode() {
     $('#view-mode-button').innerText = '카테고리별 보기';
     store.setStorage('view-mode', 'categoryMode');
+    const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
+    menus.forEach((menu) => {
+      menu.id === 'category-mode'
+        ? menu.classList.add('selected')
+        : menu.classList.remove('selected');
+    });
+  }
+
+  #renderCategoryMode() {
+    this.#setButtonCategoryMode();
     const categories = productDataModel.getCategoriesGotProduct();
     const productsArrays = productDataModel.getProducts();
     $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent(
@@ -54,18 +64,19 @@ class HeaderController {
     );
   }
 
-  #renderTotalMode() {
-    $('#view-mode-button').innerText = '전체 보기';
+  #setButtonTotalMode() {
+    $('#view-mode-button').innerText = '전체상품 보기';
     store.setStorage('view-mode', 'totalMode');
-    const productsArrays = productDataModel.getProducts();
-    $('#product-container').innerHTML = totalMode.renderTotalModeComponent(productsArrays);
-  }
-
-  #toggleSelected(e) {
     const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
     menus.forEach((menu) => {
-      e.target.id === menu.id ? menu.classList.add('selected') : menu.classList.remove('selected');
+      menu.id === 'total-mode' ? menu.classList.add('selected') : menu.classList.remove('selected');
     });
+  }
+
+  #renderTotalMode() {
+    this.#setButtonTotalMode();
+    const productsArrays = productDataModel.getProducts();
+    $('#product-container').innerHTML = totalMode.renderTotalModeComponent(productsArrays);
   }
 
   #foldViewModeList(targetId) {
