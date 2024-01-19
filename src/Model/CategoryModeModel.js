@@ -9,6 +9,11 @@ const categoryModeModel = {
       .map((category) => category.name);
   },
 
+  getCategoriesGotProduct() {
+    const productsArray = this.getProducts();
+    return productsArray.map((products) => products[0].category);
+  },
+
   getProducts() {
     const categories = this.getCategories();
     const products = store.getStorage('products');

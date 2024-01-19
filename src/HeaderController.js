@@ -38,7 +38,7 @@ class HeaderController {
   }
 
   #renderCategoryMode() {
-    const categories = categoryModeModel.getCategories();
+    const categories = categoryModeModel.getCategoriesGotProduct();
     const productsArrays = categoryModeModel.getProducts();
     $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent(
       categories,
