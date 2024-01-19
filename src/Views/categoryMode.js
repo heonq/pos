@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 
+import formatter from '../../utils/formatter.js';
+
 const categoryMode = {
   renderCategoryModeComponent(categories, productsArrays) {
     const productsComponentArray = this.rendertotalProducts(productsArrays);
@@ -27,19 +29,12 @@ const categoryMode = {
   },
 
   renderEachProduct(product) {
-    if (product.name !== null) {
-      return `
-    <div class="product-list">
-      <div class="product-by-category">
-        <span>${product.name}</span><br/ ><span>${product.price}원</span>
-      </div>
-    </div>`;
-    }
     return `<div class="product-list">
     <div class="product-by-category">
-      <span>+</span>
-    </div>
-  </div>`;
+    <span>${product.name}</span>
+    <br/ >
+    <span>${formatter.formatNumber(product.price)}원</span>
+      </div></div>`;
   },
 };
 
