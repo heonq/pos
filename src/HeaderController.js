@@ -1,5 +1,5 @@
 import $ from '../utils/index.js';
-import categoryModeModel from './Model/CategoryModeModel.js';
+import productDataModel from './Model/productDataModel.js';
 import categoryMode from './Views/categoryMode.js';
 import totalMode from './Views/totalMode.js';
 
@@ -38,8 +38,8 @@ class HeaderController {
   }
 
   #renderCategoryMode() {
-    const categories = categoryModeModel.getCategoriesGotProduct();
-    const productsArrays = categoryModeModel.getProducts();
+    const categories = productDataModel.getCategoriesGotProduct();
+    const productsArrays = productDataModel.getProducts();
     $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent(
       categories,
       productsArrays,

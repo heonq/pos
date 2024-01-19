@@ -1,6 +1,6 @@
 import store from '../../utils/store.js';
 
-const categoryModeModel = {
+const productDataModel = {
   getCategories() {
     const categories = store.getStorage('categories');
     return categories
@@ -23,4 +23,4 @@ const categoryModeModel = {
   },
 };
 
-export default categoryModeModel;
+export default productDataModel;
