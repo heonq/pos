@@ -8,6 +8,7 @@ class HeaderController {
     this.#addToggleViewMode();
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
+    this.#addToggleModalContainer();
   }
 
   #hideComponentNotUsing() {
@@ -15,6 +16,7 @@ class HeaderController {
       const targetId = e.target.id;
       this.#foldViewModeList(targetId);
       this.#foldProductManagementList(targetId);
+      this.#hideModalContainer(targetId);
     });
   }
 
@@ -70,6 +72,30 @@ class HeaderController {
       'category-management',
     ];
     if (!IDS.includes(targetId)) $('#product-management-container').classList.remove('expanded');
+  }
+
+  #addToggleModalContainer() {
+    $('#button-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-button')) {
+        $('#modal-container').classList.toggle('show');
+        this.#showBackground();
+      }
+    });
+  }
+
+  #showBackground() {
+    $('#background').classList.add('show');
+  }
+
+  #hideBackground() {
+    $('#background').classList.remove('show');
+  }
+
+  #hideModalContainer(targetId) {
+    if (targetId === 'background') {
+      $('#modal-container').classList.remove('show');
+      this.#hideBackground();
+    }
   }
 }
 
