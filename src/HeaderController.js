@@ -10,6 +10,7 @@ class HeaderController {
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
     this.#addToggleModalContainer();
+    this.#renderTotalMode();
   }
 
   #hideComponentNotUsing() {
@@ -47,7 +48,8 @@ class HeaderController {
   }
 
   #renderTotalMode() {
-    $('#product-container').innerHTML = totalMode.renderTotalModeComponent();
+    const productsArrays = productDataModel.getProducts();
+    $('#product-container').innerHTML = totalMode.renderTotalModeComponent(productsArrays);
   }
 
   #toggleSelected(e) {
