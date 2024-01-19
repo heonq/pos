@@ -32,9 +32,8 @@ class HeaderController {
   #addToggleViewMode() {
     $('#hidden-view-list').addEventListener('click', (e) => {
       this.#foldViewModeList();
-      this.#toggleSelected(e);
       if (e.target.id === 'category-mode') return this.#renderCategoryMode();
-      if (e.target.id === 'total-mode') return this.#renderTotalMode();
+      return this.#renderTotalMode();
     });
   }
 
