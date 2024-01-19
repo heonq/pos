@@ -2,6 +2,7 @@ import $ from '../utils/index.js';
 import productDataModel from './Model/productDataModel.js';
 import categoryMode from './Views/categoryMode.js';
 import totalMode from './Views/totalMode.js';
+import store from '../utils/store.js';
 
 class HeaderController {
   init() {
@@ -10,7 +11,7 @@ class HeaderController {
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
     this.#addToggleModalContainer();
-    this.#renderTotalMode();
+    this.#renderViewMode();
   }
 
   #hideComponentNotUsing() {
@@ -30,7 +31,6 @@ class HeaderController {
 
   #addToggleViewMode() {
     $('#hidden-view-list').addEventListener('click', (e) => {
-      $('#view-mode-button').innerText = e.target.innerText;
       this.#foldViewModeList();
       this.#toggleSelected(e);
       if (e.target.id === 'category-mode') return this.#renderCategoryMode();
@@ -38,7 +38,14 @@ class HeaderController {
     });
   }
 
+  #renderViewMode() {
+    const viewMode = store.getStorage('view-mode');
+    return viewMode === 'categoryMode' ? this.#renderCategoryMode() : this.#renderTotalMode();
+  }
+
   #renderCategoryMode() {
+    $('#view-mode-button').innerText = '카테고리별 보기';
+    store.setStorage('view-mode', 'categoryMode');
     const categories = productDataModel.getCategoriesGotProduct();
     const productsArrays = productDataModel.getProducts();
     $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent(
@@ -48,6 +55,8 @@ class HeaderController {
   }
 
   #renderTotalMode() {
+    $('#view-mode-button').innerText = '전체 보기';
+    store.setStorage('view-mode', 'totalMode');
     const productsArrays = productDataModel.getProducts();
     $('#product-container').innerHTML = totalMode.renderTotalModeComponent(productsArrays);
   }
