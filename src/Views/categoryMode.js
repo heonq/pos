@@ -2,105 +2,43 @@
 /* eslint-disable max-lines-per-function */
 
 const categoryMode = {
-  renderCategoryModeComponent() {
+  renderCategoryModeComponent(categories, productsArrays) {
+    const productsComponentArray = this.rendertotalProducts(productsArrays);
     return `<div id="category-container">
-    <div class="category-text">카테고리1</div>
-    <div class="scroll-container">
-      <div class="product-list">
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 블랙</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category"><span>공식 티셔츠 1Size</span><br/ ><span>50,000원</span></div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
+    ${categories
+      .map(
+        (category, index) => this.renderEachCategoryName(category) + productsComponentArray[index],
+      )
+      .join('')}
+  </div>`;
+  },
+
+  renderEachCategoryName(category) {
+    return `<div class="category-text">${category}</div>`;
+  },
+
+  rendertotalProducts(productsArrays) {
+    return productsArrays.map(
+      (productsArray) =>
+        `<div class="scroll-container">${productsArray
+          .map((product) => this.renderEachProduct(product))
+          .join('')}</div>`,
+    );
+  },
+
+  renderEachProduct(product) {
+    if (product.name !== null) {
+      return `
+    <div class="product-list">
+      <div class="product-by-category">
+        <span>${product.name}</span><br/ ><span>${product.price}원</span>
       </div>
+    </div>`;
+    }
+    return `<div class="product-list">
+    <div class="product-by-category">
+      <span>+</span>
     </div>
-    <div class="category-text">카테고리1</div>
-    <div class="scroll-container">
-      <div class="product-list">
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 블랙</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category"><span>공식 티셔츠 1Size</span><br/ ><span>50,000원</span></div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-      </div>
-    </div>
-    <div class="category-text">카테고리1</div>
-    <div class="scroll-container">
-      <div class="product-list">
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 블랙</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category"><span>공식 티셔츠 1Size</span><br/ ><span>50,000원</span></div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-      </div>
-    </div>
-    <div class="category-text">카테고리1</div>
-    <div class="scroll-container">
-      <div class="product-list">
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 블랙</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category"><span>공식 티셔츠 1Size</span><br/ ><span>50,000원</span></div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-        <div class="product-by-category">
-          <span>윈드브레이커 실버</span><br/ ><span>118,000원</span>
-        </div>
-      </div>
-    </div>
-    
   </div>`;
   },
 };

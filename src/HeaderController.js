@@ -1,4 +1,5 @@
 import $ from '../utils/index.js';
+import categoryModeModel from './Model/CategoryModeModel.js';
 import categoryMode from './Views/categoryMode.js';
 import totalMode from './Views/totalMode.js';
 
@@ -37,7 +38,12 @@ class HeaderController {
   }
 
   #renderCategoryMode() {
-    $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent();
+    const categories = categoryModeModel.getCategories();
+    const productsArrays = categoryModeModel.getProducts();
+    $('#product-container').innerHTML = categoryMode.renderCategoryModeComponent(
+      categories,
+      productsArrays,
+    );
   }
 
   #renderTotalMode() {
