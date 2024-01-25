@@ -52,6 +52,10 @@ class HeaderController {
     });
   }
 
+  #renderAlertMessage() {
+    $('#product-container').innerHTML = productComponents.renderAlertMessage();
+  }
+
   #renderCategoryMode() {
     this.#setButtonCategoryMode();
     const categories = productDataModel.getCategoriesGotProduct();
