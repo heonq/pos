@@ -1,7 +1,6 @@
 import $ from '../utils/index.js';
 import productDataModel from './Model/productDataModel.js';
-import categoryMode from './Views/categoryMode.js';
-import totalMode from './Views/totalMode.js';
+import productComponents from './Views/productComponents.js';
 import store from '../utils/store.js';
 
 class HeaderController {
