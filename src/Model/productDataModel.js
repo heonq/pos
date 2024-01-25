@@ -1,8 +1,9 @@
 import store from '../../utils/store.js';
 
 const productDataModel = {
-  getCategories() {
+  getCategoriesOrder() {
     const categories = store.getStorage('categories');
+    if (!categories) return [];
     return categories
       .sort((a, b) => a.order - b.order)
       .filter((category) => category.display === true)
@@ -11,15 +12,22 @@ const productDataModel = {
 
   getCategoriesGotProduct() {
     const productsArray = this.getProducts();
-    return productsArray.map((products) => products[0].category);
+    const categoriesOrder = this.getCategoriesOrder();
+    if (!productsArray) return [];
+    const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
+    return categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
   },
 
   getProducts() {
-    const categories = this.getCategories();
     const products = store.getStorage('products');
-    return categories.map((category) =>
-      products.filter((product) => product.category === category && product.display === true),
-    );
+    if (!products) return products;
+    return products.filter((product) => product.display === true);
+  },
+
+  getProductsInOrder() {
+    const categoriesOrder = this.getCategoriesGotProduct();
+    const products = this.getProducts();
+    return categoriesOrder.map((category) => products.filter((product) => product.category === category));
   },
 };
 
