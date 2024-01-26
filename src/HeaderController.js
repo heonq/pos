@@ -82,8 +82,8 @@ class HeaderController {
 
   #renderTotalMode() {
     this.#setButtonTotalMode();
-    const products = productDataModel.getProductsInOrder();
-    if (!products.length) return this.#renderAlertMessage();
+    const productsArrays = productDataModel.getProductsInOrder();
+    if (!productsArrays.length) return this.#renderAlertMessage();
     $('#product-container').innerHTML = productComponents.renderTotalModeComponent(productsArrays);
   }
 
