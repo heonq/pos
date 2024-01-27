@@ -1,6 +1,4 @@
 import $ from '../../utils/index.js';
-import productDataModel from '../Models/productData.js';
-import productComponents from '../Views/productComponents.js';
 import store from '../../utils/store.js';
 
 class HeaderController {
@@ -10,6 +8,7 @@ class HeaderController {
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
     this.#addToggleModalContainer();
+    this.#selectButton();
   }
 
   #hideComponentNotUsing() {
@@ -61,6 +60,12 @@ class HeaderController {
       if (menu.id === 'category-mode') return menu.classList.add('selected');
       return menu.classList.remove('selected');
     });
+  }
+
+  #selectButton() {
+    const viewMode = store.getStorage('view-mode');
+    if (viewMode === 'categoryMode') return this.#setButtonCategoryMode();
+    return this.#setButtonTotalMode();
   }
 
   #foldViewModeList(targetId) {
