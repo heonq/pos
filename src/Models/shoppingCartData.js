@@ -24,6 +24,20 @@ class ShoppingCartData {
     else this.#shoppingCart.push(productToAdd);
     this.#setShoppingCart();
   }
+
+  plusQuantity(product) {
+    this.#getShoppingCart();
+    const productToPlus = this.#shoppingCart.find(product);
+    productToPlus.quantity += 1;
+    this.#setShoppingCart();
+  }
+
+  minusQuantity(product) {
+    this.#getShoppingCart();
+    const productToMinus = this.#shoppingCart.find(product);
+    if (productToMinus.quantity > 0) productToMinus.quantity -= 1;
+    this.#setShoppingCart();
+  }
 }
 
 export default ShoppingCartData;
