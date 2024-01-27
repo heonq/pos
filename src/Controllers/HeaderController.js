@@ -10,7 +10,6 @@ class HeaderController {
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
     this.#addToggleModalContainer();
-    this.#renderViewMode();
   }
 
   #hideComponentNotUsing() {
@@ -31,39 +30,15 @@ class HeaderController {
   #addToggleViewMode() {
     $('#hidden-view-list').addEventListener('click', (e) => {
       this.#foldViewModeList();
-      if (e.target.id === 'category-mode') return this.#renderCategoryMode();
-      return this.#renderTotalMode();
+      if (e.target.id === 'category-mode') return this.#setButtonCategoryMode();
+      return this.#setButtonTotalMode();
     });
-  }
-
-  #renderViewMode() {
-    const viewMode = store.getStorage('view-mode');
-    return viewMode === 'categoryMode' ? this.#renderCategoryMode() : this.#renderTotalMode();
   }
 
   #setButtonCategoryMode() {
     $('#view-mode-button').innerText = '카테고리별 보기';
     store.setStorage('view-mode', 'categoryMode');
     this.#selectCategoryButton();
-  }
-
-  #selectCategoryButton() {
-    const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
-    menus.forEach((menu) => {
-      if (menu.id === 'category-mode') return menu.classList.add('selected');
-      return menu.classList.remove('selected');
-    });
-  }
-
-  #renderAlertMessage() {
-    $('#product-container').innerHTML = productComponents.renderAlertMessage();
-  }
-
-  #renderCategoryMode() {
-    this.#setButtonCategoryMode();
-    const [categories, products] = [productDataModel.getCategoriesGotProduct(), productDataModel.getProductsInOrder()];
-    if (!products.length) return this.#renderAlertMessage();
-    $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
   }
 
   #setButtonTotalMode() {
@@ -80,11 +55,12 @@ class HeaderController {
     });
   }
 
-  #renderTotalMode() {
-    this.#setButtonTotalMode();
-    const productsArrays = productDataModel.getProductsInOrder();
-    if (!productsArrays.length) return this.#renderAlertMessage();
-    $('#product-container').innerHTML = productComponents.renderTotalModeComponent(productsArrays);
+  #selectCategoryButton() {
+    const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
+    menus.forEach((menu) => {
+      if (menu.id === 'category-mode') return menu.classList.add('selected');
+      return menu.classList.remove('selected');
+    });
   }
 
   #foldViewModeList(targetId) {
