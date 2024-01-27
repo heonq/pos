@@ -1,5 +1,5 @@
 import $ from '../../utils/index.js';
-import productDataModel from '../Model/productDataModel.js';
+import productDataModel from '../Models/productData.js';
 import productComponents from '../Views/productComponents.js';
 import store from '../../utils/store.js';
 
