@@ -35,5 +35,6 @@ module.exports = {
     'max-depth': ['error', 2],
     'max-lines-per-function': ['error', 10],
     'no-unused-vars': 'off',
+    'no-undef': 'off',
   },
 };
