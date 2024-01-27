@@ -49,8 +49,8 @@ const productComponents = {
   },
 
   renderAlertMessage() {
-    return `
-        <div id ='alert-message'>상품이 존재하지 않습니다.</div>
+    return `<div id='alert-container'>
+        <span>상품이 존재하지 않습니다.</span>
         `;
   },
 };
