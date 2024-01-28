@@ -4,10 +4,20 @@ class ShoppingCartData {
   #shoppingCart;
 
   constructor() {
-    this.#getShoppingCart();
+    this.#updateShoppingCart();
   }
 
-  #getShoppingCart() {
+  getShoppingCartData() {
+    this.#updateShoppingCart();
+    return this.#shoppingCart;
+  }
+
+  getTotalAmount() {
+    this.getShoppingCartData();
+    return this.#shoppingCart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+  }
+
+  #updateShoppingCart() {
     this.#shoppingCart = store.getStorage('shoppingCart') ?? [];
   }
 
@@ -16,9 +26,9 @@ class ShoppingCartData {
   }
 
   addToShoppingCart(product) {
-    this.#getShoppingCart();
+    this.#updateShoppingCart();
     const productToAdd = product;
-    productToAdd[quantity] = 1;
+    productToAdd.quantity = 1;
     const existProduct = this.#shoppingCart.find((cartProduct) => cartProduct.name === productToAdd.name);
     if (existProduct) existProduct.quantity += 1;
     else this.#shoppingCart.push(productToAdd);
@@ -26,14 +36,14 @@ class ShoppingCartData {
   }
 
   plusQuantity(product) {
-    this.#getShoppingCart();
+    this.#updateShoppingCart();
     const productToPlus = this.#shoppingCart.find(product);
     productToPlus.quantity += 1;
     this.#setShoppingCart();
   }
 
   minusQuantity(product) {
-    this.#getShoppingCart();
+    this.#updateShoppingCart();
     const productToMinus = this.#shoppingCart.find(product);
     if (productToMinus.quantity > 0) productToMinus.quantity -= 1;
     this.#setShoppingCart();
