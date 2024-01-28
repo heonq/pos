@@ -17,7 +17,7 @@
   display: flex;
 }
 
-.product-by-category {
+.product {
   flex: 0 0 auto;
   width: 175px;
   height: 70px;
@@ -27,13 +27,20 @@
   scroll-snap-align: start;
   text-align: center;
   cursor: pointer;
+  line-height: 35px;
 }
 
-.product-by-category span {
+.product span {
   line-height: 35px;
 }
 
 .category-text {
   margin-bottom: 5px;
   font-size: 15px;
+}
+
+#total-product-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: baseline;
 }
