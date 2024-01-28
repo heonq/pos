@@ -14,6 +14,7 @@ class ShoppingCartController {
   init() {
     this.#renderShoppingCart();
     this.#addProductRender();
+    this.#addControlQuantity();
   }
 
   #renderShoppingCart() {
@@ -37,6 +38,15 @@ class ShoppingCartController {
 
   #renderAmountToPay() {
     $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getTotalAmount());
+  }
+
+  #addControlQuantity() {
+    $('#shopping-cart-box').addEventListener('mousedown', (e) => {
+      const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
+      if (e.target.classList.contains('plus')) this.#shoppingCartData.plusQuantity(productName);
+      if (e.target.classList.contains('minus')) this.#shoppingCartData.minusQuantity(productName);
+      this.#renderShoppingCart();
+    });
   }
 }
 

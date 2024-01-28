@@ -35,16 +35,16 @@ class ShoppingCartData {
     this.#setShoppingCart();
   }
 
-  plusQuantity(product) {
+  plusQuantity(productName) {
     this.#updateShoppingCart();
-    const productToPlus = this.#shoppingCart.find(product);
+    const productToPlus = this.#shoppingCart.find((product) => product.name === productName);
     productToPlus.quantity += 1;
     this.#setShoppingCart();
   }
 
-  minusQuantity(product) {
+  minusQuantity(productName) {
     this.#updateShoppingCart();
-    const productToMinus = this.#shoppingCart.find(product);
+    const productToMinus = this.#shoppingCart.find((product) => product.name === productName);
     if (productToMinus.quantity > 0) productToMinus.quantity -= 1;
     this.#setShoppingCart();
   }
