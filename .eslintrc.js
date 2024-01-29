@@ -33,7 +33,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-process-exit': 'error',
     'max-depth': ['error', 2],
-    'max-lines-per-function': ['error', 10],
+    'max-lines-per-function': ['error', 15],
     'no-unused-vars': 'off',
     'no-undef': 'off',
   },
