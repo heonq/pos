@@ -17,6 +17,7 @@ const shoppingCartComponents = {
       <div class="minus">-</div>
       <div class="quantity">${product.quantity}</div>
       <div class="plus">+</div>
+      <div class="delete">x</div>
     </div>
   </div>
     `,

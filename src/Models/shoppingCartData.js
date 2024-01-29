@@ -22,7 +22,10 @@ class ShoppingCartData {
   }
 
   #setShoppingCart() {
-    store.setStorage('shoppingCart', this.#shoppingCart);
+    store.setStorage(
+      'shoppingCart',
+      this.#shoppingCart.filter((product) => product.quantity > 0),
+    );
   }
 
   addToShoppingCart(product) {
@@ -45,7 +48,15 @@ class ShoppingCartData {
   minusQuantity(productName) {
     this.#updateShoppingCart();
     const productToMinus = this.#shoppingCart.find((product) => product.name === productName);
-    if (productToMinus.quantity > 0) productToMinus.quantity -= 1;
+    if (productToMinus.quantity > 1) productToMinus.quantity -= 1;
+    else this.deleteFromCart(productName);
+    this.#setShoppingCart();
+  }
+
+  deleteFromCart(productName) {
+    this.#updateShoppingCart();
+    const productToDelete = this.#shoppingCart.find((product) => product.name === productName);
+    productToDelete.quantity = 0;
     this.#setShoppingCart();
   }
 }

@@ -30,13 +30,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  overflow: visible;
 }
 
-.plus {
+.plus,
+.minus {
+  font-size: 20px;
   width: 50%;
   cursor: pointer;
 }
-.minus {
-  width: 50%;
+
+.delete {
+  position: absolute;
+  background-color: white;
+  right: 310%;
+  top: 5%;
   cursor: pointer;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
 }

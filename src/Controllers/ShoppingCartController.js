@@ -45,10 +45,14 @@ class ShoppingCartController {
 
   #addControlQuantity() {
     $('#shopping-cart-box').addEventListener('mousedown', (e) => {
-      const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
-      if (e.target.classList.contains('plus')) this.#shoppingCartData.plusQuantity(productName);
-      if (e.target.classList.contains('minus')) this.#shoppingCartData.minusQuantity(productName);
-      this.#renderShoppingCart();
+      if (e.target.classList.length) {
+        const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
+        const { classList } = e.target;
+        if (classList.contains('plus')) this.#shoppingCartData.plusQuantity(productName);
+        if (classList.contains('minus')) this.#shoppingCartData.minusQuantity(productName);
+        if (classList.contains('delete')) this.#shoppingCartData.deleteFromCart(productName);
+        this.#renderShoppingCart();
+      }
     });
   }
 }
