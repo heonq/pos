@@ -10,7 +10,7 @@ const productComponents = {
 
   renderEachProduct(product) {
     return `
-    <div class="product" data-name=${product.name.replace(' ', '_')} data-price=${product.price}>
+    <div class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${product.price}>
     ${product.name}<br />${formatter.formatNumber(product.price)}원
       </div>`;
   },
@@ -37,7 +37,9 @@ const productComponents = {
       .map((products) =>
         products
           .map(
-            (product) => `<div class="product">
+            (product) => `<div class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${
+              product.price
+            }>
       ${product.name}<br/ >${formatter.formatNumber(product.price)}원
   </div>`,
           )
