@@ -16,9 +16,11 @@
   width: 70%;
   height: 100%;
   box-shadow: 0 0 0 0.5px #000 inset;
-  scroll-snap-align: start;
-  line-height: 70px;
   text-align: center;
+}
+
+.cart-product {
+  line-height: 35px;
 }
 
 .quantity-box {

@@ -44,3 +44,7 @@
   flex-wrap: wrap;
   align-content: baseline;
 }
+
+#total-product-container .product {
+  margin-bottom: 10px;
+}

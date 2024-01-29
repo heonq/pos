@@ -1,16 +1,9 @@
-#header-container {
-  width: 100%;
-  min-width: 1500px;
-  display: flex;
-  justify-content: center;
-}
-
 header {
   width: 100%;
+  /* min-width: 1500px; */
   margin-top: 30px;
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
 }
 
 #payment-number-container {
@@ -66,16 +59,6 @@ header {
 }
 
 .header-button {
-  line-height: 40px;
-  box-shadow: 0 0 0 0.5px #000 inset;
-  width: 150px;
-  height: 40px;
-  text-align: center;
-  margin: 0 3px 0 3px;
-  cursor: pointer;
-}
-
-.modal-button {
   line-height: 40px;
   box-shadow: 0 0 0 0.5px #000 inset;
   width: 150px;
