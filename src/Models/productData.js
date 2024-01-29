@@ -1,34 +1,59 @@
 import store from '../../utils/store.js';
 
-const productDataModel = {
-  getCategoriesOrder() {
+class ProductData {
+  #categories;
+
+  #products;
+
+  constructor() {
+    this.updateData();
+  }
+
+  updateData() {
+    this.#updateCategoriesGotProduct();
+    this.#updateProductsInOrder();
+  }
+
+  getCategories() {
+    this.updateData();
+    return this.#categories;
+  }
+
+  getProducts() {
+    this.updateData();
+    return this.#products;
+  }
+
+  #getCategoriesOrderFromStorage() {
     const categories = store.getStorage('categories');
     if (!categories) return [];
     return categories
       .sort((a, b) => a.order - b.order)
       .filter((category) => category.display === true)
       .map((category) => category.name);
-  },
+  }
 
-  getCategoriesGotProduct() {
-    const productsArray = this.getProducts();
-    const categoriesOrder = this.getCategoriesOrder();
-    if (!productsArray) return [];
-    const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
-    return categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
-  },
+  #updateCategoriesGotProduct() {
+    const productsArray = this.#getProductsFromStorage();
+    const categoriesOrder = this.#getCategoriesOrderFromStorage();
+    if (!productsArray) this.#categories = [];
+    else {
+      const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
+      this.#categories = categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
+    }
+  }
 
-  getProducts() {
+  #getProductsFromStorage() {
     const products = store.getStorage('products');
     if (!products) return products;
     return products.filter((product) => product.display === true);
-  },
+  }
 
-  getProductsInOrder() {
-    const categoriesOrder = this.getCategoriesGotProduct();
-    const products = this.getProducts();
-    return categoriesOrder.map((category) => products.filter((product) => product.category === category));
-  },
-};
+  #updateProductsInOrder() {
+    this.#updateCategoriesGotProduct();
+    const products = this.#getProductsFromStorage();
+    this.#products = this.#categories.map((category) => products.filter((product) => product.category === category));
+  }
+}
 
-export default productDataModel;
+export default ProductData;

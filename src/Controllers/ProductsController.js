@@ -1,16 +1,22 @@
 import store from '../../utils/store.js';
 import $ from '../../utils/index.js';
-import productDataModel from '../Models/productData.js';
+import ProductData from '../Models/productData.js';
 import productComponents from '../Views/productComponents.js';
 
 class ProductsController {
+  #productData;
+
+  constructor() {
+    this.#productData = new ProductData();
+  }
+
   init() {
     this.#renderViewMode();
     this.#addRenderEvent();
   }
 
   #addRenderEvent() {
-    const methods = [this.#renderCategoryMode, this.#renderTotalMode];
+    const methods = [this.#renderCategoryMode.bind(this), this.#renderTotalMode.bind(this)];
     $('#hidden-view-list')
       .querySelectorAll('div')
       .forEach((button, index) => button.addEventListener('click', methods[index]));
@@ -22,15 +28,15 @@ class ProductsController {
   }
 
   #renderCategoryMode() {
-    const [categories, products] = [productDataModel.getCategoriesGotProduct(), productDataModel.getProductsInOrder()];
+    const [categories, products] = [this.#productData.getCategories(), this.#productData.getProducts()];
     if (!products.length) return this.#renderAlertMessage();
     $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
   }
 
   #renderTotalMode() {
-    const productsArrays = productDataModel.getProductsInOrder();
-    if (!productsArrays.length) return this.#renderAlertMessage();
-    $('#product-container').innerHTML = productComponents.renderTotalModeComponent(productsArrays);
+    const productsArrays = this.#productData.getProducts();
+    if (!productsArrays.length) this.#renderAlertMessage();
+    else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(productsArrays);
   }
 
   #renderAlertMessage() {

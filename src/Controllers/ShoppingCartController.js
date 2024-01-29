@@ -1,14 +1,17 @@
 import ShoppingCartData from '../Models/ShoppingCartData.js';
 import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
-import productData from '../Models/productData.js';
+import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
 
 class ShoppingCartController {
   #shoppingCartData;
 
+  #productData;
+
   constructor() {
     this.#shoppingCartData = new ShoppingCartData();
+    this.#productData = new ProductData();
   }
 
   init() {
@@ -25,10 +28,10 @@ class ShoppingCartController {
   }
 
   #addProductRender() {
-    const products = productData.getProducts();
+    const products = this.#productData.getProducts().flat();
     $('#product-container').addEventListener('click', (e) => {
-      const name = formatter.formatDataSetToText(e.target.dataset.name);
       if (e.target.classList.contains('product')) {
+        const name = formatter.formatDataSetToText(e.target.dataset.name);
         const productToAdd = products.find((product) => product.name === name);
         this.#shoppingCartData.addToShoppingCart(productToAdd);
         this.#renderShoppingCart();
