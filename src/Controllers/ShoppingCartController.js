@@ -9,6 +9,8 @@ class ShoppingCartController {
 
   #productData;
 
+  #paymentMethod;
+
   constructor() {
     this.#shoppingCartData = new ShoppingCartData();
     this.#productData = new ProductData();
@@ -18,6 +20,7 @@ class ShoppingCartController {
     this.#renderShoppingCart();
     this.#addProductRender();
     this.#addControlQuantity();
+    this.#setPaymentMethod();
   }
 
   #renderShoppingCart() {
@@ -54,6 +57,25 @@ class ShoppingCartController {
         this.#renderShoppingCart();
       }
     });
+  }
+
+  #setPaymentMethod() {
+    $('#payment-method-box').addEventListener('click', (e) => {
+      this.#paymentMethod = e.target.innerText;
+      this.#selectMethod(e.target);
+    });
+  }
+
+  #deselectAllMethod() {
+    const methodButtons = Array.from($('#payment-method-box').querySelectorAll('.payment-method-button')).filter(
+      (button) => button.innerText !== '할인적용',
+    );
+    methodButtons.forEach((button) => button.classList.remove('selected'));
+  }
+
+  #selectMethod(target) {
+    this.#deselectAllMethod();
+    target.classList.add('selected');
   }
 }
 
