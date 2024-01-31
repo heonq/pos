@@ -4,19 +4,15 @@
 import formatter from '../../utils/formatter.js';
 
 const productComponents = {
-  renderCategoryText(category) {
-    return `<div class="category-text">${category}</div>`;
-  },
-
   renderEachProduct(product) {
     return `
-    <div class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${product.price}>
+    <button class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${product.price}>
     ${product.name}<br />${formatter.formatNumber(product.price)}원
-      </div>`;
+      </button>`;
   },
 
   renderEachCategoryComponent(category, productsArray) {
-    return `${this.renderCategoryText(category)}
+    return `<div class="category-text">${category}</div>
     <div class="scroll-container">${productsArray.map((product) => this.renderEachProduct(product)).join('')}</div>`;
   },
 
@@ -27,25 +23,9 @@ const productComponents = {
   },
 
   renderTotalModeComponent(productsArrays) {
-    return `<div id="total-product-container">
-    ${this.renderTotalModeProduct(productsArrays)}
-</div>`;
-  },
-
-  renderTotalModeProduct(productsArrays) {
-    return productsArrays
-      .map((products) =>
-        products
-          .map(
-            (product) => `<div class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${
-              product.price
-            }>
-      ${product.name}<br/ >${formatter.formatNumber(product.price)}원
-  </div>`,
-          )
-          .join(''),
-      )
-      .join('');
+    return `<div id="total-product-container">${productsArrays
+      .map((products) => products.map((product) => this.renderEachProduct(product)).join(''))
+      .join('')}</div>`;
   },
 
   renderAlertMessage() {
