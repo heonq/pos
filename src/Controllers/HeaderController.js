@@ -89,24 +89,16 @@ class HeaderController {
   #addToggleModalContainer() {
     $('#button-container').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-button')) {
-        $('#modal-container').classList.toggle('show');
-        this.#showBackground();
+        $('#modal-container').classList.add('show', 'big');
+        $('#background').classList.add('show');
       }
     });
   }
 
-  #showBackground() {
-    $('#background').classList.add('show');
-  }
-
-  #hideBackground() {
-    $('#background').classList.remove('show');
-  }
-
   #hideModalContainer(targetId) {
     if (targetId === 'background') {
-      $('#modal-container').classList.remove('show');
-      this.#hideBackground();
+      $('#modal-container').classList.remove('show', 'big', 'small');
+      $('#background').classList.remove('show');
     }
   }
 }

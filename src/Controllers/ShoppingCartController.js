@@ -3,6 +3,7 @@ import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
 import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
+import modalComponents from '../Views/modalComponents.js';
 
 class ShoppingCartController {
   #shoppingCartData;
@@ -21,6 +22,7 @@ class ShoppingCartController {
     this.#addProductRender();
     this.#addControlQuantity();
     this.#setPaymentMethod();
+    this.#addRenderDiscountModal();
   }
 
   #renderShoppingCart() {
@@ -76,6 +78,22 @@ class ShoppingCartController {
   #selectMethod(target) {
     this.#deselectAllMethod();
     target.classList.add('selected');
+  }
+
+  #showModalContainerSmall() {
+    $('#background').classList.add('show');
+    $('#modal-container').classList.add('show', 'small');
+  }
+
+  #renderDiscountModal() {
+    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent();
+  }
+
+  #addRenderDiscountModal() {
+    $('#discount').addEventListener('click', () => {
+      this.#showModalContainerSmall();
+      this.#renderDiscountModal();
+    });
   }
 }
 
