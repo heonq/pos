@@ -13,7 +13,7 @@ class ShoppingCartData {
   }
 
   getTotalAmount() {
-    this.getShoppingCartData();
+    this.#updateShoppingCart();
     return this.#shoppingCart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
   }
 
@@ -58,6 +58,24 @@ class ShoppingCartData {
     const productToDelete = this.#shoppingCart.find((product) => product.name === productName);
     productToDelete.quantity = 0;
     this.#setShoppingCart();
+  }
+
+  initDiscountInfo() {
+    store.setStorage('discountInfo', {
+      type: 'percentage',
+      discountAmount: 0,
+      discountValue: 0,
+      chargeAmount: this.getTotalAmount(),
+      reason: '',
+    });
+  }
+
+  setDiscount(discountInfo) {
+    store.setStorage('discountInfo', discountInfo);
+  }
+
+  getDiscount() {
+    return store.getStorage('discountInfo');
   }
 }
 
