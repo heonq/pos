@@ -61,13 +61,14 @@ class ShoppingCartData {
   }
 
   initDiscountInfo() {
-    store.setStorage('discountInfo', {
+    return {
       type: 'percentage',
+      totalAmount: this.getTotalAmount(),
       discountAmount: 0,
       discountValue: 0,
       chargeAmount: this.getTotalAmount(),
       reason: '',
-    });
+    };
   }
 
   setDiscount(discountInfo) {

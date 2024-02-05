@@ -31,19 +31,7 @@ class DiscountController extends modalController {
   }
 
   #updateDiscountFromStorage() {
-    this.#discountInfo = this.#shoppingCartData.getDiscount() ?? this.#initDiscountInfo();
-  }
-
-  #initDiscountInfo() {
-    const totalAmount = this.#shoppingCartData.getTotalAmount();
-    return {
-      type: 'percentage',
-      discountValue: 0,
-      totalAmount,
-      discountAmount: 0,
-      chargeAmount: totalAmount,
-      reason: '',
-    };
+    this.#discountInfo = this.#shoppingCartData.getDiscount() ?? this.#shoppingCartData.initDiscountInfo();
   }
 }
 

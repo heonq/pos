@@ -21,7 +21,7 @@ const modalComponents = {
     </div>
     <div id="discount-info-section">
     <div id="discount-input-section">
-    <input type="number" value="${discountInfo.value}" min="0" ${
+    <input type="number" value="${discountInfo.discountValue}" min="0" ${
       discountInfo.type === 'percentage' ? 'max="100"' : ''
     } class=${discountInfo.type} id="discount-input" /><span id="discount-text">${
       discountInfo.type === 'percentage' ? '%' : '원'
