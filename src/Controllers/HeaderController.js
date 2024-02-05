@@ -1,14 +1,16 @@
 import $ from '../../utils/index.js';
 import store from '../../utils/store.js';
+import modalController from '../core/modalController.js';
 
-class HeaderController {
+class HeaderController extends modalController {
   init() {
     this.#hideComponentNotUsing();
     this.#addToggleViewMode();
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
-    this.#addToggleModalContainer();
+    this.#setBackgroundHideModal();
     this.#selectButton();
+    this.#preventDefaultForm();
   }
 
   #hideComponentNotUsing() {
@@ -16,7 +18,6 @@ class HeaderController {
       const targetId = e.target.id;
       this.#foldViewModeList(targetId);
       this.#foldProductManagementList(targetId);
-      this.#hideModalContainer(targetId);
     });
   }
 
@@ -86,20 +87,18 @@ class HeaderController {
     if (!IDS.includes(targetId)) $('#product-management-container').classList.remove('expanded');
   }
 
-  #addToggleModalContainer() {
-    $('#button-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal-button')) {
-        $('#modal-container').classList.add('show', 'big');
-        $('#background').classList.add('show');
-      }
+  #setBackgroundHideModal() {
+    $('#background').addEventListener('click', () => {
+      this.hideModal();
     });
   }
 
-  #hideModalContainer(targetId) {
-    if (targetId === 'background') {
-      $('#modal-container').classList.remove('show', 'big', 'small');
-      $('#background').classList.remove('show');
-    }
+  #preventDefaultForm() {
+    document.querySelectorAll('form').forEach((form) =>
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+      }),
+    );
   }
 }
 

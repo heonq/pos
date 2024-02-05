@@ -22,7 +22,6 @@ class ShoppingCartController {
     this.#addProductRender();
     this.#addControlQuantity();
     this.#setPaymentMethod();
-    this.#addRenderDiscountModal();
   }
 
   #renderShoppingCart() {
@@ -77,23 +76,8 @@ class ShoppingCartController {
 
   #selectMethod(target) {
     this.#deselectAllMethod();
+    if (target.id === 'discount') return;
     target.classList.add('selected');
-  }
-
-  #showModalContainerSmall() {
-    $('#background').classList.add('show');
-    $('#modal-container').classList.add('show', 'small');
-  }
-
-  #renderDiscountModal() {
-    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent();
-  }
-
-  #addRenderDiscountModal() {
-    $('#discount').addEventListener('click', () => {
-      this.#showModalContainerSmall();
-      this.#renderDiscountModal();
-    });
   }
 }
 
