@@ -3,11 +3,11 @@ import store from '../../utils/store.js';
 class ShoppingCartData {
   #shoppingCart;
 
-  #discountInfo;
+  #paymentInfo;
 
   constructor() {
     this.#updateShoppingCart();
-    this.#setDiscountInfo();
+    this.#getPaymentInfoFromStorage();
   }
 
   getShoppingCartData() {
@@ -39,7 +39,7 @@ class ShoppingCartData {
     if (existProduct) existProduct.quantity += 1;
     else this.#shoppingCart.push(productToAdd);
     this.#setShoppingCart();
-    this.#initDiscountInfo();
+    this.initPaymentInfo();
   }
 
   handleQuantity(classList, productName) {
@@ -48,7 +48,7 @@ class ShoppingCartData {
     if (classList.contains('minus')) this.#minusQuantity(productName);
     if (classList.contains('delete')) this.#deleteFromCart(productName);
     this.#setShoppingCart();
-    this.#initDiscountInfo();
+    this.initPaymentInfo();
   }
 
   #plusQuantity(productName) {
@@ -67,64 +67,73 @@ class ShoppingCartData {
     productToDelete.quantity = 0;
   }
 
-  #initDiscountInfo() {
-    this.#setDefaultDiscountInfo();
-    this.#setDiscountToStorage();
-    this.#setDiscountInfo();
+  initShoppingCart() {
+    this.#shoppingCart = [];
+    this.#setShoppingCart();
   }
 
-  getDiscountInfo() {
-    this.#setDiscountInfo();
-    return this.#discountInfo;
+  initPaymentInfo() {
+    this.#setDefaultPaymentInfo();
+    this.#setPaymentInfoToStorage();
   }
 
-  #setDiscountToStorage() {
-    store.setStorage('discountInfo', this.#discountInfo);
+  gePaymentInfo() {
+    this.#getPaymentInfoFromStorage();
+    return this.#paymentInfo;
   }
 
-  #setDiscountInfo() {
-    if (store.getStorage('discountInfo')) this.#discountInfo = store.getStorage('discountInfo');
-    else this.#setDefaultDiscountInfo();
+  #setPaymentInfoToStorage() {
+    store.setStorage('discountInfo', this.#paymentInfo);
   }
 
-  #setDefaultDiscountInfo() {
-    this.#discountInfo = {
-      type: 'percentage',
+  #getPaymentInfoFromStorage() {
+    this.#setDefaultPaymentInfo();
+    if (store.getStorage('discountInfo')) this.#paymentInfo = store.getStorage('discountInfo');
+  }
+
+  #setDefaultPaymentInfo() {
+    this.#paymentInfo = {
+      method: '',
+      discountType: 'percentage',
       totalAmount: this.getTotalAmount(),
       discountAmount: 0,
       discountValue: 0,
       chargeAmount: this.getTotalAmount(),
-      reason: '',
+      discountReason: '',
     };
+  }
+
+  updatePaymentMethod(method) {
+    this.#paymentInfo.method = method;
+    this.#setPaymentInfoToStorage();
   }
 
   updateDiscount(discountValue, discountReason) {
     this.updateDiscountValue(discountValue);
-    this.#discountInfo.reason = discountReason;
-    this.#setDiscountToStorage();
+    this.#paymentInfo.discountReason = discountReason;
+    this.#setPaymentInfoToStorage();
   }
 
   updateDiscountType(type) {
-    this.#setDefaultDiscountInfo();
-    this.#discountInfo.type = type;
-    this.#setDiscountToStorage();
+    this.#setDefaultPaymentInfo();
+    this.#paymentInfo.discountType = type;
+    this.#setPaymentInfoToStorage();
   }
 
   updateDiscountValue(discountValue) {
-    this.#discountInfo.discountValue = discountValue;
-    if (this.#discountInfo.type === 'percentage')
-      this.#discountInfo.discountAmount = Math.floor(discountValue * this.#discountInfo.totalAmount * 0.01);
-    else this.#discountInfo.discountAmount = discountValue;
-    this.#discountInfo.chargeAmount = this.#discountInfo.totalAmount - this.#discountInfo.discountAmount;
-    this.#setDiscountToStorage();
+    this.#paymentInfo.discountValue = discountValue;
+    this.#paymentInfo.discountAmount = discountValue;
+    if (this.#paymentInfo.type === 'percentage')
+      this.#paymentInfo.discountAmount = Math.floor(discountValue * this.#paymentInfo.totalAmount * 0.01);
+    this.#paymentInfo.chargeAmount = this.#paymentInfo.totalAmount - this.#paymentInfo.discountAmount;
   }
 
   checkDiscountAmount() {
-    return this.#discountInfo.discountAmount > 0;
+    return this.#paymentInfo.discountAmount > 0;
   }
 
   checkDiscountType() {
-    return this.#discountInfo.type === 'category';
+    return this.#paymentInfo.discountType === 'category';
   }
 }
 

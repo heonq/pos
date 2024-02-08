@@ -26,7 +26,7 @@ class DiscountController extends modalController {
 
   #renderDiscountModal() {
     if (this.#shoppingCartData.getTotalAmount() === 0) return;
-    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#shoppingCartData.getDiscountInfo());
+    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#shoppingCartData.gePaymentInfo());
     this.#calculateDiscount();
     this.showModal('small');
     this.#addRadioEvent();
@@ -71,7 +71,7 @@ class DiscountController extends modalController {
     const type = $('#percentage-type-checkbox').checked ? 'percentage' : 'amount';
     if (!validator.validateDiscount(type, discountValue, totalAmount)) return;
     this.#shoppingCartData.updateDiscount(discountValue, discountReason);
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getDiscountInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.gePaymentInfo().chargeAmount);
     this.#updateDiscountButtonClass();
     this.hideModal();
   }

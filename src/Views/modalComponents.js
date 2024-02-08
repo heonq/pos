@@ -3,18 +3,18 @@
 import formatter from '../../utils/formatter.js';
 
 const modalComponents = {
-  renderDiscountComponent(discountInfo) {
+  renderDiscountComponent(paymentInfo) {
     return `<div id="discount-container">
     <div id="select-discount-type-section">
     <div id="percentage-section">
       <input type="radio" class="discount-checkbox" value="percentage" id="percentage-type-checkbox" name="discount" ${
-        discountInfo.type === 'percentage' ? 'checked' : ''
+        paymentInfo.discountType === 'percentage' ? 'checked' : ''
       } />
       <label for="percentage-type-checkbox">할인율 적용</label>
       </div>
       <div id="amount-section">
       <input type="radio" class="discount-checkbox" value="amount" id="amount-type-checkbox" name="discount" ${
-        discountInfo.type === 'amount' ? 'checked' : ''
+        paymentInfo.discountType === 'amount' ? 'checked' : ''
       } />
       <label for="amount-type-checkbox">금액 적용</label>
       </div>
@@ -22,17 +22,17 @@ const modalComponents = {
     <div id="discount-info-section">
     <div id="discount-input-section">
     <input type="number" value="${
-      discountInfo.type === 'percentage' ? discountInfo.discountValue : discountInfo.discountAmount
-    }" min="0" ${discountInfo.type === 'percentage' ? 'max="100"' : ''} class=${
-      discountInfo.type
-    } id="discount-input" /><span id="discount-text">${discountInfo.type === 'percentage' ? '%' : '원'}</span>
+      paymentInfo.discountType === 'percentage' ? paymentInfo.discountValue : paymentInfo.discountAmount
+    }" min="0" ${paymentInfo.discountType === 'percentage' ? 'max="100"' : ''} class=${
+      paymentInfo.type
+    } id="discount-input" /><span id="discount-text">${paymentInfo.discountType === 'percentage' ? '%' : '원'}</span>
     </div>
     <div id="discount-amount-section">
-    ${this.renderDiscountAmount(discountInfo)}
+    ${this.renderDiscountAmount(paymentInfo)}
     </div>
     <div id="discount-reason-section">
     <div>할인 사유</div>
-    <input type="text" id="discount-reason-input" value="${discountInfo.reason}" />
+    <input type="text" id="discount-reason-input" value="${paymentInfo.discountReason}" />
     </div>
     </div>
     </div>
@@ -40,13 +40,13 @@ const modalComponents = {
   `;
   },
 
-  renderDiscountAmount(discountInfo) {
+  renderDiscountAmount(paymentInfo) {
     return `<span>할인 전 금액 : <span id="total-amount">${formatter.formatNumber(
-      discountInfo.totalAmount,
+      paymentInfo.totalAmount,
     )}</span>원</span>
-    <span>할인 금액 : <span id="discount-amount">${formatter.formatNumber(discountInfo.discountAmount)}</span>원</span>
+    <span>할인 금액 : <span id="discount-amount">${formatter.formatNumber(paymentInfo.discountAmount)}</span>원</span>
     <span>할인 후 금액 : <span id="charge-amount">${formatter.formatNumber(
-      discountInfo.totalAmount - discountInfo.discountAmount,
+      paymentInfo.totalAmount - paymentInfo.discountAmount,
     )}</span>원</span>`;
   },
 

@@ -45,7 +45,7 @@ class ShoppingCartController {
   }
 
   #renderAmountToPay() {
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getDiscountInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.gePaymentInfo().chargeAmount);
   }
 
   #removeDiscountedClass() {
