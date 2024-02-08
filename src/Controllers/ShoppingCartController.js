@@ -66,23 +66,10 @@ class ShoppingCartController {
 
   #setPaymentMethod() {
     $('#payment-method-box').addEventListener('click', (e) => {
-      if (e.target.id === 'discount') return;
+      if (e.target.closest('div').id === 'second-row') return;
       this.#shoppingCartData.updatePaymentMethod(e.target.innerText);
-      this.#selectMethod(e.target);
+      this.#renderSelectedMethod();
     });
-  }
-
-  #deselectAllMethod() {
-    const methodButtons = Array.from($('#payment-method-box').querySelectorAll('.payment-method-button')).filter(
-      (button) => button.innerText !== '할인적용',
-    );
-    methodButtons.forEach((button) => button.classList.remove('selected'));
-  }
-
-  #selectMethod(target) {
-    this.#deselectAllMethod();
-    if (target.id === 'discount') return;
-    target.classList.add('selected');
   }
 
   #addInitiateButtonEvent() {
