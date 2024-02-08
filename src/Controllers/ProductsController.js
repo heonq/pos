@@ -29,14 +29,14 @@ class ProductsController {
 
   #renderCategoryMode() {
     const [categories, products] = [this.#productData.getCategories(), this.#productData.getProducts()];
-    if (!products.length) return this.#renderAlertMessage();
-    $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
+    if (!products.length) this.#renderAlertMessage();
+    else $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
   }
 
   #renderTotalMode() {
-    const productsArrays = this.#productData.getProducts();
-    if (!productsArrays.length) this.#renderAlertMessage();
-    else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(productsArrays);
+    const products = this.#productData.getProducts();
+    if (!products.length) this.#renderAlertMessage();
+    else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(products);
   }
 
   #renderAlertMessage() {
