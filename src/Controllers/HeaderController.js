@@ -1,8 +1,8 @@
 import $ from '../../utils/index.js';
 import store from '../../utils/store.js';
-import modalController from '../core/modalController.js';
+import ModalController from '../core/ModalController.js';
 
-class HeaderController extends modalController {
+class HeaderController extends ModalController {
   init() {
     this.#hideComponentNotUsing();
     this.#addToggleViewMode();

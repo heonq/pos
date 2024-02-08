@@ -1,6 +1,6 @@
 import $ from '../../utils/index.js';
 
-class modalController {
+class ModalController {
   addSubmitButtonEvent(submitClassName, callback) {
     $('#submit-buttons').addEventListener('click', (e) => {
       if (e.target.classList.contains(submitClassName)) {
@@ -20,4 +20,4 @@ class modalController {
   }
 }
 
-export default modalController;
+export default ModalController;

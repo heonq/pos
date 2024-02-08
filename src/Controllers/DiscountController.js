@@ -1,11 +1,11 @@
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import ShoppingCartData from '../Models/ShoppingCartData.js';
-import modalController from '../core/modalController.js';
+import ModalController from '../core/ModalController.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
 
-class DiscountController extends modalController {
+class DiscountController extends ModalController {
   #shoppingCartData;
 
   constructor() {
