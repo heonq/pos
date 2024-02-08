@@ -21,16 +21,14 @@ const modalComponents = {
     </div>
     <div id="discount-info-section">
     <div id="discount-input-section">
-    <input type="number" value="${discountInfo.discountValue}" min="0" ${
-      discountInfo.type === 'percentage' ? 'max="100"' : ''
-    } class=${discountInfo.type} id="discount-input" /><span id="discount-text">${
-      discountInfo.type === 'percentage' ? '%' : '원'
-    }</span>
+    <input type="number" value="${
+      discountInfo.type === 'percentage' ? discountInfo.discountValue : discountInfo.discountAmount
+    }" min="0" ${discountInfo.type === 'percentage' ? 'max="100"' : ''} class=${
+      discountInfo.type
+    } id="discount-input" /><span id="discount-text">${discountInfo.type === 'percentage' ? '%' : '원'}</span>
     </div>
     <div id="discount-amount-section">
-    <span>할인 전 금액 : ${formatter.formatNumber(discountInfo.chargeAmount + discountInfo.discountAmount)}원</span>
-    <span>할인 금액 : ${formatter.formatNumber(discountInfo.discountAmount)}원</span>
-    <span>할인 후 금액 : ${formatter.formatNumber(discountInfo.chargeAmount)}원</span>
+    ${this.renderDiscountAmount(discountInfo)}
     </div>
     <div id="discount-reason-section">
     <div>할인 사유</div>
@@ -40,6 +38,16 @@ const modalComponents = {
     </div>
     ${this.renderSubmitAndCancelButtons('discount')}
   `;
+  },
+
+  renderDiscountAmount(discountInfo) {
+    return `<span>할인 전 금액 : <span id="total-amount">${formatter.formatNumber(
+      discountInfo.totalAmount,
+    )}</span>원</span>
+    <span>할인 금액 : <span id="discount-amount">${formatter.formatNumber(discountInfo.discountAmount)}</span>원</span>
+    <span>할인 후 금액 : <span id="charge-amount">${formatter.formatNumber(
+      discountInfo.totalAmount - discountInfo.discountAmount,
+    )}</span>원</span>`;
   },
 
   renderSubmitAndCancelButtons(modalType) {

@@ -39,12 +39,18 @@ class ShoppingCartController {
         const productToAdd = products.find((product) => product.name === name);
         this.#shoppingCartData.addToShoppingCart(productToAdd);
         this.#renderShoppingCart();
+        this.#renderAmountToPay();
       }
     });
   }
 
   #renderAmountToPay() {
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getTotalAmount());
+    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getDiscountInfo().chargeAmount);
+  }
+
+  #removeDiscountedClass() {
+    $('#discount').classList.remove('selected');
+    $('#amount').classList.remove('discounted');
   }
 
   #addControlQuantity() {
@@ -52,10 +58,9 @@ class ShoppingCartController {
       if (e.target.classList.length) {
         const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
         const { classList } = e.target;
-        if (classList.contains('plus')) this.#shoppingCartData.plusQuantity(productName);
-        if (classList.contains('minus')) this.#shoppingCartData.minusQuantity(productName);
-        if (classList.contains('delete')) this.#shoppingCartData.deleteFromCart(productName);
+        this.#shoppingCartData.handleQuantity(classList, productName);
         this.#renderShoppingCart();
+        this.#removeDiscountedClass();
       }
     });
   }
