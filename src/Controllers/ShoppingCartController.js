@@ -3,14 +3,11 @@ import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
 import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
-import modalComponents from '../Views/modalComponents.js';
 
 class ShoppingCartController {
   #shoppingCartData;
 
   #productData;
-
-  #paymentMethod;
 
   constructor() {
     this.#shoppingCartData = new ShoppingCartData();
@@ -22,6 +19,8 @@ class ShoppingCartController {
     this.#addProductRender();
     this.#addControlQuantity();
     this.#setPaymentMethod();
+    this.#addInitiateButtonEvent();
+    this.#renderSelectedMethod();
   }
 
   #renderShoppingCart() {
@@ -67,7 +66,8 @@ class ShoppingCartController {
 
   #setPaymentMethod() {
     $('#payment-method-box').addEventListener('click', (e) => {
-      this.#paymentMethod = e.target.innerText;
+      if (e.target.id === 'discount') return;
+      this.#shoppingCartData.updatePaymentMethod(e.target.innerText);
       this.#selectMethod(e.target);
     });
   }
@@ -83,6 +83,25 @@ class ShoppingCartController {
     this.#deselectAllMethod();
     if (target.id === 'discount') return;
     target.classList.add('selected');
+  }
+
+  #addInitiateButtonEvent() {
+    $('#initiate-button').addEventListener('click', () => {
+      this.#shoppingCartData.initShoppingCart();
+      this.#shoppingCartData.initPaymentInfo();
+      this.#removeDiscountedClass();
+      this.#renderShoppingCart();
+      this.#renderSelectedMethod();
+    });
+  }
+
+  #renderSelectedMethod() {
+    const buttons = $('#payment-method-box').querySelectorAll('button');
+    const { method } = this.#shoppingCartData.gePaymentInfo();
+    buttons.forEach((button) => {
+      button.classList.remove('selected');
+      if (button.innerText === method) button.classList.add('selected');
+    });
   }
 }
 
