@@ -5,9 +5,12 @@ class ShoppingCartData {
 
   #paymentInfo;
 
+  #splitPayment;
+
   constructor() {
     this.#updateShoppingCart();
     this.#getPaymentInfoFromStorage();
+    this.initSplitPayment();
   }
 
   getShoppingCartData() {
@@ -77,18 +80,18 @@ class ShoppingCartData {
     this.#setPaymentInfoToStorage();
   }
 
-  gePaymentInfo() {
+  getPaymentInfo() {
     this.#getPaymentInfoFromStorage();
     return this.#paymentInfo;
   }
 
   #setPaymentInfoToStorage() {
-    store.setStorage('discountInfo', this.#paymentInfo);
+    store.setStorage('paymentInfo', this.#paymentInfo);
   }
 
   #getPaymentInfoFromStorage() {
     this.#setDefaultPaymentInfo();
-    if (store.getStorage('discountInfo')) this.#paymentInfo = store.getStorage('discountInfo');
+    if (store.getStorage('paymentInfo')) this.#paymentInfo = store.getStorage('paymentInfo');
   }
 
   #setDefaultPaymentInfo() {
@@ -123,7 +126,7 @@ class ShoppingCartData {
   updateDiscountValue(discountValue) {
     this.#paymentInfo.discountValue = discountValue;
     this.#paymentInfo.discountAmount = discountValue;
-    if (this.#paymentInfo.type === 'percentage')
+    if (this.#paymentInfo.discountType === 'percentage')
       this.#paymentInfo.discountAmount = Math.floor(discountValue * this.#paymentInfo.totalAmount * 0.01);
     this.#paymentInfo.chargeAmount = this.#paymentInfo.totalAmount - this.#paymentInfo.discountAmount;
   }
@@ -134,6 +137,35 @@ class ShoppingCartData {
 
   checkDiscountType() {
     return this.#paymentInfo.discountType === 'category';
+  }
+
+  saveSplitPayment(paymentMethod = [], amount = []) {
+    this.#splitPayment.methods = paymentMethod;
+    this.#splitPayment.amounts = amount;
+    store.setStorage('splitPayment', this.#splitPayment);
+  }
+
+  setDefaultSplitPayment() {
+    this.#splitPayment = {
+      methods: [],
+      amounts: [],
+    };
+  }
+
+  deactivateSplitPayment() {
+    this.setDefaultSplitPayment();
+    this.updatePaymentMethod('');
+    store.setStorage('splitPayment', this.#splitPayment);
+  }
+
+  initSplitPayment() {
+    this.setDefaultSplitPayment();
+    if (store.getStorage('splitPayment')) this.#splitPayment = store.getStorage('splitPayment');
+  }
+
+  getSplitPayment() {
+    this.initSplitPayment();
+    return this.#splitPayment;
   }
 }
 

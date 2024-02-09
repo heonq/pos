@@ -44,7 +44,7 @@ class ShoppingCartController {
   }
 
   #renderAmountToPay() {
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.gePaymentInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getPaymentInfo().chargeAmount);
   }
 
   #removeDiscountedClass() {
@@ -76,6 +76,7 @@ class ShoppingCartController {
     $('#initiate-button').addEventListener('click', () => {
       this.#shoppingCartData.initShoppingCart();
       this.#shoppingCartData.initPaymentInfo();
+      this.#shoppingCartData.deactivateSplitPayment();
       this.#removeDiscountedClass();
       this.#renderShoppingCart();
       this.#renderSelectedMethod();
@@ -84,8 +85,9 @@ class ShoppingCartController {
 
   #renderSelectedMethod() {
     const buttons = $('#payment-method-box').querySelectorAll('button');
-    const { method } = this.#shoppingCartData.gePaymentInfo();
+    const { method } = this.#shoppingCartData.getPaymentInfo();
     buttons.forEach((button) => {
+      if (button.id === 'discount') return;
       button.classList.remove('selected');
       if (button.innerText === method) button.classList.add('selected');
     });

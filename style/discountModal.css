@@ -59,3 +59,29 @@
   justify-content: center;
   align-items: center;
 }
+
+#split-payment-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  width: 280px;
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 50px;
+}
+
+#split-payment-container input,
+select {
+  height: 40px;
+  border-style: none;
+  background-color: rgb(246, 246, 246);
+  margin-top: 15px;
+  font-size: 16px;
+  text-align: right;
+}
+
+#split-payment-container input {
+  width: 180px;
+}

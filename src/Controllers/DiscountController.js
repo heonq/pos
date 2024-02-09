@@ -1,11 +1,11 @@
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import ShoppingCartData from '../Models/ShoppingCartData.js';
-import ModalController from '../core/ModalController.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
+import PaymentModalController from '../core/PaymentModalController.js';
 
-class DiscountController extends ModalController {
+class DiscountController extends PaymentModalController {
   #shoppingCartData;
 
   constructor() {
@@ -25,8 +25,9 @@ class DiscountController extends ModalController {
   }
 
   #renderDiscountModal() {
+    if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
     if (this.#shoppingCartData.getTotalAmount() === 0) return;
-    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#shoppingCartData.gePaymentInfo());
+    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#shoppingCartData.getPaymentInfo());
     this.#calculateDiscount();
     this.showModal('small');
     this.#addRadioEvent();
@@ -71,8 +72,10 @@ class DiscountController extends ModalController {
     const type = $('#percentage-type-checkbox').checked ? 'percentage' : 'amount';
     if (!validator.validateDiscount(type, discountValue, totalAmount)) return;
     this.#shoppingCartData.updateDiscount(discountValue, discountReason);
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.gePaymentInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getPaymentInfo().chargeAmount);
+    this.#shoppingCartData.deactivateSplitPayment();
     this.#updateDiscountButtonClass();
+    this.renderSelectedMethod(this.#shoppingCartData);
     this.hideModal();
   }
 
