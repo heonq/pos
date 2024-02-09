@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import ShoppingCartData from '../Models/ShoppingCartData.js';
 import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
@@ -21,6 +22,7 @@ class ShoppingCartController {
     this.#setPaymentMethod();
     this.#addInitiateButtonEvent();
     this.#renderSelectedMethod();
+    this.#addETCPayEvent();
   }
 
   #renderShoppingCart() {
@@ -90,6 +92,15 @@ class ShoppingCartController {
       if (button.id === 'discount') return;
       button.classList.remove('selected');
       if (button.innerText === method) button.classList.add('selected');
+    });
+  }
+
+  #addETCPayEvent() {
+    $('#etcetera').addEventListener('click', () => {
+      const reason = prompt('기타 사유를 입력해주세요.');
+      this.#shoppingCartData.setETCReason(reason);
+      this.#renderSelectedMethod();
+      this.#renderShoppingCart();
     });
   }
 }

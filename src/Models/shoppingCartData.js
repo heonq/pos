@@ -103,6 +103,7 @@ class ShoppingCartData {
       discountValue: 0,
       chargeAmount: this.getTotalAmount(),
       discountReason: '',
+      ETCReason: '',
     };
   }
 
@@ -166,6 +167,12 @@ class ShoppingCartData {
   getSplitPayment() {
     this.initSplitPayment();
     return this.#splitPayment;
+  }
+
+  setETCReason(reason) {
+    this.initPaymentInfo();
+    this.#paymentInfo.ETCReason = reason;
+    this.updatePaymentMethod('기타결제');
   }
 }
 
