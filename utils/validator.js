@@ -30,11 +30,12 @@ const validator = {
   },
 
   validateSplitPayment(paymentMethods, amounts, totalAmount) {
+    const totalSplitAmount = amounts.reduce((acc, curr) => acc + Number(curr), 0);
     if (paymentMethods.some((method) => method === '')) {
       alert('결제 수단을 선택해주세요.');
       return false;
     }
-    if (amounts.reduce((acc, curr) => acc + Number(curr), 0) !== totalAmount) {
+    if (totalSplitAmount !== totalAmount || amounts.some((amount) => amount <= 0)) {
       alert('결제 금액을 올바르게 입력해주세요.');
       return false;
     }
