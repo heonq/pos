@@ -5,15 +5,19 @@ import $ from '../../utils/index.js';
 import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
+import SalesData from '../Models/salesData.js';
 
 class ShoppingCartController {
   #shoppingCartData;
 
   #productData;
 
+  #salesData;
+
   constructor() {
     this.#shoppingCartData = new ShoppingCartData();
     this.#productData = new ProductData();
+    this.#salesData = new SalesData();
   }
 
   init() {
@@ -42,6 +46,7 @@ class ShoppingCartController {
         const name = formatter.formatDataSetToText(e.target.dataset.name);
         const productToAdd = products.find((product) => product.name === name);
         this.#shoppingCartData.addToShoppingCart(productToAdd);
+        this.#salesData.initPaymentInfo();
         this.#renderShoppingCart();
         this.#renderAmountToPay();
       }
@@ -49,7 +54,7 @@ class ShoppingCartController {
   }
 
   #renderAmountToPay() {
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getPaymentInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(this.#salesData.getPaymentInfo().chargeAmount);
   }
 
   #removeDiscountedClass() {
@@ -63,6 +68,7 @@ class ShoppingCartController {
         const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
         const { classList } = e.target;
         this.#shoppingCartData.handleQuantity(classList, productName);
+        this.#salesData.initPaymentInfo();
         this.#renderShoppingCart();
         this.#removeDiscountedClass();
       }
@@ -73,7 +79,7 @@ class ShoppingCartController {
     $('#payment-method-box').addEventListener('click', (e) => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       if (e.target.closest('div').id === 'second-row') return;
-      this.#shoppingCartData.updatePaymentMethod(e.target.innerText);
+      this.#salesData.updatePaymentMethod(e.target.innerText);
       this.#renderSelectedMethod();
     });
   }
@@ -86,7 +92,7 @@ class ShoppingCartController {
 
   #renderSelectedMethod() {
     const buttons = $('#payment-method-box').querySelectorAll('button');
-    const { method } = this.#shoppingCartData.getPaymentInfo();
+    const { method } = this.#salesData.getPaymentInfo();
     buttons.forEach((button) => {
       if (button.id === 'discount') return;
       button.classList.remove('selected');
@@ -98,7 +104,7 @@ class ShoppingCartController {
     $('#etcetera').addEventListener('click', () => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       const reason = prompt('기타 사유를 입력해주세요.');
-      this.#shoppingCartData.setETCReason(reason);
+      this.#salesData.setETCReason(reason);
       this.#renderSelectedMethod();
       this.#renderShoppingCart();
       this.#updateDiscountButtonClass();
@@ -107,16 +113,16 @@ class ShoppingCartController {
 
   #addSaveSalesHistoryEvent() {
     $('#payment-complete-button').addEventListener('click', () => {
-      if (!validator.validatePaymentMethod(this.#shoppingCartData.getPaymentInfo())) return;
-      this.#shoppingCartData.handleSalesInfo();
+      if (!validator.validatePaymentMethod(this.#salesData.getPaymentInfo())) return;
+      this.#salesData.handleSalesInfo();
       this.#initShoppingCartAndPayment();
     });
   }
 
   #initShoppingCartAndPayment() {
     this.#shoppingCartData.initShoppingCart();
-    this.#shoppingCartData.initPaymentInfo();
-    this.#shoppingCartData.deactivateSplitPayment();
+    this.#salesData.initPaymentInfo();
+    this.#salesData.deactivateSplitPayment();
     this.#removeDiscountedClass();
     this.#renderShoppingCart();
     this.#renderSelectedMethod();
@@ -124,7 +130,7 @@ class ShoppingCartController {
   }
 
   #updateDiscountButtonClass() {
-    if (this.#shoppingCartData.checkDiscountAmount()) {
+    if (this.#salesData.checkDiscountAmount()) {
       $('#discount').classList.add('selected');
       return $('#amount').classList.add('discounted');
     }
@@ -133,7 +139,7 @@ class ShoppingCartController {
   }
 
   #renderSalesNumber() {
-    const salesNumber = this.#shoppingCartData.getSalesNumber();
+    const salesNumber = this.#salesData.getSalesNumber();
     $('#sales-number').innerText = salesNumber;
   }
 }

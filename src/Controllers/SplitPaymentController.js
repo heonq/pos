@@ -3,13 +3,17 @@ import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import PaymentModalController from '../core/PaymentModalController.js';
 import validator from '../../utils/validator.js';
+import SalesData from '../Models/salesData.js';
 
 class SplitPaymentController extends PaymentModalController {
   #shoppingCartData;
 
+  #salesData;
+
   constructor() {
     super();
     this.#shoppingCartData = new ShoppingCartData();
+    this.#salesData = new SalesData();
   }
 
   init() {
@@ -26,16 +30,14 @@ class SplitPaymentController extends PaymentModalController {
 
   #renderSplitPayment() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-    $('#modal-container').innerHTML = modalComponents.renderSplitPaymentComponent(
-      this.#shoppingCartData.getPaymentInfo(),
-    );
+    $('#modal-container').innerHTML = modalComponents.renderSplitPaymentComponent(this.#salesData.getPaymentInfo());
     this.#renderSplitInput();
     this.showModal('small');
   }
 
   #renderSplitInput() {
-    const paymentMethods = this.#shoppingCartData.getSplitPayment().methods;
-    const { amounts } = this.#shoppingCartData.getSplitPayment();
+    const paymentMethods = this.#salesData.getSplitPayment().methods;
+    const { amounts } = this.#salesData.getSplitPayment();
     const inputs = $('#split-payment-container').querySelectorAll('input');
     const selects = $('#split-payment-container').querySelectorAll('select');
     inputs.forEach((input, index) => (input.value = amounts[index]));
@@ -50,7 +52,7 @@ class SplitPaymentController extends PaymentModalController {
 
   #renderInput(e) {
     const inputs = ['first-split-input', 'second-split-input'];
-    const { chargeAmount } = this.#shoppingCartData.getPaymentInfo();
+    const { chargeAmount } = this.#salesData.getPaymentInfo();
     const index = inputs.indexOf(e.target.id);
     $(`#${inputs[1 - index]}`).value = chargeAmount - $(`#${inputs[index]}`).value;
   }
@@ -65,13 +67,12 @@ class SplitPaymentController extends PaymentModalController {
   #handleSplitPayment() {
     const amounts = [$('#first-split-input').value, $('#second-split-input').value];
     const paymentMethods = [$('#first-method').value, $('#second-method').value];
-    if (!validator.validateSplitPayment(paymentMethods, amounts, this.#shoppingCartData.getPaymentInfo().chargeAmount))
-      return;
-    this.#shoppingCartData.updatePaymentMethod('분할결제');
+    if (!validator.validateSplitPayment(paymentMethods, amounts, this.#salesData.getPaymentInfo().chargeAmount)) return;
+    this.#salesData.updatePaymentMethod('분할결제');
     $('#split').classList.add('selected');
-    this.#shoppingCartData.saveSplitPayment(paymentMethods, amounts);
+    this.#salesData.saveSplitPayment(paymentMethods, amounts);
     this.hideModal();
-    this.renderSelectedMethod(this.#shoppingCartData);
+    this.renderSelectedMethod(this.#salesData);
   }
 }
 

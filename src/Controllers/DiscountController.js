@@ -4,13 +4,17 @@ import ShoppingCartData from '../Models/ShoppingCartData.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
 import PaymentModalController from '../core/PaymentModalController.js';
+import SalesData from '../Models/salesData.js';
 
 class DiscountController extends PaymentModalController {
   #shoppingCartData;
 
+  #salesData;
+
   constructor() {
     super();
     this.#shoppingCartData = new ShoppingCartData();
+    this.#salesData = new SalesData();
   }
 
   init() {
@@ -27,7 +31,7 @@ class DiscountController extends PaymentModalController {
   #renderDiscountModal() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
     if (this.#shoppingCartData.getTotalAmount() === 0) return;
-    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#shoppingCartData.getPaymentInfo());
+    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#salesData.getPaymentInfo());
     this.#calculateDiscount();
     this.showModal('small');
     this.#addRadioEvent();
@@ -71,16 +75,16 @@ class DiscountController extends PaymentModalController {
     const totalAmount = this.#shoppingCartData.getTotalAmount();
     const type = $('#percentage-type-checkbox').checked ? 'percentage' : 'amount';
     if (!validator.validateDiscount(type, discountValue, totalAmount)) return;
-    this.#shoppingCartData.updateDiscount(discountValue, discountReason);
-    $('#amount').innerText = formatter.formatNumber(this.#shoppingCartData.getPaymentInfo().chargeAmount);
-    this.#shoppingCartData.deactivateSplitPayment();
+    this.#salesData.updateDiscount(discountValue, discountReason);
+    $('#amount').innerText = formatter.formatNumber(this.#salesData.getPaymentInfo().chargeAmount);
+    this.#salesData.deactivateSplitPayment();
     this.#updateDiscountButtonClass();
-    this.renderSelectedMethod(this.#shoppingCartData);
+    this.renderSelectedMethod(this.#salesData);
     this.hideModal();
   }
 
   #updateDiscountButtonClass() {
-    if (this.#shoppingCartData.checkDiscountAmount()) {
+    if (this.#salesData.checkDiscountAmount()) {
       $('#discount').classList.add('selected');
       return $('#amount').classList.add('discounted');
     }
