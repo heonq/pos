@@ -9,6 +9,14 @@ const formatter = {
   formatTextToDataSet(text) {
     return text.replaceAll(' ', '_');
   },
+
+  formatDate(date) {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  },
+
+  formatTime(date) {
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  },
 };
 
 export default formatter;

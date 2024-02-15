@@ -1,4 +1,6 @@
 import store from '../../utils/store.js';
+import formatter from '../../utils/formatter.js';
+import VALUES from '../../constants/values.js';
 
 class ShoppingCartData {
   #shoppingCart;
@@ -7,10 +9,15 @@ class ShoppingCartData {
 
   #splitPayment;
 
+  #salesInfo;
+
+  #salesHistory;
+
   constructor() {
     this.#updateShoppingCart();
     this.#getPaymentInfoFromStorage();
     this.initSplitPayment();
+    this.initSalesHistory();
   }
 
   getShoppingCartData() {
@@ -108,6 +115,7 @@ class ShoppingCartData {
   }
 
   updatePaymentMethod(method) {
+    this.#getPaymentInfoFromStorage();
     this.#paymentInfo.method = method;
     this.#setPaymentInfoToStorage();
   }
@@ -137,7 +145,7 @@ class ShoppingCartData {
   }
 
   checkDiscountType() {
-    return this.#paymentInfo.discountType === 'category';
+    return this.#paymentInfo.discountType === 'percentage';
   }
 
   saveSplitPayment(paymentMethod = [], amount = []) {
@@ -173,6 +181,82 @@ class ShoppingCartData {
     this.initPaymentInfo();
     this.#paymentInfo.ETCReason = reason;
     this.updatePaymentMethod('기타결제');
+  }
+
+  initSalesHistory() {
+    const dateText = formatter.formatDate(new Date());
+    if (!store.getStorage('salesHistories')) store.setStorage('salesHistories', { [dateText]: [] });
+    this.#salesHistory = store.getStorage('salesHistories')[dateText] ?? [];
+  }
+
+  setSalesInfo() {
+    this.initSalesHistory();
+    this.initSalesInfo();
+    this.handleETCInfo();
+    this.handleDiscountInfo();
+  }
+
+  initSalesInfo() {
+    const date = new Date();
+    this.#salesInfo = {
+      number: this.#salesHistory.length + 1,
+      products: this.#shoppingCart,
+      chargeAmount: this.#paymentInfo.chargeAmount,
+      method: this.#paymentInfo.method,
+      date: formatter.formatDate(date),
+      time: formatter.formatTime(date),
+      discount: false,
+      discountType: '',
+      note: '',
+    };
+  }
+
+  handleETCInfo() {
+    if (this.#salesInfo.method === '기타결제') {
+      this.#salesInfo.chargeAmount = 0;
+      this.#salesInfo.note = this.#paymentInfo.ETCReason;
+    }
+  }
+
+  handleDiscountInfo() {
+    const { discountType } = this.#paymentInfo;
+    const { discountValue } = this.#paymentInfo;
+    this.#salesInfo.discountValue = discountValue;
+    if (this.#paymentInfo.discountValue > 0) {
+      this.#salesInfo.discountType = discountType;
+      this.#salesInfo.discount = true;
+      this.#salesInfo.note = `할인 사유 : ${this.#paymentInfo.discountReason} 할인금액 : ${formatter.formatNumber(
+        discountValue,
+      )}${VALUES.discountType[discountType]} `;
+    }
+  }
+
+  handleSalesInfo() {
+    this.setSalesInfo();
+    if (this.#paymentInfo.method === '분할결제') {
+      this.handleSplitPayment();
+    } else this.#salesHistory.push(this.#salesInfo);
+    const salesHistories = store.getStorage('salesHistories');
+    salesHistories[formatter.formatDate(new Date())] = this.#salesHistory;
+    store.setStorage('salesHistories', salesHistories);
+    this.initPaymentInfo();
+  }
+
+  handleSplitPayment() {
+    this.initSplitPayment();
+    this.#salesInfo.note += `분할결제 : ${this.#salesInfo.number},${this.#salesInfo.number + 1}`;
+    this.#splitPayment.amounts.forEach((amount, index) => {
+      this.#salesInfo.chargeAmount = amount;
+      this.#salesInfo.method = this.#splitPayment.methods[index];
+      this.#salesHistory.push({ ...this.#salesInfo });
+      this.#salesInfo.products = [];
+      this.#salesInfo.number += 1;
+    });
+  }
+
+  getSalesNumber() {
+    this.initSalesHistory();
+    return this.#salesHistory[this.#salesHistory.length - 1]?.number ?? 0;
   }
 }
 

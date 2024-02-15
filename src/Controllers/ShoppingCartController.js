@@ -4,6 +4,7 @@ import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
 import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
+import validator from '../../utils/validator.js';
 
 class ShoppingCartController {
   #shoppingCartData;
@@ -23,6 +24,7 @@ class ShoppingCartController {
     this.#addInitiateButtonEvent();
     this.#renderSelectedMethod();
     this.#addETCPayEvent();
+    this.#addSaveSalesHistoryEvent();
   }
 
   #renderShoppingCart() {
@@ -30,6 +32,7 @@ class ShoppingCartController {
       this.#shoppingCartData.getShoppingCartData(),
     );
     this.#renderAmountToPay();
+    this.#renderSalesNumber();
   }
 
   #addProductRender() {
@@ -68,6 +71,7 @@ class ShoppingCartController {
 
   #setPaymentMethod() {
     $('#payment-method-box').addEventListener('click', (e) => {
+      if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       if (e.target.closest('div').id === 'second-row') return;
       this.#shoppingCartData.updatePaymentMethod(e.target.innerText);
       this.#renderSelectedMethod();
@@ -76,12 +80,7 @@ class ShoppingCartController {
 
   #addInitiateButtonEvent() {
     $('#initiate-button').addEventListener('click', () => {
-      this.#shoppingCartData.initShoppingCart();
-      this.#shoppingCartData.initPaymentInfo();
-      this.#shoppingCartData.deactivateSplitPayment();
-      this.#removeDiscountedClass();
-      this.#renderShoppingCart();
-      this.#renderSelectedMethod();
+      this.#initShoppingCartAndPayment();
     });
   }
 
@@ -97,11 +96,45 @@ class ShoppingCartController {
 
   #addETCPayEvent() {
     $('#etcetera').addEventListener('click', () => {
+      if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       const reason = prompt('기타 사유를 입력해주세요.');
       this.#shoppingCartData.setETCReason(reason);
       this.#renderSelectedMethod();
       this.#renderShoppingCart();
+      this.#updateDiscountButtonClass();
     });
+  }
+
+  #addSaveSalesHistoryEvent() {
+    $('#payment-complete-button').addEventListener('click', () => {
+      if (!validator.validatePaymentMethod(this.#shoppingCartData.getPaymentInfo())) return;
+      this.#shoppingCartData.handleSalesInfo();
+      this.#initShoppingCartAndPayment();
+    });
+  }
+
+  #initShoppingCartAndPayment() {
+    this.#shoppingCartData.initShoppingCart();
+    this.#shoppingCartData.initPaymentInfo();
+    this.#shoppingCartData.deactivateSplitPayment();
+    this.#removeDiscountedClass();
+    this.#renderShoppingCart();
+    this.#renderSelectedMethod();
+    this.#renderSalesNumber();
+  }
+
+  #updateDiscountButtonClass() {
+    if (this.#shoppingCartData.checkDiscountAmount()) {
+      $('#discount').classList.add('selected');
+      return $('#amount').classList.add('discounted');
+    }
+    $('#discount').classList.remove('selected');
+    return $('#amount').classList.remove('discounted');
+  }
+
+  #renderSalesNumber() {
+    const salesNumber = this.#shoppingCartData.getSalesNumber();
+    $('#sales-number').innerText = salesNumber;
   }
 }
 

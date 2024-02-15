@@ -41,6 +41,14 @@ const validator = {
     }
     return true;
   },
+
+  validatePaymentMethod(paymentInfo) {
+    if (paymentInfo.method === '') {
+      alert('결제 수단을 선택해주세요.');
+      return false;
+    }
+    return true;
+  },
 };
 
 export default validator;
