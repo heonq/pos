@@ -11,11 +11,22 @@ const formatter = {
   },
 
   formatDate(date) {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const dateInfo = [date.getFullYear(), date.getMonth() + 1, date.getDate()].map((info) =>
+      this.formatZero(String(info)),
+    );
+    return dateInfo.join('-');
   },
 
   formatTime(date) {
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const timeInfo = [date.getHours(), date.getMinutes(), date.getSeconds()].map((info) =>
+      this.formatZero(String(info)),
+    );
+    return timeInfo.join(':');
+  },
+
+  formatZero(number) {
+    if (number.length === 1) return `0${number}`;
+    return number;
   },
 };
 
