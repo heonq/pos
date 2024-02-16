@@ -77,6 +77,46 @@ const modalComponents = {
       </div>
     </div>${this.renderSubmitAndCancelButtons('split-payment')}`;
   },
+
+  renderSalesHistory(salesHistory) {
+    return `<div id="sales-history-container">
+    ${this.renderTable(salesHistory)}
+    </div>`;
+  },
+
+  renderTable(salesHistory) {
+    return `<table>
+    <thead>
+    <tr>
+    <th>판매번호</th>
+    <th>판매금액</th>
+    <th>결제수단</th>
+    <th>비고</th>
+    <th>날짜</th>
+    <th>시간</th>
+    <th>반품</th>
+    <th>수정</th>
+    </tr>
+    </thead>
+    <tbody>
+${salesHistory.map((salesInfo) => this.renderTbody(salesInfo)).join('')}
+</tbody>
+    </table>`;
+  },
+  renderTbody(salesInfo) {
+    return `
+    <tr>
+      <td class="sales-number"><span>${salesInfo.number}</span></td>
+      <td class="charge-amount"><span class="editable">${formatter.formatNumber(salesInfo.chargeAmount)}</span></td>
+      <td class="payment-method"><span class="method">${salesInfo.method}</span></td>
+      <td class="note"><span class="editable">${salesInfo.note}</span></td>
+      <td class="date"><span class="editable">${salesInfo.date}</span></td>
+      <td class="time"><span class="editable">${salesInfo.time}</span></td>
+      <td class="refund-button"><button>반품</button></td>
+      <td><button class="edit-button" data-sales-number=${salesInfo.number}>수정</button></td>
+    </tr>
+    `;
+  },
 };
 
 export default modalComponents;

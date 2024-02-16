@@ -73,7 +73,7 @@
 }
 
 #split-payment-container input,
-select {
+#split-payment-container select {
   height: 40px;
   border-style: none;
   background-color: rgb(246, 246, 246);

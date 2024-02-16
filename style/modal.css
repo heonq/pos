@@ -18,13 +18,17 @@
 #modal-container {
   display: flex;
   flex-direction: column;
-  /* align-self: center; */
   align-items: center;
-  /* justify-content: center; */
   position: absolute;
   z-index: -999;
   background-color: white;
   opacity: 0;
+}
+
+#modal-container.wide {
+  width: 1300px;
+  height: 820px;
+  top: 38px;
 }
 
 #modal-container.big {

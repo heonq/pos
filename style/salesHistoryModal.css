@@ -1,0 +1,17 @@
+#sales-history-container {
+  overflow: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+td,
+th {
+  padding-right: 50px;
+  text-align: center;
+  padding-top: 20px;
+}
+
+#sales-history-container input {
+  width: 50px;
+  text-align: center;
+}

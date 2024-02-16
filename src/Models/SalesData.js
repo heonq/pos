@@ -196,6 +196,11 @@ class SalesData {
     this.initSalesHistory();
     return this.#salesHistory[this.#salesHistory.length - 1]?.number ?? 0;
   }
+
+  getSalesHistory(dateText) {
+    this.initSalesHistory(dateText);
+    return this.#salesHistory;
+  }
 }
 
 export default SalesData;
