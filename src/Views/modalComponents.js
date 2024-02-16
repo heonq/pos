@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import formatter from '../../utils/formatter.js';
+import VALUES from '../../constants/values.js';
 
 const modalComponents = {
   renderDiscountComponent(paymentInfo) {
@@ -78,10 +79,9 @@ const modalComponents = {
     </div>${this.renderSubmitAndCancelButtons('split-payment')}`;
   },
 
-  renderSalesHistory(salesHistory) {
-    return `<div id="sales-history-container">
-    ${this.renderTable(salesHistory)}
-    </div>`;
+  renderSalesHistoryContainer() {
+    return `<div id="date-select-section"><select id="date-select"></select><button id="search-button">조회</button></div>
+    <div id="sales-history-container"></div>`;
   },
 
   renderTable(salesHistory) {
@@ -116,6 +116,25 @@ ${salesHistory.map((salesInfo) => this.renderTbody(salesInfo)).join('')}
       <td><button class="edit-button" data-sales-number=${salesInfo.number}>수정</button></td>
     </tr>
     `;
+  },
+
+  replaceSpanWithInput(span) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = span.innerText;
+    span.parentNode.replaceChild(input, span);
+  },
+
+  replaceMethodSpanWithSelect(method) {
+    const select = document.createElement('select');
+    select.class = 'method';
+    VALUES.paymentMethods.forEach((method) => {
+      const option = document.createElement('option');
+      option.value = method;
+      option.text = method;
+      select.appendChild(option);
+    });
+    method.parentNode.replaceChild(select, method);
   },
 };
 

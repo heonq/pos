@@ -11,10 +11,13 @@ class SalesHistoryController extends ModalController {
 
   #salesData;
 
+  #editing;
+
   constructor() {
     super();
     this.#shoppingCartData = new ShoppingCartData();
     this.#salesData = new SalesData();
+    this.#editing = false;
   }
 
   init() {
@@ -23,15 +26,41 @@ class SalesHistoryController extends ModalController {
 
   addSalesHistoryButtonEvent() {
     $('#sales-history-button').addEventListener('click', () => {
-      this.renderSalesHistory();
+      this.renderSalesHistoryContainer();
+      this.renderSalesHistoryTable();
       this.showModal('wide');
     });
   }
 
-  renderSalesHistory(dateText = formatter.formatDate(new Date())) {
-    const salesHistory = this.#salesData.getSalesHistory(dateText);
-    $('#modal-container').innerHTML = modalComponents.renderSalesHistory(salesHistory);
+  addSearchEvent() {
+    $('#search-button').addEventListener('click', () => {
+      this.renderSalesHistoryTable($('#date-select').value);
+    });
+  }
+
+  renderDateSelect() {
+    this.#salesData
+      .getDateWithSales()
+      .sort((a, b) => b.localeCompare(a))
+      .forEach((date) => {
+        const option = document.createElement('option');
+        option.value = date;
+        option.text = date;
+        $('#date-select').appendChild(option);
+      });
+    this.addSearchEvent();
+  }
+
+  renderSalesHistoryContainer() {
+    $('#modal-container').innerHTML = modalComponents.renderSalesHistoryContainer();
     this.addEditButtonEvent();
+    this.renderDateSelect();
+  }
+
+  renderSalesHistoryTable(dateText = formatter.formatDate(new Date())) {
+    const salesHistory = this.#salesData.getSalesHistory(dateText);
+    $('#sales-history-container').innerHTML = modalComponents.renderTable(salesHistory);
+    this.#editing = false;
   }
 
   addEditButtonEvent() {
@@ -41,32 +70,15 @@ class SalesHistoryController extends ModalController {
   }
 
   handleEdit(e) {
+    if (this.#editing) return;
+    this.#editing = true;
     e.target
       .closest('tr')
       .querySelectorAll('.editable')
-      .forEach((span) => this.replaceSpanWithInput(span));
-    this.replaceMethodSpanWithSelect(e.target.closest('tr').querySelector('.method'));
+      .forEach((span) => modalComponents.replaceSpanWithInput(span));
+    modalComponents.replaceMethodSpanWithSelect(e.target.closest('tr').querySelector('.method'));
     e.target.className = 'edit-submit-button';
     e.target.innerText = '확인';
-  }
-
-  replaceSpanWithInput(span) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = span.innerText;
-    span.parentNode.replaceChild(input, span);
-  }
-
-  replaceMethodSpanWithSelect(method) {
-    const select = document.createElement('select');
-    select.class = 'method';
-    VALUES.paymentMethods.forEach((method) => {
-      const option = document.createElement('option');
-      option.value = method;
-      option.text = method;
-      select.appendChild(option);
-    });
-    method.parentNode.replaceChild(select, method);
   }
 }
 
