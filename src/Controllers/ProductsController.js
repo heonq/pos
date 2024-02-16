@@ -28,13 +28,13 @@ class ProductsController {
   }
 
   #renderCategoryMode() {
-    const [categories, products] = [this.#productData.getCategories(), this.#productData.getProducts()];
+    const [categories, products] = [this.#productData.getCategoriesToShow(), this.#productData.getProductsToShow()];
     if (!products.length) this.#renderAlertMessage();
     else $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
   }
 
   #renderTotalMode() {
-    const products = this.#productData.getProducts();
+    const products = this.#productData.getProductsToShow();
     if (!products.length) this.#renderAlertMessage();
     else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(products);
   }

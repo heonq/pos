@@ -6,36 +6,45 @@ class ProductData {
   #products;
 
   constructor() {
-    this.updateData();
+    this.updateDataToShow();
   }
 
-  updateData() {
+  updateDataToShow() {
     this.#updateCategoriesGotProduct();
     this.#updateProductsInOrder();
   }
 
-  getCategories() {
-    this.updateData();
+  getCategoriesToShow() {
+    this.updateDataToShow();
     return this.#categories;
   }
 
-  getProducts() {
-    this.updateData();
+  getProductsToShow() {
+    this.updateDataToShow();
     return this.#products;
   }
 
-  #getCategoriesOrderFromStorage() {
-    const categories = store.getStorage('categories');
-    if (!categories) return [];
-    return categories
-      .sort((a, b) => a.order - b.order)
-      .filter((category) => category.display === true)
-      .map((category) => category.name);
+  getTotalCategories() {
+    this.#updateTotalCategoriesFromStorage();
+    return this.#categories;
+  }
+
+  getTotalProducts() {
+    this.#updateTotalProductsFromStorage();
+    return this.#products;
+  }
+
+  #updateTotalCategoriesFromStorage() {
+    this.#categories = store.getStorage('categories') ?? [];
   }
 
   #updateCategoriesGotProduct() {
-    const productsArray = this.#getProductsFromStorage();
-    const categoriesOrder = this.#getCategoriesOrderFromStorage();
+    this.#updateTotalProductsFromStorage();
+    this.#updateTotalCategoriesFromStorage();
+    const productsArray = this.#products.filter((product) => (product.display = true));
+    const categoriesOrder = this.#categories
+      .filter((category) => category.display === true)
+      .map((category) => category.name);
     if (!productsArray) this.#categories = [];
     else {
       const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
@@ -43,16 +52,15 @@ class ProductData {
     }
   }
 
-  #getProductsFromStorage() {
-    const products = store.getStorage('products');
-    if (!products) return products;
-    return products.filter((product) => product.display === true);
+  #updateTotalProductsFromStorage() {
+    this.#products = store.getStorage('products') ?? [];
   }
 
   #updateProductsInOrder() {
     this.#updateCategoriesGotProduct();
-    const products = this.#getProductsFromStorage();
-    this.#products = this.#categories.map((category) => products.filter((product) => product.category === category));
+    this.#products = this.#categories.map((category) =>
+      this.#products.filter((product) => product.category === category),
+    );
   }
 }
 
