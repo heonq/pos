@@ -42,7 +42,7 @@ class HeaderController extends ModalController {
   }
 
   #setButtonTotalMode() {
-    $('#view-mode-button').innerText = '전체상품 보기';
+    $('#view-mode-button').innerText = '전체 보기';
     store.setStorage('view-mode', 'totalMode');
     this.#selectTotalButton();
   }
