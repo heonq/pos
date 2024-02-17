@@ -136,6 +136,51 @@ ${salesHistory.map((salesInfo) => this.renderTbody(salesInfo)).join('')}
     });
     method.parentNode.replaceChild(select, method);
   },
+
+  renderProductRegistration() {
+    return `<div id="product-registration-modal">
+    <div id="product-registration-container">
+    <div id="product-registration-header">
+    <span>상품명</span>
+    <span>가격</span>
+    <span>바코드</span>
+    <span>카테고리</span>
+    <span>전시여부</span>
+    <span>삭제</span>
+    </div>
+    ${this.renderProductInputs()}
+    </div>
+    <div>
+    <button id="plus-product-input-button">+</button>
+    </div>
+    </div>
+    ${this.renderSubmitAndCancelButtons('product-registration')}
+    `;
+  },
+  renderOptions(select, categories) {
+    const options = [];
+    categories.forEach((category) => {
+      const option = document.createElement('option');
+      option.value = category;
+      option.text = category;
+      options.push(option);
+    });
+    options.forEach((option) => select.appendChild(option));
+  },
+
+  renderProductInputs() {
+    return `<div class="product-inputs-row">
+      <div><input class="product-name-input" /></div>
+      <div><input class="product-price-input" /></div>
+      <div><input class="product-barcode-input" /></div>
+      <div><select class="product-categories-select"></select></div>
+      <div><select class="product-display-select">
+        <option value="true">전시</option>
+        <option value="false">숨김</option>
+      </select></div>
+      <div><button class="product-delete-button">삭제</button></div>
+    </div>`;
+  },
 };
 
 export default modalComponents;

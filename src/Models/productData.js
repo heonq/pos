@@ -59,8 +59,13 @@ class ProductData {
   #updateProductsInOrder() {
     this.#updateCategoriesGotProduct();
     this.#products = this.#categories.map((category) =>
-      this.#products.filter((product) => product.category === category),
+      this.#products.filter((product) => product.category === category && product.display === true),
     );
+  }
+
+  registerProduct(productsData) {
+    this.#products = productsData;
+    store.setStorage('products', this.#products);
   }
 }
 

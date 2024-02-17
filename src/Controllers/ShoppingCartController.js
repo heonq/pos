@@ -40,8 +40,8 @@ class ShoppingCartController {
   }
 
   #addProductRender() {
-    const products = this.#productData.getProductsToShow().flat();
     $('#product-container').addEventListener('click', (e) => {
+      const products = this.#productData.getProductsToShow().flat();
       if (e.target.classList.contains('product')) {
         const name = formatter.formatDataSetToText(e.target.dataset.name);
         const productToAdd = products.find((product) => product.name === name);

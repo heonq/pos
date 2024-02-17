@@ -13,6 +13,7 @@ class ProductsController {
   init() {
     this.#renderViewMode();
     this.#addRenderEvent();
+    this.#addSubmitEvent();
   }
 
   #addRenderEvent() {
@@ -20,6 +21,13 @@ class ProductsController {
     $('#hidden-view-list')
       .querySelectorAll('div')
       .forEach((button, index) => button.addEventListener('click', methods[index]));
+  }
+
+  #addSubmitEvent() {
+    $('#modal-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('product-registration-submit', 'product-management-submit'))
+        this.#renderViewMode();
+    });
   }
 
   #renderViewMode() {

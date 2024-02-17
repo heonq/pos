@@ -49,6 +49,50 @@ const validator = {
     }
     return true;
   },
+
+  validateNames(productNames) {
+    if (productNames.some((name) => name === '')) {
+      alert('상품명을 입력해주세요.');
+      return false;
+    }
+    const duplicatedNames = [
+      ...new Set(
+        productNames.filter(
+          (productName) => productNames.lastIndexOf(productName) !== productNames.indexOf(productName),
+        ),
+      ),
+    ];
+    if (duplicatedNames.length) {
+      alert(`중복된 상품명이 존재합니다. 중복된 상품 : ${duplicatedNames.join(',')}`);
+      return false;
+    }
+    return true;
+  },
+
+  validateBarcodes(products) {
+    const exceptBlank = products.filter((product) => product.barcode !== '');
+    const barcodes = exceptBlank.map((product) => product.barcode);
+    const duplicatedBarcodes = barcodes.filter(
+      (barcode) => barcodes.lastIndexOf(barcode) !== barcodes.indexOf(barcode),
+    );
+    const duplicatedProducts = exceptBlank
+      .filter((product) => duplicatedBarcodes.includes(product.barcode))
+      .map((product) => product.name);
+    if (duplicatedProducts.length) {
+      alert(`중복된 바코드가 존재합니다. 상품명 : ${duplicatedProducts.join(',')}`);
+      return false;
+    }
+    return true;
+  },
+
+  validatePrice(products) {
+    const prices = products.map((product) => product.price);
+    if (prices.some((price) => Number(price) < 0 || Number(price) !== Math.floor(price))) {
+      alert(`가격은 0 이상의 자연수여야 합니다.`);
+      return false;
+    }
+    return true;
+  },
 };
 
 export default validator;

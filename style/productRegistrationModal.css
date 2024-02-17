@@ -1,0 +1,59 @@
+#product-registration-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 50px;
+  height: 650px;
+  overflow: auto;
+}
+
+#plus-product-input-button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  border-style: none;
+  font-size: 20px;
+}
+
+#product-registration-header {
+  position: sticky;
+  top: 0px;
+  z-index: 200;
+  width: 800px;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+}
+
+#product-registration-header span {
+  text-align: center;
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  margin-right: 30px;
+}
+
+.product-inputs-row {
+  width: 800px;
+  display: flex;
+  justify-content: center;
+}
+
+.product-inputs-row * {
+  text-align: center;
+  width: 100px;
+  margin-right: 30px;
+  height: 25px;
+}
+
+.product-inputs-row div {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
