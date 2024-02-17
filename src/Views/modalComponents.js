@@ -84,10 +84,10 @@ const modalComponents = {
     <div id="sales-history-container"></div>`;
   },
 
-  renderTable(salesHistory) {
+  renderTable(salesHistory, products) {
     return `<table>
     <thead>
-    <tr>
+    <tr id="thead-tr">
     <th>판매번호</th>
     <th>판매금액</th>
     <th>결제수단</th>
@@ -96,14 +96,36 @@ const modalComponents = {
     <th>시간</th>
     <th>반품</th>
     <th>수정</th>
+    ${this.renderProductsTh(products)}
     </tr>
     </thead>
     <tbody>
-${salesHistory.map((salesInfo) => this.renderTbody(salesInfo)).join('')}
+    ${salesHistory.map((salesInfo) => this.renderTbody(salesInfo, products)).join('')}
 </tbody>
     </table>`;
   },
-  renderTbody(salesInfo) {
+
+  renderProductsTh(products) {
+    return products
+      .flat()
+      .map((product) => `<th class=${product.name}>${product.name}</th>`)
+      .join('');
+  },
+
+  renderSalesTd(productsData, productSaleHistory) {
+    return productsData
+      .map(
+        (product) =>
+          `<td class="quantity"><span data-product-name=${formatter.formatTextToDataSet(
+            product.name,
+          )} class="editable">${
+            productSaleHistory.filter((productSold) => productSold.name == product.name)[0]?.quantity ?? 0
+          }</span></td>`,
+      )
+      .join('');
+  },
+
+  renderTbody(salesInfo, productsData) {
     return `
     <tr>
       <td class="sales-number"><span>${salesInfo.number}</span></td>
@@ -114,6 +136,7 @@ ${salesHistory.map((salesInfo) => this.renderTbody(salesInfo)).join('')}
       <td class="time"><span class="editable">${salesInfo.time}</span></td>
       <td class="refund-button"><button>반품</button></td>
       <td><button class="edit-button" data-sales-number=${salesInfo.number}>수정</button></td>
+      ${this.renderSalesTd(productsData, salesInfo.products)}
     </tr>
     `;
   },

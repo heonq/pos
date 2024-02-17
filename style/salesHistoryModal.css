@@ -1,17 +1,46 @@
 #sales-history-container {
-  overflow: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  overflow: scroll;
+  width: 1200px;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 td,
 th {
-  padding-right: 50px;
+  width: 90px;
+  min-width: 90px;
+  padding: 10px;
   text-align: center;
-  padding-top: 20px;
 }
 
-#sales-history-container input {
+tr :nth-child(7),
+tr :nth-child(8) {
   width: 50px;
+  min-width: 50px;
+}
+
+td input {
+  width: 80px;
   text-align: center;
+}
+
+thead th {
+  position: sticky;
+}
+
+#date-select-section {
+  position: absolute;
+  right: 30px;
+  top: 20px;
+}
+
+#date-select-section select {
+  width: 90px;
+  height: 25px;
+  border-style: none;
+}
+
+#date-select-section button {
+  width: 50px;
+  height: 25px;
 }

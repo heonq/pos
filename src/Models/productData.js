@@ -41,7 +41,7 @@ class ProductData {
   #updateCategoriesGotProduct() {
     this.#updateTotalProductsFromStorage();
     this.#updateTotalCategoriesFromStorage();
-    const productsArray = this.#products.filter((product) => (product.display = true));
+    const productsArray = this.#products.filter((product) => product.display === true);
     const categoriesOrder = this.#categories
       .filter((category) => category.display === true)
       .map((category) => category.name);

@@ -1,13 +1,12 @@
-import ShoppingCartData from '../Models/ShoppingCartData.js';
 import SalesData from '../Models/salesData.js';
 import ModalController from '../core/ModalController.js';
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import formatter from '../../utils/formatter.js';
-import VALUES from '../../constants/values.js';
+import ProductData from '../Models/productData.js';
 
 class SalesHistoryController extends ModalController {
-  #shoppingCartData;
+  #productData;
 
   #salesData;
 
@@ -15,7 +14,7 @@ class SalesHistoryController extends ModalController {
 
   constructor() {
     super();
-    this.#shoppingCartData = new ShoppingCartData();
+    this.#productData = new ProductData();
     this.#salesData = new SalesData();
     this.#editing = false;
   }
@@ -59,7 +58,8 @@ class SalesHistoryController extends ModalController {
 
   renderSalesHistoryTable(dateText = formatter.formatDate(new Date())) {
     const salesHistory = this.#salesData.getSalesHistory(dateText);
-    $('#sales-history-container').innerHTML = modalComponents.renderTable(salesHistory);
+    const products = this.#productData.getTotalProducts();
+    $('#sales-history-container').innerHTML = modalComponents.renderTable(salesHistory, products);
     this.#editing = false;
   }
 

@@ -117,12 +117,12 @@ class SalesData {
 
   setETCReason(reason) {
     this.initPaymentInfo();
-    this.#paymentInfo.ETCReason = reason;
     this.updatePaymentMethod('기타결제');
+    this.#paymentInfo.ETCReason = reason;
+    this.#setPaymentInfoToStorage();
   }
 
-  initSalesHistory() {
-    const dateText = formatter.formatDate(new Date());
+  initSalesHistory(dateText = formatter.formatDate(new Date())) {
     if (!store.getStorage('salesHistories')) store.setStorage('salesHistories', { [dateText]: [] });
     this.#salesHistory = store.getStorage('salesHistories')[dateText] ?? [];
   }
@@ -200,6 +200,10 @@ class SalesData {
   getSalesHistory(dateText) {
     this.initSalesHistory(dateText);
     return this.#salesHistory;
+  }
+
+  getDateWithSales() {
+    return Object.keys(store.getStorage('salesHistories'));
   }
 }
 
