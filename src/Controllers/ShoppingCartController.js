@@ -76,9 +76,8 @@ class ShoppingCartController {
   }
 
   #setPaymentMethod() {
-    $('#payment-method-box').addEventListener('click', (e) => {
+    $('#first-row').addEventListener('click', (e) => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-      if (e.target.closest('div').id === 'second-row') return;
       this.#salesData.updatePaymentMethod(e.target.innerText);
       this.#renderSelectedMethod();
     });

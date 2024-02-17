@@ -23,8 +23,6 @@ class SplitPaymentController extends PaymentModalController {
   #addSplitPaymentRenderEvent() {
     $('#split').addEventListener('click', () => {
       this.#renderSplitPayment();
-      this.#addSplitInputEvent();
-      this.#addSubmitEvent();
     });
   }
 
@@ -33,6 +31,8 @@ class SplitPaymentController extends PaymentModalController {
     $('#modal-container').innerHTML = modalComponents.renderSplitPaymentComponent(this.#salesData.getPaymentInfo());
     this.#renderSplitInput();
     this.showModal('small');
+    this.#addSplitInputEvent();
+    this.#addSubmitEvent();
   }
 
   #renderSplitInput() {
