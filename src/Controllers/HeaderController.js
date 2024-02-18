@@ -78,13 +78,13 @@ class HeaderController extends ModalController {
 
   #addToggleProductManagement() {
     $('#product-management-button').addEventListener('click', () => {
-      $('#product-management-container').classList.toggle('expanded');
+      $('#product-management-button-container').classList.toggle('expanded');
     });
   }
 
   #foldProductManagementList(targetId) {
     const IDS = ['product-management-button', 'product-management', 'product-registration', 'category-management'];
-    if (!IDS.includes(targetId)) $('#product-management-container').classList.remove('expanded');
+    if (!IDS.includes(targetId)) $('#product-management-button-container').classList.remove('expanded');
   }
 
   #setBackgroundHideModal() {
