@@ -114,8 +114,16 @@ class ShoppingCartController {
     $('#payment-complete-button').addEventListener('click', () => {
       if (!validator.validatePaymentMethod(this.#salesData.getPaymentInfo())) return;
       this.#salesData.handleSalesInfo();
+      this.#handleProductSalesHistory();
       this.#initShoppingCartAndPayment();
     });
+  }
+
+  #handleProductSalesHistory() {
+    const products = this.#productData.getTotalProducts();
+    const shoppingCart = this.#shoppingCartData.getShoppingCartData();
+    shoppingCart.forEach((product) => (products[product.name].salesQuantity += product.quantity));
+    this.#productData.registerProduct(products);
   }
 
   #initShoppingCartAndPayment() {
