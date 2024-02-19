@@ -30,7 +30,6 @@ class DiscountController extends PaymentModalController {
 
   #renderDiscountModal() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-    if (this.#shoppingCartData.getTotalAmount() === 0) return;
     $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#salesData.getPaymentInfo());
     this.#calculateDiscount();
     this.showModal('small');
@@ -50,7 +49,7 @@ class DiscountController extends PaymentModalController {
   }
 
   #handleDiscountType(e) {
-    this.#shoppingCartData.updateDiscountType(e.currentTarget.value);
+    this.#salesData.updateDiscountType(e.currentTarget.value);
     this.#renderDiscountModal();
   }
 
