@@ -78,23 +78,25 @@ class ProductManagementController extends ModalController {
   }
 
   #setProductsToStorage() {
-    const dataToUpdate = [...this.#productData.getTotalProducts(), ...this.#getProductsFromInput()];
-    if (!validator.validateNames(dataToUpdate.map((product) => product.name))) return;
-    if (!validator.validateBarcodes(dataToUpdate)) return;
-    if (!validator.validatePrice(dataToUpdate)) return;
+    const dataToUpdate = { ...this.#productData.getTotalProducts(), ...this.#getProductsFromInput() };
+    const dataToValidate = Object.values(dataToUpdate);
+    if (!validator.validateNames(dataToValidate.map((product) => product.name))) return;
+    if (!validator.validateBarcodes(dataToValidate)) return;
+    if (!validator.validatePrice(dataToValidate)) return;
     this.#productData.registerProduct(dataToUpdate);
     this.hideModal();
   }
 
   #getProductsFromInput() {
     const rows = $('#product-registration-container').querySelectorAll('.product-inputs-row');
-    const products = [];
+    const products = {};
     rows.forEach((row) => {
       const product = {};
       row.querySelectorAll('input').forEach((input, index) => (product[VALUES.inputKeys[index]] = input.value));
       row.querySelectorAll('select').forEach((select, index) => (product[VALUES.selectKeys[index]] = select.value));
       product.display === 'true' ? (product.display = true) : (product.display = false);
-      products.push(product);
+      product.salesQuantity = 0;
+      products[product.name] = product;
     });
     return products;
   }
@@ -107,7 +109,7 @@ class ProductManagementController extends ModalController {
   }
 
   #renderProductManagement() {
-    const products = this.#productData.getTotalProducts();
+    const products = Object.values(this.#productData.getTotalProducts());
     const component = products.map((product) => modalComponents.renderProductsInputs(product)).join('');
     $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
     $('#product-lists-container').insertAdjacentHTML('beforeend', component);

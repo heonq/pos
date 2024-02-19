@@ -41,7 +41,7 @@ class ProductData {
   #updateCategoriesGotProduct() {
     this.#updateTotalProductsFromStorage();
     this.#updateTotalCategoriesFromStorage();
-    const productsArray = this.#products.filter((product) => product.display === true);
+    const productsArray = Object.values(this.#products).filter((product) => product.display === true);
     const categoriesOrder = this.#categories
       .filter((category) => category.display === true)
       .map((category) => category.name);
@@ -53,13 +53,13 @@ class ProductData {
   }
 
   #updateTotalProductsFromStorage() {
-    this.#products = store.getStorage('products') ?? [];
+    this.#products = store.getStorage('products') ?? {};
   }
 
   #updateProductsInOrder() {
     this.#updateCategoriesGotProduct();
     this.#products = this.#categories.map((category) =>
-      this.#products.filter((product) => product.category === category && product.display === true),
+      Object.values(this.#products).filter((product) => product.category === category && product.display === true),
     );
   }
 

@@ -58,7 +58,7 @@ class SalesHistoryController extends ModalController {
 
   renderSalesHistoryTable(dateText = formatter.formatDate(new Date())) {
     const salesHistory = this.#salesData.getSalesHistory(dateText);
-    const products = this.#productData.getTotalProducts();
+    const products = Object.values(this.#productData.getTotalProducts());
     $('#sales-history-container').innerHTML = modalComponents.renderTable(salesHistory, products);
     this.#editing = false;
   }

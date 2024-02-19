@@ -106,10 +106,7 @@ const modalComponents = {
   },
 
   renderProductsTh(products) {
-    return products
-      .flat()
-      .map((product) => `<th class=${product.name}>${product.name}</th>`)
-      .join('');
+    return products.map((product) => `<th class=${product.name}>${product.name}</th>`).join('');
   },
 
   renderSalesTd(productsData, productSaleHistory) {
