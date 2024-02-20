@@ -105,6 +105,7 @@ class ProductManagementController extends ModalController {
     $('#product-management').addEventListener('click', () => {
       this.showModal('big');
       this.#renderProductManagement();
+      this.#addDeleteButtonEventForManagement();
     });
   }
 
@@ -114,6 +115,31 @@ class ProductManagementController extends ModalController {
     $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
     $('#product-lists-container').insertAdjacentHTML('beforeend', component);
     this.#renderTotalSelectCategoriesOption();
+  }
+
+  #addDeleteButtonEventForManagement() {
+    $('#product-management-container')
+      .querySelectorAll('.product-delete-button')
+      .forEach((button) => {
+        button.addEventListener('click', (e) => {
+          if (confirm('상품을 삭제하시겠습니까?')) this.#deleteProduct(e);
+        });
+      });
+  }
+
+  #deleteProduct(e) {
+    const targetNumber = e.target.closest('.product-management-row').dataset.productNumber;
+    const products = this.#productData.getTotalProducts();
+    if (!validator.validateSalesQuantity(products[targetNumber].salesQuantity)) return;
+    delete products[targetNumber];
+    this.#productData.registerProduct(products);
+    const childNode = e.target.closest('.product-management-row');
+    $('#product-lists-container').removeChild(childNode);
+    this.#addRerenderProductClass();
+  }
+
+  #addRerenderProductClass() {
+    $('#submit').classList.add('rerender');
   }
 }
 

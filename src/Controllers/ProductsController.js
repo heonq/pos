@@ -13,7 +13,7 @@ class ProductsController {
   init() {
     this.#renderViewMode();
     this.#addRenderEvent();
-    this.#addSubmitEvent();
+    this.#addSubmitButtonRerenderEvent();
   }
 
   #addRenderEvent() {
@@ -21,13 +21,6 @@ class ProductsController {
     $('#hidden-view-list')
       .querySelectorAll('div')
       .forEach((button, index) => button.addEventListener('click', methods[index]));
-  }
-
-  #addSubmitEvent() {
-    $('#modal-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('product-registration-submit', 'product-management-submit'))
-        this.#renderViewMode();
-    });
   }
 
   #renderViewMode() {
@@ -49,6 +42,14 @@ class ProductsController {
 
   #renderAlertMessage() {
     $('#product-container').innerHTML = productComponents.renderAlertMessage();
+  }
+
+  #addSubmitButtonRerenderEvent() {
+    $('#modal-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('rerender')) {
+        this.#renderViewMode();
+      }
+    });
   }
 }
 

@@ -94,6 +94,14 @@ const validator = {
     }
     return true;
   },
+
+  validateSalesQuantity(salesQuantity) {
+    if (salesQuantity > 0) {
+      alert('판매 내역이 존재하는 상품을 삭제하거나 이름을 변경할 수 없습니다.');
+      return false;
+    }
+    return true;
+  },
 };
 
 export default validator;

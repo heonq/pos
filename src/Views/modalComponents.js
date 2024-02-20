@@ -201,6 +201,63 @@ const modalComponents = {
       <div><button class="product-delete-button">삭제</button></div>
     </div>`;
   },
+
+  renderProductManagementContainer() {
+    return `<div id="product-management-container" class="product-container">
+      <div id="product-management-buttons">
+        <select>
+          <option hidden>선택한 상품 수정하기</option>
+          <option>선택한 상품 삭제</option>
+          <option>선택한 상품 보이기/숨기기</option>
+          <option>선택한 상품 카테고리 변경</option>
+        </select>
+        <select id="search-by-category">
+          <option hidden>카테고리</option>
+        </select>
+        <select id="search-by-display">
+          <option hidden>전시상태</option>
+          <option value="true">전시</option>
+          <option value="false">숨김</option>
+        </select>
+        <button id="management-search-button">검색</button>
+      </div>
+      <div id="product-lists-container">
+      <div id="product-list-header">
+      <div><input type="checkbox" class="select-total-product-button" /></div>
+      <div>상품명</div>
+      <div>가격</div>
+      <div>바코드</div>
+      <div>카테고리</div>
+      <div>전시여부</div>
+      <div>판매수량</div>
+      <div>삭제</div>
+      </div>
+      </div>
+    </div>${this.renderSubmitAndCancelButtons('product-management')}`;
+  },
+
+  renderProductsInputs(product) {
+    return `<div data-product-number=${product.number} class="product-management-row product-inputs-row">
+      <div><input type="checkbox" class="select-product-button" /></div>
+      <div><input class="product-name-input" value=${product.name}></div>
+      <div><input class="product-price-input" value=${product.price}></div>
+      <div><input class="product-barcode-input" value=${product.barcode}></div>
+      <div>
+      <select data-category=${product.category} class="product-categories-select">
+      </select>
+      </div>
+      <div>
+      <select>
+      <option ${product.display ? 'selected' : ''}>전시</option>
+      <option ${product.display ? '' : 'selected'}>숨김</option>
+      </select>
+      </div>
+      <div>
+      ${product.salesQuantity}
+      </div>
+      <div><button class="product-delete-button">삭제</button></div>
+    </div>`;
+  },
 };
 
 export default modalComponents;
