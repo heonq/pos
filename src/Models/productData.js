@@ -34,6 +34,15 @@ class ProductData {
     return this.#products;
   }
 
+  getNewProductNumber() {
+    this.#updateTotalProductsFromStorage();
+    return (
+      Object.keys(this.#products)
+        .map(Number)
+        .sort((a, b) => b - a)[0] + 1
+    );
+  }
+
   #updateTotalCategoriesFromStorage() {
     this.#categories = store.getStorage('categories') ?? [];
   }
@@ -66,6 +75,16 @@ class ProductData {
   registerProduct(productsData) {
     this.#products = productsData;
     store.setStorage('products', this.#products);
+    this.#updateProductNumberHistory();
+  }
+
+  getNewestProductNumber() {
+    return Number(store.getStorage('newestProductNumber') ?? 1);
+  }
+
+  #updateProductNumberHistory() {
+    const newestNumber = this.getNewestProductNumber() + Object.values(this.#products).length;
+    store.setStorage('newestProductNumber', newestNumber);
   }
 }
 

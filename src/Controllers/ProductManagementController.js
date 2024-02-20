@@ -8,6 +8,8 @@ import validator from '../../utils/validator.js';
 class ProductManagementController extends ModalController {
   #productData;
 
+  #productNumber;
+
   constructor() {
     super();
     this.#productData = new ProductData();
@@ -84,19 +86,22 @@ class ProductManagementController extends ModalController {
     if (!validator.validateBarcodes(dataToValidate)) return;
     if (!validator.validatePrice(dataToValidate)) return;
     this.#productData.registerProduct(dataToUpdate);
+    this.#addRerenderProductClass();
     this.hideModal();
   }
 
   #getProductsFromInput() {
     const rows = $('#product-registration-container').querySelectorAll('.product-inputs-row');
     const products = {};
-    rows.forEach((row) => {
+    const newestProductNumber = this.#productData.getNewestProductNumber();
+    rows.forEach((row, index) => {
       const product = {};
       row.querySelectorAll('input').forEach((input, index) => (product[VALUES.inputKeys[index]] = input.value));
       row.querySelectorAll('select').forEach((select, index) => (product[VALUES.selectKeys[index]] = select.value));
+      product.number = newestProductNumber + index;
       product.display === 'true' ? (product.display = true) : (product.display = false);
       product.salesQuantity = 0;
-      products[product.name] = product;
+      products[product.number] = product;
     });
     return products;
   }
