@@ -33,6 +33,7 @@ class SplitPaymentController extends PaymentModalController {
     this.showModal('small');
     this.#addSplitInputEvent();
     this.#addSubmitEvent();
+    this.#addHandleDiscountSubmitEvent();
   }
 
   #renderSplitInput() {
@@ -73,6 +74,21 @@ class SplitPaymentController extends PaymentModalController {
     this.#salesData.saveSplitPayment(paymentMethods, amounts);
     this.hideModal();
     this.renderSelectedMethod(this.#salesData);
+  }
+
+  #addHandleDiscountSubmitEvent() {
+    $('#split-payment-container').addEventListener('change', this.#handleSplitSubmit.bind(this));
+  }
+
+  #handleSplitSubmit() {
+    const inputComplete = Array.from($('#split-payment-container').querySelectorAll('input')).every(
+      (input) => input.value !== '',
+    );
+    const selectComplete = Array.from($('#split-payment-container').querySelectorAll('select')).every(
+      (select) => select.value !== '',
+    );
+    if (inputComplete && selectComplete) return this.enableSubmitButton();
+    return this.disableSubmitButton();
   }
 }
 

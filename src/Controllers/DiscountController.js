@@ -37,6 +37,7 @@ class DiscountController extends PaymentModalController {
     this.#addInputEvent();
     this.addSubmitButtonEvent('discount-submit', this.#submitDiscount.bind(this));
     this.addSubmitButtonEvent('discount-cancel', this.hideModal.bind(this));
+    this.#addHandleDiscountSubmitEvent();
   }
 
   #addRadioEvent() {
@@ -89,6 +90,22 @@ class DiscountController extends PaymentModalController {
     }
     $('#discount').classList.remove('selected');
     return $('#amount').classList.remove('discounted');
+  }
+
+  #addHandleDiscountSubmitEvent() {
+    $('#discount-info-section')
+      .querySelectorAll('input')
+      .forEach((input) => {
+        input.addEventListener('input', () => {
+          this.#handleDiscountSubmit();
+        });
+      });
+  }
+
+  #handleDiscountSubmit() {
+    if (Array.from($('#discount-info-section').querySelectorAll('input')).every((input) => input.value !== ''))
+      return this.enableSubmitButton();
+    return this.disableSubmitButton();
   }
 }
 

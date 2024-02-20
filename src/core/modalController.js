@@ -15,8 +15,18 @@ class ModalController {
   }
 
   hideModal() {
-    $('#modal-container').classList.remove('show', 'big', 'small');
-    $('#background').classList.remove('show');
+    $('#modal-container').className = '';
+    $('#background').className = '';
+  }
+
+  enableSubmitButton() {
+    $('#submit').classList.add('submitable');
+    $('#submit').disabled = false;
+  }
+
+  disableSubmitButton() {
+    $('#submit').classList.remove('submitable');
+    $('#submit').disalbed = true;
   }
 }
 
