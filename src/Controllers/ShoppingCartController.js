@@ -37,6 +37,7 @@ class ShoppingCartController {
     );
     this.#renderAmountToPay();
     this.#renderSalesNumber();
+    this.#renderSelectedMethod();
   }
 
   #addProductRender() {
@@ -97,6 +98,7 @@ class ShoppingCartController {
       button.classList.remove('selected');
       if (button.innerText === method) button.classList.add('selected');
     });
+    this.#updateDiscountButtonClass();
   }
 
   #addETCPayEvent() {
@@ -104,9 +106,7 @@ class ShoppingCartController {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       const reason = prompt('기타 사유를 입력해주세요.');
       this.#salesData.setETCReason(reason);
-      this.#renderSelectedMethod();
       this.#renderShoppingCart();
-      this.#updateDiscountButtonClass();
     });
   }
 
@@ -122,7 +122,7 @@ class ShoppingCartController {
   #handleProductSalesHistory() {
     const products = this.#productData.getTotalProducts();
     const shoppingCart = this.#shoppingCartData.getShoppingCartData();
-    shoppingCart.forEach((product) => (products[product.name].salesQuantity += product.quantity));
+    shoppingCart.forEach((product) => (products[product.number].salesQuantity += product.quantity));
     this.#productData.registerProduct(products);
   }
 
