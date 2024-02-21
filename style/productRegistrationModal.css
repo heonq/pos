@@ -14,7 +14,6 @@
 #plus-product-input-button {
   margin-top: 20px;
   margin-bottom: 20px;
-  padding: 0;
   width: 35px;
   height: 35px;
   border-radius: 35px;
@@ -26,7 +25,7 @@
   position: sticky;
   top: 0px;
   z-index: 200;
-  width: 800px;
+  width: 1000px;
   display: flex;
   justify-content: center;
   background-color: white;
@@ -40,20 +39,77 @@
   margin-right: 30px;
 }
 
-.product-inputs-row {
-  width: 800px;
+.product-registration-row {
+  width: 1000px;
   display: flex;
   justify-content: center;
 }
 
-.product-inputs-row * {
+.product-registration-row * {
   text-align: center;
   width: 100px;
   margin-right: 30px;
   height: 25px;
 }
 
-.product-inputs-row div {
+.product-registration-row div {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+#product-management-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 50px;
+  height: 650px;
+  overflow: auto;
+}
+
+.product-management-row {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 800px;
+  justify-content: center;
+}
+
+.product-management-row span {
+  width: 100px;
+  max-width: 100px;
+}
+
+.product-management-row input {
+  max-width: 90px;
+}
+
+#product-management-buttons {
+  position: sticky;
+  top: 0px;
+  z-index: 200;
+  background-color: white;
+  width: 800px;
+  display: flex;
+  justify-content: end;
+}
+
+#product-list-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: sticky;
+  top: 22px;
+  z-index: 200;
+  width: 800px;
+  background-color: white;
+}
+
+#product-list-header span {
+  width: 100px;
+  max-width: 100px;
+  text-align: center;
 }

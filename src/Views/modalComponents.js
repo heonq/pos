@@ -159,7 +159,7 @@ const modalComponents = {
 
   renderProductRegistration() {
     return `<div id="product-registration-modal">
-    <div id="product-registration-container">
+    <div id="product-registration-container" class="product-container">
     <div id="product-registration-header">
     <span>상품명</span>
     <span>가격</span>
@@ -168,7 +168,6 @@ const modalComponents = {
     <span>전시여부</span>
     <span>삭제</span>
     </div>
-    ${this.renderProductInputs()}
     </div>
     <div>
     <button id="plus-product-input-button">+</button>
@@ -189,7 +188,7 @@ const modalComponents = {
   },
 
   renderProductInputs() {
-    return `<div class="product-inputs-row">
+    return `<div class="product-registration-row product-inputs-row">
       <div><input class="product-name-input" /></div>
       <div><input class="product-price-input" /></div>
       <div><input class="product-barcode-input" /></div>
@@ -223,14 +222,14 @@ const modalComponents = {
       </div>
       <div id="product-lists-container">
       <div id="product-list-header">
-      <div><input type="checkbox" class="select-total-product-button" /></div>
-      <div>상품명</div>
-      <div>가격</div>
-      <div>바코드</div>
-      <div>카테고리</div>
-      <div>전시여부</div>
-      <div>판매수량</div>
-      <div>삭제</div>
+      <span><input type="checkbox" class="select-total-product-button" /></span>
+      <span>상품명</span>
+      <span>가격</span>
+      <span>바코드</span>
+      <span>카테고리</span>
+      <span>전시여부</span>
+      <span>판매수량</span>
+      <span>삭제</span>
       </div>
       </div>
     </div>${this.renderSubmitAndCancelButtons('product-management')}`;
@@ -238,24 +237,24 @@ const modalComponents = {
 
   renderProductsInputs(product) {
     return `<div data-product-number=${product.number} class="product-management-row product-inputs-row">
-      <div><input type="checkbox" class="select-product-button" /></div>
-      <div><input class="product-name-input" value=${product.name}></div>
-      <div><input class="product-price-input" value=${product.price}></div>
-      <div><input class="product-barcode-input" value=${product.barcode}></div>
-      <div>
+      <span><input type="checkbox" class="select-product-button" /></span>
+      <span><input class="product-name-input" value=${product.name}></span>
+      <span><input class="product-price-input" value=${product.price}></span>
+      <span><input class="product-barcode-input" value=${product.barcode}></span>
+      <span>
       <select data-category=${product.category} class="product-categories-select">
       </select>
-      </div>
-      <div>
+      </span>
+      <span>
       <select>
       <option ${product.display ? 'selected' : ''}>전시</option>
       <option ${product.display ? '' : 'selected'}>숨김</option>
       </select>
-      </div>
-      <div>
+      </span>
+      <span>
       ${product.salesQuantity}
-      </div>
-      <div><button class="product-delete-button">삭제</button></div>
+      </span>
+      <span><button class="product-delete-button">삭제</button></span>
     </div>`;
   },
 };
