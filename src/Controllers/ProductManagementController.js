@@ -8,8 +8,6 @@ import validator from '../../utils/validator.js';
 class ProductManagementController extends ModalController {
   #productData;
 
-  #productNumber;
-
   constructor() {
     super();
     this.#productData = new ProductData();
@@ -22,21 +20,18 @@ class ProductManagementController extends ModalController {
 
   #addRenderProductRegistraitonModal() {
     $('#product-registration').addEventListener('click', () => {
-      this.showModal('big');
-      $('#modal-container').innerHTML = modalComponents.renderProductRegistration();
-      this.#renderLastSelectCategoriesOption();
+      this.#renderProductRegistraiton();
       this.#addPlusButtonEvent();
-      this.#addDeleteButtonEvent();
+      this.#addDeleteButtonEventForRegistration();
       this.addSubmitButtonEvent('product-registration-submit', this.#setProductsToStorage.bind(this));
       this.addSubmitButtonEvent('product-registration-cancel', this.hideModal.bind(this));
-      this.#addInputPreventDefault();
     });
   }
 
-  #addInputPreventDefault() {
-    $('#product-registration-modal').addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) e.preventDefault();
-    });
+  #renderProductRegistraiton() {
+    this.showModal('big');
+    $('#modal-container').innerHTML = modalComponents.renderProductRegistration();
+    this.#addProductInput();
   }
 
   #renderLastSelectCategoriesOption() {
@@ -63,7 +58,7 @@ class ProductManagementController extends ModalController {
     });
   }
 
-  #addDeleteButtonEvent() {
+  #addDeleteButtonEventForRegistration() {
     $('#product-registration-container').addEventListener('click', (e) => {
       if (e.target.classList.contains('product-delete-button')) this.#deleteInputs(e);
     });
