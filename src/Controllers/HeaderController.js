@@ -11,6 +11,7 @@ class HeaderController extends ModalController {
     this.#setBackgroundHideModal();
     this.#selectButton();
     this.#preventDefaultForm();
+    this.#preventModalEnterKey();
   }
 
   #hideComponentNotUsing() {
@@ -99,6 +100,12 @@ class HeaderController extends ModalController {
         e.preventDefault();
       }),
     );
+  }
+
+  #preventModalEnterKey() {
+    $('#modal-container').addEventListener('keydown', (e) => {
+      if (e.keyCode === 13) e.preventDefault();
+    });
   }
 }
 
