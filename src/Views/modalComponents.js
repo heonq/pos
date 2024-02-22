@@ -247,8 +247,8 @@ const modalComponents = {
       </span>
       <span>
       <select>
-      <option ${product.display ? 'selected' : ''}>전시</option>
-      <option ${product.display ? '' : 'selected'}>숨김</option>
+      <option value="true" ${product.display ? 'selected' : ''}>전시</option>
+      <option value="false" ${product.display ? '' : 'selected'}>숨김</option>
       </select>
       </span>
       <span>
