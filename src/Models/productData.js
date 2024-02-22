@@ -6,36 +6,31 @@ class ProductData {
   #products;
 
   constructor() {
-    this.updateDataToShow();
-  }
-
-  updateDataToShow() {
-    this.#updateCategoriesGotProduct();
-    this.#updateProductsInOrder();
-  }
-
-  getCategoriesToShow() {
-    this.updateDataToShow();
-    return this.#categories;
-  }
-
-  getProductsToShow() {
-    this.updateDataToShow();
-    return this.#products;
-  }
-
-  getTotalCategories() {
+    this.updateTotalProductsFromStorage();
     this.#updateTotalCategoriesFromStorage();
+  }
+
+  getProducts() {
+    return this.#products;
+  }
+
+  getCategories() {
     return this.#categories;
   }
 
-  getTotalProducts() {
-    this.#updateTotalProductsFromStorage();
-    return this.#products;
+  updateTotalProductsFromStorage() {
+    this.#products = store.getStorage('products') ?? {};
+  }
+
+  getProductsInOrder() {
+    const categories = this.getCategoriesGotProduct();
+    return categories.map((category) =>
+      Object.values(this.#products).filter((product) => product.category === category && product.display === true),
+    );
   }
 
   getNewProductNumber() {
-    this.#updateTotalProductsFromStorage();
+    this.updateTotalProductsFromStorage();
     return (
       Object.keys(this.#products)
         .map(Number)
@@ -43,47 +38,47 @@ class ProductData {
     );
   }
 
+  updateProduct(productNumber, updateData) {
+    this.#products[productNumber] = { ...this.#products[productNumber], ...updateData };
+  }
+
+  deleteProduct(productNumber) {
+    delete this.#products[productNumber];
+  }
+
   #updateTotalCategoriesFromStorage() {
     this.#categories = store.getStorage('categories') ?? [];
   }
 
-  #updateCategoriesGotProduct() {
-    this.#updateTotalProductsFromStorage();
+  getCategoriesGotProduct() {
+    this.updateTotalProductsFromStorage();
     this.#updateTotalCategoriesFromStorage();
     const productsArray = Object.values(this.#products).filter((product) => product.display === true);
     const categoriesOrder = this.#categories
       .filter((category) => category.display === true)
       .map((category) => category.name);
-    if (!productsArray) this.#categories = [];
+    if (!productsArray) return [];
     else {
       const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
-      this.#categories = categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
+      return categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
     }
   }
 
-  #updateTotalProductsFromStorage() {
-    this.#products = store.getStorage('products') ?? {};
+  deleteProduct(targetNumber) {
+    delete this.#products[targetNumber];
   }
 
-  #updateProductsInOrder() {
-    this.#updateCategoriesGotProduct();
-    this.#products = this.#categories.map((category) =>
-      Object.values(this.#products).filter((product) => product.category === category && product.display === true),
-    );
-  }
-
-  registerProduct(productsData) {
-    this.#products = productsData;
+  registerProduct(dataToUpdate = {}) {
+    this.#products = { ...this.#products, ...dataToUpdate };
     store.setStorage('products', this.#products);
-    this.#updateProductNumberHistory();
   }
 
   getNewestProductNumber() {
     return Number(store.getStorage('newestProductNumber') ?? 1);
   }
 
-  #updateProductNumberHistory() {
-    const newestNumber = this.getNewestProductNumber() + Object.values(this.#products).length;
+  updateProductNumberHistory(productCount) {
+    const newestNumber = this.getNewestProductNumber() + productCount;
     store.setStorage('newestProductNumber', newestNumber);
   }
 }

@@ -14,29 +14,7 @@ class ProductManagementController extends ModalController {
   }
 
   init() {
-    this.#addRenderProductRegistraitonModal();
     this.#addRenderProductManagementModal();
-  }
-
-  #addRenderProductRegistraitonModal() {
-    $('#product-registration').addEventListener('click', () => {
-      this.#renderProductRegistraiton();
-      this.#addPlusButtonEvent();
-      this.#addDeleteButtonEventForRegistration();
-      this.addSubmitButtonEvent('product-registration-submit', this.#setProductsToStorage.bind(this));
-      this.addSubmitButtonEvent('product-registration-cancel', this.hideModal.bind(this));
-    });
-  }
-
-  #renderProductRegistraiton() {
-    this.showModal('big');
-    $('#modal-container').innerHTML = modalComponents.renderProductRegistration();
-    this.#addProductInput();
-  }
-
-  #renderLastSelectCategoriesOption() {
-    const selects = Array.from($('.product-container').querySelectorAll('.product-categories-select'));
-    this.#renderCategoriesSelectOptions(selects[selects.length - 1]);
   }
 
   #renderTotalSelectCategoriesOption() {
@@ -48,73 +26,51 @@ class ProductManagementController extends ModalController {
   }
 
   #renderCategoriesSelectOptions(select) {
-    const categories = this.#productData.getTotalCategories().map((category) => category.name);
+    const categories = this.#productData.getCategories().map((category) => category.name);
     modalComponents.renderOptions(select, categories);
   }
 
-  #addPlusButtonEvent() {
-    $('#plus-product-input-button').addEventListener('click', () => {
-      this.#addProductInput();
-    });
-  }
-
-  #addDeleteButtonEventForRegistration() {
-    $('#product-registration-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('product-delete-button')) this.#deleteInputs(e);
-    });
-  }
-
-  #deleteInputs(e) {
-    const targetNode = e.target.closest('.product-inputs-row');
-    targetNode.parentNode.removeChild(targetNode);
-  }
-
-  #addProductInput() {
-    $('#product-registration-container').insertAdjacentHTML('beforeend', modalComponents.renderProductInputs());
-    this.#renderLastSelectCategoriesOption();
-  }
-
-  #setProductsToStorage() {
-    const dataToUpdate = { ...this.#productData.getTotalProducts(), ...this.#getProductsFromInput() };
-    const dataToValidate = Object.values(dataToUpdate);
-    if (!validator.validateNames(dataToValidate.map((product) => product.name))) return;
-    if (!validator.validateBarcodes(dataToValidate)) return;
-    if (!validator.validatePrice(dataToValidate)) return;
-    this.#productData.registerProduct(dataToUpdate);
+  #setChangedProductsToStorage() {
+    this.#getChangedProductsFromInput();
+    const dataToValidate = Object.values(this.#productData.getProducts());
+    if (!validator.validateProductRegistration(dataToValidate)) return;
+    this.#productData.registerProduct();
     this.#addRerenderProductClass();
     this.hideModal();
   }
 
-  #getProductsFromInput() {
-    const rows = $('#product-registration-container').querySelectorAll('.product-inputs-row');
-    const products = {};
-    const newestProductNumber = this.#productData.getNewestProductNumber();
-    rows.forEach((row, index) => {
-      const product = {};
-      row.querySelectorAll('input').forEach((input, index) => (product[VALUES.inputKeys[index]] = input.value));
-      row.querySelectorAll('select').forEach((select, index) => (product[VALUES.selectKeys[index]] = select.value));
-      product.number = newestProductNumber + index;
-      product.display === 'true' ? (product.display = true) : (product.display = false);
-      product.salesQuantity = 0;
-      products[product.number] = product;
+  #getChangedProductsFromInput() {
+    const rows = $('#product-management-container').querySelectorAll('.product-inputs-row');
+    rows.forEach((row) => {
+      const productNumber = row.dataset.productNumber;
+      const data = {};
+      const inputs = Array.from(row.querySelectorAll('input')).filter((input) => input.type !== 'checkbox');
+      const selects = row.querySelectorAll('select');
+      inputs.forEach((input, index) => (data[VALUES.inputKeys[index]] = input.value));
+      selects.forEach((select, index) => (data[VALUES.selectKeys[index]] = select.value));
+      data.display = data.display === 'true' ? true : false;
+      this.#productData.updateProduct(productNumber, data);
     });
-    return products;
   }
 
   #addRenderProductManagementModal() {
     $('#product-management').addEventListener('click', () => {
-      this.showModal('big');
+      this.#productData.updateTotalProductsFromStorage();
       this.#renderProductManagement();
       this.#addDeleteButtonEventForManagement();
+      this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
+      this.addSubmitButtonEvent('product-management-cancel', this.hideModal.bind(this));
     });
   }
 
   #renderProductManagement() {
-    const products = Object.values(this.#productData.getTotalProducts());
+    this.showModal('big');
+    const products = Object.values(this.#productData.getProducts());
     const component = products.map((product) => modalComponents.renderProductsInputs(product)).join('');
     $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
     $('#product-lists-container').insertAdjacentHTML('beforeend', component);
     this.#renderTotalSelectCategoriesOption();
+    this.enableSubmitButton();
   }
 
   #addDeleteButtonEventForManagement() {
@@ -129,12 +85,10 @@ class ProductManagementController extends ModalController {
 
   #deleteProduct(e) {
     const targetNumber = e.target.closest('.product-management-row').dataset.productNumber;
-    const products = this.#productData.getTotalProducts();
-    if (!validator.validateSalesQuantity(products[targetNumber].salesQuantity)) return;
-    delete products[targetNumber];
-    this.#productData.registerProduct(products);
+    if (!validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)) return;
     const childNode = e.target.closest('.product-management-row');
     $('#product-lists-container').removeChild(childNode);
+    this.#productData.deleteProduct(targetNumber);
     this.#addRerenderProductClass();
   }
 

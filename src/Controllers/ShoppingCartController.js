@@ -42,8 +42,8 @@ class ShoppingCartController {
 
   #addProductRender() {
     $('#product-container').addEventListener('click', (e) => {
-      const products = this.#productData.getProductsToShow().flat();
       if (e.target.classList.contains('product')) {
+        const products = this.#productData.getProductsInOrder().flat();
         const name = formatter.formatDataSetToText(e.target.dataset.name);
         const productToAdd = products.find((product) => product.name === name);
         this.#shoppingCartData.addToShoppingCart(productToAdd);

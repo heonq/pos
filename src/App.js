@@ -5,6 +5,7 @@ import DiscountController from './Controllers/DiscountController.js';
 import SplitPaymentController from './Controllers/SplitPaymentController.js';
 import SalesHistoryController from './Controllers/SalesHistoryController.js';
 import ProductManagementController from './Controllers/ProductManagementController.js';
+import ProductRegistrationController from './Controllers/ProductRegistrationController.js';
 
 class App {
   play() {
@@ -15,6 +16,7 @@ class App {
     new SplitPaymentController().init();
     new SalesHistoryController().init();
     new ProductManagementController().init();
+    new ProductRegistrationController().init();
   }
 }
 
