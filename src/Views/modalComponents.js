@@ -204,11 +204,12 @@ const modalComponents = {
   renderProductManagementContainer() {
     return `<div id="product-management-container" class="product-container">
       <div id="product-management-buttons">
-        <select>
+        <select id="manage-selected-button">
           <option hidden>선택한 상품 수정하기</option>
-          <option>선택한 상품 삭제</option>
-          <option>선택한 상품 보이기/숨기기</option>
-          <option>선택한 상품 카테고리 변경</option>
+          <option value="delete-selected">선택한 상품 삭제</option>
+          <option value="display-selected">선택한 상품 전시</option>
+          <option value="hide-selected">선택한 상품 숨기기</option>
+          <option value="change-selected-category">선택한 상품 카테고리 변경</optionid=>
         </select>
         <select id="search-by-category">
           <option hidden>카테고리</option>

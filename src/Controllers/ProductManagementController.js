@@ -60,6 +60,7 @@ class ProductManagementController extends ModalController {
       this.#addDeleteButtonEventForManagement();
       this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
       this.addSubmitButtonEvent('product-management-cancel', this.hideModal.bind(this));
+      this.#addSelectTotalEvent();
     });
   }
 
@@ -70,6 +71,7 @@ class ProductManagementController extends ModalController {
     $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
     $('#product-lists-container').insertAdjacentHTML('beforeend', component);
     this.#renderTotalSelectCategoriesOption();
+    this.#addHandleSelectedEvent();
     this.enableSubmitButton();
   }
 
@@ -78,15 +80,15 @@ class ProductManagementController extends ModalController {
       .querySelectorAll('.product-delete-button')
       .forEach((button) => {
         button.addEventListener('click', (e) => {
-          if (confirm('상품을 삭제하시겠습니까?')) this.#deleteProduct(e);
+          if (confirm('상품을 삭제하시겠습니까?')) this.#deleteProduct(e.target.closest('.product-management-row'));
         });
       });
   }
 
-  #deleteProduct(e) {
-    const targetNumber = e.target.closest('.product-management-row').dataset.productNumber;
+  #deleteProduct(inputRow) {
+    const targetNumber = inputRow.dataset.productNumber;
     if (!validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)) return;
-    const childNode = e.target.closest('.product-management-row');
+    const childNode = inputRow;
     $('#product-lists-container').removeChild(childNode);
     this.#productData.deleteProduct(targetNumber);
     this.#addRerenderProductClass();
@@ -94,6 +96,35 @@ class ProductManagementController extends ModalController {
 
   #addRerenderProductClass() {
     $('#submit').classList.add('rerender');
+  }
+
+  #addSelectTotalEvent() {
+    $('.select-total-product-button').addEventListener('click', (e) => {
+      this.#selectTotal(e);
+    });
+  }
+
+  #selectTotal(e) {
+    const checked = e.target.checked;
+    const rows = $('#product-lists-container').querySelectorAll('.product-management-row');
+    rows.forEach((row) => {
+      row.querySelector('.select-product-button').checked = checked;
+    });
+  }
+
+  #addHandleSelectedEvent() {
+    $('#manage-selected-button').addEventListener('change', (e) => {
+      if (e.target.value === 'delete-selected') {
+        if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) this.#deleteSelected();
+      }
+    });
+  }
+
+  #deleteSelected() {
+    const targetRows = Array.from($('#product-lists-container').querySelectorAll('.product-management-row')).filter(
+      (row) => row.querySelector('.select-product-button').checked === true,
+    );
+    targetRows.forEach((row) => this.#deleteProduct(row));
   }
 }
 
