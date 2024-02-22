@@ -29,13 +29,16 @@ class ProductsController {
   }
 
   #renderCategoryMode() {
-    const [categories, products] = [this.#productData.getCategoriesToShow(), this.#productData.getProductsToShow()];
+    const [categories, products] = [
+      this.#productData.getCategoriesGotProduct(),
+      this.#productData.getProductsInOrder(),
+    ];
     if (!products.length) this.#renderAlertMessage();
     else $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(categories, products);
   }
 
   #renderTotalMode() {
-    const products = this.#productData.getProductsToShow();
+    const products = this.#productData.getProductsInOrder();
     if (!products.length) this.#renderAlertMessage();
     else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(products);
   }

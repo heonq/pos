@@ -29,6 +29,7 @@ class ShoppingCartController {
     this.#renderSelectedMethod();
     this.#addETCPayEvent();
     this.#addSaveSalesHistoryEvent();
+    this.#addSubmitButtonRerenderEvent();
   }
 
   #renderShoppingCart() {
@@ -134,6 +135,14 @@ class ShoppingCartController {
     this.#renderShoppingCart();
     this.#renderSelectedMethod();
     this.#renderSalesNumber();
+  }
+
+  #addSubmitButtonRerenderEvent() {
+    $('#modal-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('rerender')) {
+        this.#initShoppingCartAndPayment();
+      }
+    });
   }
 
   #updateDiscountButtonClass() {
