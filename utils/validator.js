@@ -50,7 +50,8 @@ const validator = {
     return true;
   },
 
-  validateNames(productNames) {
+  validateNames(products) {
+    const productNames = products.map((product) => product.name);
     if (productNames.some((name) => name === '')) {
       alert('상품명을 입력해주세요.');
       return false;
@@ -95,9 +96,15 @@ const validator = {
     return true;
   },
 
+  validateProductRegistration(products) {
+    if (!this.validateNames(products) || !this.validateBarcodes(products) || !this.validatePrice(products))
+      return false;
+    return true;
+  },
+
   validateSalesQuantity(salesQuantity) {
     if (salesQuantity > 0) {
-      alert('판매 내역이 존재하는 상품을 삭제하거나 이름을 변경할 수 없습니다.');
+      alert('판매 내역이 존재하는 상품은 삭제할 수 없습니다.');
       return false;
     }
     return true;
