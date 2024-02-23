@@ -58,21 +58,42 @@ class ProductManagementController extends ModalController {
       this.#productData.updateTotalProductsFromStorage();
       this.#renderProductManagement();
       this.#addDeleteButtonEventForManagement();
-      this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
-      this.addSubmitButtonEvent('product-management-cancel', this.hideModal.bind(this));
       this.#addSelectTotalEvent();
+      this.#initSelectCategoryModal();
+      this.#renderCategoriesSelectOptions($('#search-by-category'));
+      $('#management-search-button').addEventListener('click', this.#renderSearchedProducts.bind(this));
     });
   }
 
   #renderProductManagement() {
     this.showModal('big');
-    const products = Object.values(this.#productData.getProducts());
-    const component = products.map((product) => modalComponents.renderProductsInputs(product)).join('');
     $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
-    $('#product-lists-container').insertAdjacentHTML('beforeend', component);
-    this.#renderTotalSelectCategoriesOption();
+    this.#renderSearchedProducts();
     this.#addHandleSelectedEvent();
-    this.enableSubmitButton();
+    this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
+    this.addSubmitButtonEvent('product-management-cancel', this.hideModal.bind(this));
+    this.enableSubmitButton('product-management-submit');
+  }
+
+  #renderSearchedProducts() {
+    const productFilteredByAllConditions = this.#getFilteredProducts();
+    const component = productFilteredByAllConditions
+      .map((product) => modalComponents.renderProductsInputs(product))
+      .join('');
+    $('#product-list-container').innerHTML = component;
+    this.#renderTotalSelectCategoriesOption();
+  }
+
+  #getFilteredProducts() {
+    const [category, display] = [$('#search-by-category').value, VALUES.display[$('#search-by-display').value]];
+    const products = Object.values(this.#productData.getProducts());
+    const productFilteredByCategory =
+      category !== 'default' ? products.filter((product) => product.category === category) : products;
+    const productFilteredByAllConditions =
+      display !== 'default'
+        ? productFilteredByCategory.filter((product) => product.display === display)
+        : productFilteredByCategory;
+    return productFilteredByAllConditions;
   }
 
   #addDeleteButtonEventForManagement() {
@@ -89,42 +110,97 @@ class ProductManagementController extends ModalController {
     const targetNumber = inputRow.dataset.productNumber;
     if (!validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)) return;
     const childNode = inputRow;
-    $('#product-lists-container').removeChild(childNode);
+    $('#product-list-container').removeChild(childNode);
     this.#productData.deleteProduct(targetNumber);
     this.#addRerenderProductClass();
   }
 
   #addRerenderProductClass() {
-    $('#submit').classList.add('rerender');
+    $('#product-management-submit').classList.add('rerender');
   }
 
   #addSelectTotalEvent() {
-    $('.select-total-product-button').addEventListener('click', (e) => {
-      this.#selectTotal(e);
+    $('.select-total-product-button').addEventListener('click', () => {
+      this.#toggleTotalSelects();
     });
   }
 
-  #selectTotal(e) {
-    const checked = e.target.checked;
-    const rows = $('#product-lists-container').querySelectorAll('.product-management-row');
+  #toggleTotalSelects() {
+    const checked = $('.select-total-product-button').checked;
+    const rows = $('#product-list-container').querySelectorAll('.product-management-row');
     rows.forEach((row) => {
       row.querySelector('.select-product-button').checked = checked;
     });
   }
 
+  #deselectTotal() {
+    $('.select-total-product-button').checked = false;
+    this.#toggleTotalSelects();
+  }
+
   #addHandleSelectedEvent() {
     $('#manage-selected-button').addEventListener('change', (e) => {
-      if (e.target.value === 'delete-selected') {
-        if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) this.#deleteSelected();
+      const rows = this.#getSelectedRows();
+      if (rows && e.target.value === 'delete-selected') {
+        if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) {
+          rows.forEach((row) => this.#deleteProduct(row));
+          this.#deselectTotal();
+        }
       }
+      if (rows && e.target.value === 'display-selected') {
+        if (confirm('선택한 상품을 모두 전시하시겠습니까?')) this.#controllSelectedDisplay(rows, true);
+      }
+      if (rows && e.target.value === 'hide-selected') {
+        if (confirm('선택된 상품을 모두 숨기시겠습니까?')) this.#controllSelectedDisplay(rows, false);
+      }
+      if (rows && e.target.value === 'change-selected-category') {
+        if (confirm('선택된 상품의 카테고리를 변경하시겠습니까?')) this.#showSelectCategory();
+      }
+      e.target.value = 'default';
     });
   }
 
-  #deleteSelected() {
-    const targetRows = Array.from($('#product-lists-container').querySelectorAll('.product-management-row')).filter(
+  #getSelectedRows() {
+    const rows = Array.from($('#product-list-container').querySelectorAll('.product-management-row')).filter(
       (row) => row.querySelector('.select-product-button').checked === true,
     );
-    targetRows.forEach((row) => this.#deleteProduct(row));
+    if (!validator.validateSelectedRows(rows.length)) return false;
+    return rows;
+  }
+
+  #controllSelectedDisplay(rows, boolean) {
+    rows.forEach((row) => (row.querySelector(`.product-display-${boolean ? 'true' : 'false'}`).selected = true));
+    this.#deselectTotal();
+  }
+
+  #addSelectCategorySubmit() {
+    this.addSubmitButtonEvent('selected-category-submit', () => {
+      this.#submitCategory();
+      this.#hideSelectCategory();
+      this.#deselectTotal();
+    });
+    this.addSubmitButtonEvent('selected-category-cancel', this.#hideSelectCategory.bind(this));
+  }
+
+  #submitCategory() {
+    const category = $('#category-select').value;
+    const selectedRows = this.#getSelectedRows();
+    selectedRows.forEach((row) => (row.querySelector('.product-categories-select').value = category));
+  }
+
+  #showSelectCategory() {
+    $('#category-modal').classList.add('show');
+    $('#category-modal-background').classList.add('show');
+  }
+
+  #hideSelectCategory() {
+    $('#category-modal').classList.remove('show');
+    $('#category-modal-background').classList.remove('show');
+  }
+
+  #initSelectCategoryModal() {
+    this.#renderCategoriesSelectOptions($('#category-select'));
+    this.#addSelectCategorySubmit();
   }
 }
 

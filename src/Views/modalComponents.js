@@ -202,26 +202,37 @@ const modalComponents = {
   },
 
   renderProductManagementContainer() {
-    return `<div id="product-management-container" class="product-container">
+    return `<div id="category-modal-background"></div>
+    <div id="product-management-container" class="product-container">
+    <div id="category-modal">
+    <div id="category-select-container">
+    <select id="category-select">
+    </select>
+    <div id="selected-category-submit-buttons">
+    <button id="selected-category-submit">확인</button>
+    <button id="selected-category-cancel">취소</button>
+    </div>
+    </div>
+    </div>
       <div id="product-management-buttons">
         <select id="manage-selected-button">
-          <option hidden>선택한 상품 수정하기</option>
+          <option value="default" hidden>선택한 상품 수정하기</option>
           <option value="delete-selected">선택한 상품 삭제</option>
           <option value="display-selected">선택한 상품 전시</option>
           <option value="hide-selected">선택한 상품 숨기기</option>
           <option value="change-selected-category">선택한 상품 카테고리 변경</optionid=>
         </select>
         <select id="search-by-category">
-          <option hidden>카테고리</option>
+          <option value="default">전체카테고리</option>
         </select>
         <select id="search-by-display">
-          <option hidden>전시상태</option>
+          <option value="default">전체전시상태</option>
           <option value="true">전시</option>
           <option value="false">숨김</option>
         </select>
         <button id="management-search-button">검색</button>
       </div>
-      <div id="product-lists-container">
+      
       <div id="product-list-header">
       <span><input type="checkbox" class="select-total-product-button" /></span>
       <span>상품명</span>
@@ -232,7 +243,8 @@ const modalComponents = {
       <span>판매수량</span>
       <span>삭제</span>
       </div>
-      </div>
+      <div id="product-list-container"></div>
+      
     </div>${this.renderSubmitAndCancelButtons('product-management')}`;
   },
 
@@ -248,8 +260,8 @@ const modalComponents = {
       </span>
       <span>
       <select>
-      <option value="true" ${product.display ? 'selected' : ''}>전시</option>
-      <option value="false" ${product.display ? '' : 'selected'}>숨김</option>
+      <option class="product-display-true" value="true" ${product.display ? 'selected' : ''}>전시</option>
+      <option class="product-display-false" value="false" ${product.display ? '' : 'selected'}>숨김</option>
       </select>
       </span>
       <span>

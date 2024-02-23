@@ -3,6 +3,7 @@ const VALUES = Object.freeze({
   paymentMethods: ['카드결제', '현금결제', '계좌이체', '기타결제'],
   inputKeys: ['name', 'price', 'barcode'],
   selectKeys: ['category', 'display'],
+  display: { true: true, false: false, default: 'default' },
 });
 
 export default VALUES;

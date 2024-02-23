@@ -109,6 +109,14 @@ const validator = {
     }
     return true;
   },
+
+  validateSelectedRows(rowsLength) {
+    if (rowsLength <= 0) {
+      alert('한 개 이상의 상품을 선택해야 합니다.');
+      return false;
+    }
+    return true;
+  },
 };
 
 export default validator;

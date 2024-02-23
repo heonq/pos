@@ -23,6 +23,7 @@
   z-index: -999;
   background-color: white;
   opacity: 0;
+  box-shadow: 10px 15px 15px rgb(73, 73, 73);
 }
 
 #modal-container.wide {
