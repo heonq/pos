@@ -1,11 +1,9 @@
 import $ from '../../utils/index.js';
 
 class ModalController {
-  addSubmitButtonEvent(submitClassName, callback) {
-    $('#submit-buttons').addEventListener('click', (e) => {
-      if (e.target.classList.contains(submitClassName)) {
-        callback();
-      }
+  addSubmitButtonEvent(submitId, callback) {
+    $(`#${submitId}`).addEventListener('click', () => {
+      callback();
     });
   }
 
@@ -19,14 +17,14 @@ class ModalController {
     $('#background').className = '';
   }
 
-  enableSubmitButton() {
-    $('#submit').classList.add('submitable');
-    $('#submit').disabled = false;
+  enableSubmitButton(submitId) {
+    $(`#${submitId}`).classList.add('submitable');
+    $(`#${submitId}`).disabled = false;
   }
 
-  disableSubmitButton() {
-    $('#submit').classList.remove('submitable');
-    $('#submit').disalbed = true;
+  disableSubmitButton(submitId) {
+    $(`#${submitId}`).classList.remove('submitable');
+    $(`#${submitId}`).disalbed = true;
   }
 }
 

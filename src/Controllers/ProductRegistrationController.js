@@ -40,8 +40,8 @@ class ProductRegistrationController extends ModalController {
         Array.from(row.querySelectorAll('input')).filter((input) => input.className !== 'product-barcode-input'),
       )
       .flat();
-    if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton();
-    return this.disableSubmitButton();
+    if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton('product-registration-submit');
+    return this.disableSubmitButton('product-registration-submit');
   }
 
   #renderProductRegistraiton() {
@@ -109,7 +109,7 @@ class ProductRegistrationController extends ModalController {
   }
 
   #addRerenderProductClass() {
-    $('#submit').classList.add('rerender');
+    $('#product-registration-submit').classList.add('rerender');
   }
 }
 

@@ -87,8 +87,8 @@ class SplitPaymentController extends PaymentModalController {
     const selectComplete = Array.from($('#split-payment-container').querySelectorAll('select')).every(
       (select) => select.value !== '',
     );
-    if (inputComplete && selectComplete) return this.enableSubmitButton();
-    return this.disableSubmitButton();
+    if (inputComplete && selectComplete) return this.enableSubmitButton('split-payment-submit');
+    return this.disableSubmitButton('split-payment-submit');
   }
 }
 

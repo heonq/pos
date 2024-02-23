@@ -53,7 +53,7 @@ const modalComponents = {
 
   renderSubmitAndCancelButtons(modalType) {
     return `<div id="submit-buttons">
-    <button class="${modalType}-submit submit-button" id="submit" disabled>확인</button><button class="${modalType}-cancel cancel-button" id="cancel">취소</button>
+    <button class="submit-button" id="${modalType}-submit" disabled>확인</button><button class="cancel-button" id="${modalType}-cancel">취소</button>
     </div>`;
   },
 

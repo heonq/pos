@@ -104,8 +104,8 @@ class DiscountController extends PaymentModalController {
 
   #handleDiscountSubmit() {
     if (Array.from($('#discount-info-section').querySelectorAll('input')).every((input) => input.value !== ''))
-      return this.enableSubmitButton();
-    return this.disableSubmitButton();
+      return this.enableSubmitButton('discount-submit');
+    return this.disableSubmitButton('discount-submit');
   }
 }
 
