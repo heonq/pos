@@ -1,11 +1,8 @@
 /* eslint-disable no-alert */
-import ShoppingCartData from '../Models/ShoppingCartData.js';
 import shoppingCartComponents from '../Views/shoppingCartComponents.js';
 import $ from '../../utils/index.js';
-import ProductData from '../Models/productData.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
-import SalesData from '../Models/salesData.js';
 
 class ShoppingCartController {
   #shoppingCartData;
@@ -14,10 +11,10 @@ class ShoppingCartController {
 
   #salesData;
 
-  constructor() {
-    this.#shoppingCartData = new ShoppingCartData();
-    this.#productData = new ProductData();
-    this.#salesData = new SalesData();
+  constructor(productData, shoppingCartData, salesData) {
+    this.#shoppingCartData = shoppingCartData;
+    this.#productData = productData;
+    this.#salesData = salesData;
   }
 
   init() {

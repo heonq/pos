@@ -1,9 +1,7 @@
-import SalesData from '../Models/salesData.js';
-import ModalController from '../core/ModalController.js';
+import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import formatter from '../../utils/formatter.js';
-import ProductData from '../Models/productData.js';
 
 class SalesHistoryController extends ModalController {
   #productData;
@@ -12,10 +10,10 @@ class SalesHistoryController extends ModalController {
 
   #editing;
 
-  constructor() {
+  constructor(productData, salesData) {
     super();
-    this.#productData = new ProductData();
-    this.#salesData = new SalesData();
+    this.#productData = productData;
+    this.#salesData = salesData;
     this.#editing = false;
   }
 

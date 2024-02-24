@@ -1,15 +1,14 @@
 import $ from '../../utils/index.js';
-import ProductData from '../Models/productData.js';
 import modalComponents from '../Views/modalComponents.js';
-import ModalController from '../core/ModalController.js';
+import ModalController from '../core/modalController.js';
 import validator from '../../utils/validator.js';
 
 class CategoryManagementController extends ModalController {
   #productData;
 
-  constructor() {
+  constructor(productData) {
     super();
-    this.#productData = new ProductData();
+    this.#productData = productData;
   }
 
   init() {

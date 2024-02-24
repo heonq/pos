@@ -1,4 +1,4 @@
-import ModalController from './ModalController.js';
+import ModalController from './modalController.js';
 import $ from '../../utils/index.js';
 
 class PaymentModalController extends ModalController {

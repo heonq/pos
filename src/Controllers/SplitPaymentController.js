@@ -1,19 +1,17 @@
-import ShoppingCartData from '../Models/ShoppingCartData.js';
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import PaymentModalController from '../core/PaymentModalController.js';
 import validator from '../../utils/validator.js';
-import SalesData from '../Models/salesData.js';
 
 class SplitPaymentController extends PaymentModalController {
   #shoppingCartData;
 
   #salesData;
 
-  constructor() {
+  constructor(shoppingCartData, salesData) {
     super();
-    this.#shoppingCartData = new ShoppingCartData();
-    this.#salesData = new SalesData();
+    this.#shoppingCartData = shoppingCartData;
+    this.#salesData = salesData;
   }
 
   init() {

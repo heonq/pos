@@ -1,6 +1,6 @@
 import $ from '../../utils/index.js';
 import store from '../../utils/store.js';
-import ModalController from '../core/ModalController.js';
+import ModalController from '../core/modalController.js';
 
 class HeaderController extends ModalController {
   init() {

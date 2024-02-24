@@ -1,20 +1,18 @@
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
-import ShoppingCartData from '../Models/ShoppingCartData.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
 import PaymentModalController from '../core/PaymentModalController.js';
-import SalesData from '../Models/salesData.js';
 
 class DiscountController extends PaymentModalController {
   #shoppingCartData;
 
   #salesData;
 
-  constructor() {
+  constructor(shoppingCartData, salesData) {
     super();
-    this.#shoppingCartData = new ShoppingCartData();
-    this.#salesData = new SalesData();
+    this.#shoppingCartData = shoppingCartData;
+    this.#salesData = salesData;
   }
 
   init() {

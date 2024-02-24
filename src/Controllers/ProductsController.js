@@ -1,13 +1,12 @@
 import store from '../../utils/store.js';
 import $ from '../../utils/index.js';
-import ProductData from '../Models/productData.js';
 import productComponents from '../Views/productComponents.js';
 
 class ProductsController {
   #productData;
 
-  constructor() {
-    this.#productData = new ProductData();
+  constructor(productData) {
+    this.#productData = productData;
   }
 
   init() {
