@@ -87,7 +87,7 @@
   max-width: 90px;
 }
 
-#product-management-buttons {
+#product-management-buttons-container {
   position: sticky;
   top: 0px;
   z-index: 200;

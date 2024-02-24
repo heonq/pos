@@ -140,7 +140,7 @@ class ProductManagementController extends ModalController {
   }
 
   #addHandleSelectedEvent() {
-    $('#manage-selected-button').addEventListener('change', (e) => {
+    $('#product-management-buttons').addEventListener('change', (e) => {
       const rows = this.#getSelectedRows();
       if (rows && e.target.value === 'delete-selected') {
         if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) {

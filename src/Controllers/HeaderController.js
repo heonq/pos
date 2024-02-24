@@ -84,8 +84,8 @@ class HeaderController extends ModalController {
   }
 
   #foldProductManagementList(targetId) {
-    const IDS = ['product-management-button', 'product-management', 'product-registration', 'category-management'];
-    if (!IDS.includes(targetId)) $('#product-management-button-container').classList.remove('expanded');
+    if (targetId !== 'product-management-button')
+      $('#product-management-button-container').classList.remove('expanded');
   }
 
   #setBackgroundHideModal() {
