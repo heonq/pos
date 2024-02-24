@@ -75,7 +75,7 @@ class ProductData {
 
   convertCategoryNameToNumber(categoryName) {
     this.updateTotalCategoriesFromStorage();
-    return Object.values(this.#categories).find((category) => category.name === categoryName);
+    return Object.values(this.#categories).find((category) => category.name === categoryName).number;
   }
 
   deleteProduct(targetNumber) {
