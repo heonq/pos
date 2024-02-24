@@ -7,7 +7,7 @@ class ProductData {
 
   constructor() {
     this.updateTotalProductsFromStorage();
-    this.#updateTotalCategoriesFromStorage();
+    this.updateTotalCategoriesFromStorage();
   }
 
   getProducts() {
@@ -25,7 +25,9 @@ class ProductData {
   getProductsInOrder() {
     const categories = this.getCategoriesGotProduct();
     return categories.map((category) =>
-      Object.values(this.#products).filter((product) => product.category === category && product.display === true),
+      Object.values(this.#products).filter(
+        (product) => this.convertCategoryNumberToName(product.category) === category && product.display === true,
+      ),
     );
   }
 
@@ -46,22 +48,34 @@ class ProductData {
     delete this.#products[productNumber];
   }
 
-  #updateTotalCategoriesFromStorage() {
-    this.#categories = store.getStorage('categories') ?? [];
+  updateTotalCategoriesFromStorage() {
+    this.#categories = store.getStorage('categories') ?? { 1: { name: '카테고리없음', display: true, number: 1 } };
   }
 
   getCategoriesGotProduct() {
     this.updateTotalProductsFromStorage();
-    this.#updateTotalCategoriesFromStorage();
-    const productsArray = Object.values(this.#products).filter((product) => product.display === true);
-    const categoriesOrder = this.#categories
+    this.updateTotalCategoriesFromStorage();
+    const categoriesGotProduct = [
+      ...new Set(
+        Object.values(this.#products)
+          .filter((product) => product.display === true)
+          .map((product) => this.convertCategoryNumberToName(product.category)),
+      ),
+    ];
+    const categoriesOrder = Object.values(this.#categories)
       .filter((category) => category.display === true)
       .map((category) => category.name);
-    if (!productsArray) return [];
-    else {
-      const categoriesGotProduct = [...new Set(productsArray.map((products) => products.category))];
-      return categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
-    }
+    return categoriesOrder.filter((category) => categoriesGotProduct.includes(category));
+  }
+
+  convertCategoryNumberToName(categoryNumber) {
+    this.updateTotalCategoriesFromStorage();
+    return this.#categories[categoryNumber].name;
+  }
+
+  convertCategoryNameToNumber(categoryName) {
+    this.updateTotalCategoriesFromStorage();
+    return Object.values(this.#categories).find((category) => category.name === categoryName);
   }
 
   deleteProduct(targetNumber) {

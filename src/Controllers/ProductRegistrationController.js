@@ -56,7 +56,7 @@ class ProductRegistrationController extends ModalController {
   }
 
   #renderCategoriesSelectOptions(select) {
-    const categories = this.#productData.getCategories().map((category) => category.name);
+    const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
     modalComponents.renderOptions(select, categories);
   }
 

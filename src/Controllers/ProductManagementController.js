@@ -21,12 +21,12 @@ class ProductManagementController extends ModalController {
     const selects = $('.product-container').querySelectorAll('.product-categories-select');
     selects.forEach((select) => {
       this.#renderCategoriesSelectOptions(select);
-      select.value = select.dataset.category;
+      select.value = this.#productData.convertCategoryNumberToName(select.dataset.category);
     });
   }
 
   #renderCategoriesSelectOptions(select) {
-    const categories = this.#productData.getCategories().map((category) => category.name);
+    const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
     modalComponents.renderOptions(select, categories);
   }
 
@@ -48,6 +48,7 @@ class ProductManagementController extends ModalController {
       const selects = row.querySelectorAll('select');
       inputs.forEach((input, index) => (data[VALUES.inputKeys[index]] = input.value));
       selects.forEach((select, index) => (data[VALUES.selectKeys[index]] = select.value));
+      data.category = this.#productData.convertCategoryNameToNumber(data.category);
       data.display = data.display === 'true' ? true : false;
       this.#productData.updateProduct(productNumber, data);
     });
