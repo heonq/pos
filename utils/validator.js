@@ -117,6 +117,40 @@ const validator = {
     }
     return true;
   },
+
+  validateCategories(categories) {
+    const categoryNames = categories.map((category) => category.name);
+    const duplicatedNames = [
+      ...new Set(
+        categoryNames.filter(
+          (categoryName) => categoryNames.lastIndexOf(categoryName) !== categoryNames.indexOf(categoryName),
+        ),
+      ),
+    ];
+    if (duplicatedNames.length) {
+      alert(`중복된 카테고리 이름이 존재합니다. 중복된 카테고리 : ${duplicatedNames}`);
+      return false;
+    }
+    if (categoryNames.some((categoryName) => categoryName === '')) {
+      alert('카테고리 이름은 공백으로 설정할 수 없습니다.');
+      return false;
+    }
+    return true;
+  },
+
+  validateCategoryDelete(categoryNumber, products) {
+    if (categoryNumber === 1) {
+      alert('기본 카테고리는 삭제할 수 없습니다.');
+      return false;
+    }
+    console.log(products);
+    console.log(categoryNumber);
+    if (products.some((product) => Number(product.category) === Number(categoryNumber))) {
+      alert('상품이 존재하는 카테고리는 삭제할 수 없습니다.');
+      return false;
+    }
+    return true;
+  },
 };
 
 export default validator;

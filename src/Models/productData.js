@@ -44,8 +44,8 @@ class ProductData {
     this.#products[productNumber] = { ...this.#products[productNumber], ...updateData };
   }
 
-  deleteProduct(productNumber) {
-    delete this.#products[productNumber];
+  updateCategory(categoryNumber, updateData) {
+    this.#categories[categoryNumber] = { ...this.#categories[categoryNumber], ...updateData };
   }
 
   updateTotalCategoriesFromStorage() {
@@ -82,9 +82,18 @@ class ProductData {
     delete this.#products[targetNumber];
   }
 
+  deleteCategory(targetNumber) {
+    delete this.#categories[targetNumber];
+  }
+
   registerProduct(dataToUpdate = {}) {
     this.#products = { ...this.#products, ...dataToUpdate };
     store.setStorage('products', this.#products);
+  }
+
+  registerCategory(dataToUpdate = {}) {
+    this.#categories = { ...this.#categories, ...dataToUpdate };
+    store.setStorage('categories', this.#categories);
   }
 
   getNewestProductNumber() {
