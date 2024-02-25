@@ -50,23 +50,11 @@ const validator = {
     return true;
   },
 
-  validateNames(products) {
+  validateProductsNames(products) {
     const productNames = products.map((product) => product.name);
-    if (productNames.some((name) => name === '')) {
-      alert('상품명을 입력해주세요.');
-      return false;
-    }
-    const duplicatedNames = [
-      ...new Set(
-        productNames.filter(
-          (productName) => productNames.lastIndexOf(productName) !== productNames.indexOf(productName),
-        ),
-      ),
-    ];
-    if (duplicatedNames.length) {
-      alert(`중복된 상품명이 존재합니다. 중복된 상품 : ${duplicatedNames.join(',')}`);
-      return false;
-    }
+    if (!this.validateDuplicatedNames(productNames)) return false;
+    if (!this.validateBlankNames(productNames)) return false;
+    if (!this.validateLastStringBlank(productNames)) return false;
     return true;
   },
 
@@ -97,7 +85,7 @@ const validator = {
   },
 
   validateProductRegistration(products) {
-    if (!this.validateNames(products) || !this.validateBarcodes(products) || !this.validatePrice(products))
+    if (!this.validateProductsNames(products) || !this.validateBarcodes(products) || !this.validatePrice(products))
       return false;
     return true;
   },
@@ -120,19 +108,34 @@ const validator = {
 
   validateCategories(categories) {
     const categoryNames = categories.map((category) => category.name);
-    const duplicatedNames = [
-      ...new Set(
-        categoryNames.filter(
-          (categoryName) => categoryNames.lastIndexOf(categoryName) !== categoryNames.indexOf(categoryName),
-        ),
-      ),
-    ];
+    if (!this.validateDuplicatedNames(categoryNames)) return false;
+    if (!this.validateBlankNames(categoryNames)) return false;
+    if (!this.validateLastStringBlank(categoryNames)) return false;
+    return true;
+  },
+
+  validateDuplicatedNames(names) {
+    const duplicatedNames = [...new Set(names.filter((name) => names.lastIndexOf(name) !== names.indexOf(name)))];
     if (duplicatedNames.length) {
-      alert(`중복된 카테고리 이름이 존재합니다. 중복된 카테고리 : ${duplicatedNames}`);
+      alert(`중복된 이름이 존재합니다. : ${duplicatedNames.join(',')}`);
       return false;
     }
-    if (categoryNames.some((categoryName) => categoryName === '')) {
-      alert('카테고리 이름은 공백으로 설정할 수 없습니다.');
+    return true;
+  },
+
+  validateBlankNames(names) {
+    const regex = /^\s*$/;
+    if (names.some((name) => regex.test(name))) {
+      alert('이름은 공백으로 설정할 수 없습니다.');
+      return false;
+    }
+    return true;
+  },
+
+  validateLastStringBlank(names) {
+    const regex = /\s+$/;
+    if (names.some((name) => regex.test(name))) {
+      alert('이름의 마지막 글자는 공백으로 설정할 수 없습니다.');
       return false;
     }
     return true;
@@ -143,8 +146,6 @@ const validator = {
       alert('기본 카테고리는 삭제할 수 없습니다.');
       return false;
     }
-    console.log(products);
-    console.log(categoryNumber);
     if (products.some((product) => Number(product.category) === Number(categoryNumber))) {
       alert('상품이 존재하는 카테고리는 삭제할 수 없습니다.');
       return false;
