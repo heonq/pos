@@ -140,22 +140,10 @@ class ProductManagementController extends ModalController {
 
   #addHandleSelectedEvent() {
     $('#product-management-buttons').addEventListener('change', (e) => {
-      const rows = this.#getSelectedRows();
-      if (rows && e.target.value === 'delete-selected') {
-        if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) {
-          rows.forEach((row) => this.#deleteProduct(row));
-          this.#deselectTotal();
-        }
-      }
-      if (rows && e.target.value === 'display-selected') {
-        if (confirm('선택한 상품을 모두 전시하시겠습니까?')) this.#controllSelectedDisplay(rows, true);
-      }
-      if (rows && e.target.value === 'hide-selected') {
-        if (confirm('선택된 상품을 모두 숨기시겠습니까?')) this.#controllSelectedDisplay(rows, false);
-      }
-      if (rows && e.target.value === 'change-selected-category') {
-        if (confirm('선택된 상품의 카테고리를 변경하시겠습니까?')) this.#showSelectCategory();
-      }
+      if (e.target.value === 'delete-selected') this.#handleDeleteSelected();
+      if (e.target.value === 'display-selected') this.#controllSelectedDisplay(true);
+      if (e.target.value === 'hide-selected') this.#controllSelectedDisplay(false);
+      if (e.target.value === 'change-selected-category') this.#showSelectCategory();
       e.target.value = 'default';
     });
   }
@@ -164,13 +152,29 @@ class ProductManagementController extends ModalController {
     const rows = Array.from($('#product-list-container').querySelectorAll('.product-management-row')).filter(
       (row) => row.querySelector('.select-product-button').checked === true,
     );
-    if (!validator.validateSelectedRows(rows.length)) return false;
+    if (!validator.validateSelectedRows(rows.length)) return [];
     return rows;
   }
 
-  #controllSelectedDisplay(rows, boolean) {
-    rows.forEach((row) => (row.querySelector(`.product-display-${boolean ? 'true' : 'false'}`).selected = true));
-    this.#deselectTotal();
+  #handleDeleteSelected() {
+    const rows = this.#getSelectedRows();
+    if (!rows.length) return;
+    if (confirm('선택한 상품을 모두 삭제하시겠습니까?')) {
+      rows.forEach((row) => this.#deleteProduct(row));
+      this.#deselectTotal();
+    }
+  }
+
+  #controllSelectedDisplay(boolean) {
+    const rows = this.#getSelectedRows();
+    if (!rows.length) return;
+    const boolText = boolean ? 'true' : 'false';
+    if (confirm('선택한 상품의 전시상태를 수정하시겠습니까?')) {
+      for (let i = 0; i < rows.length; i += 1) {
+        rows[i].querySelector(`.product-display-${boolText}`).selected = true;
+      }
+      this.#deselectTotal();
+    }
   }
 
   #addSelectCategorySubmit() {
@@ -185,12 +189,18 @@ class ProductManagementController extends ModalController {
   #submitCategory() {
     const category = $('#category-select').value;
     const selectedRows = this.#getSelectedRows();
-    selectedRows.forEach((row) => (row.querySelector('.product-categories-select').value = category));
+    for (let i = 0; i < selectedRows.length; i += 1) {
+      selectedRows[i].querySelector('.product-categories-select').value = category;
+    }
   }
 
   #showSelectCategory() {
-    $('#category-modal').classList.add('show');
-    $('#category-modal-background').classList.add('show');
+    const rows = this.#getSelectedRows();
+    if (!rows.length) return;
+    if (confirm('선택한 상품의 카테고리를 수정하시겠습니까?') && rows.length) {
+      $('#category-modal').classList.add('show');
+      $('#category-modal-background').classList.add('show');
+    }
   }
 
   #hideSelectCategory() {

@@ -91,26 +91,32 @@ class CategoryManagementController extends ModalController {
 
   #addHandleSelectedEvent() {
     $('#category-management-buttons').addEventListener('change', (e) => {
-      const rows = this.#getSelectedRows();
-      if (rows.length && e.target.value === 'delete-selected-categories') {
-        if (confirm('선택한 카테고리를 모두 삭제하시겠습니까?')) {
-          rows.forEach((row) => this.#deleteCategory(row));
-          this.#deselectTotal();
-        }
-      }
-      if (rows.length && e.target.value === 'display-selected-categories') {
-        if (confirm('선택한 카테고리를 모두 전시하시겠습니까?')) this.#controllSelectedDisplay(rows, true);
-      }
-      if (rows.length && e.target.value === 'hide-selected-categories') {
-        if (confirm('선택된 카테고리를 모두 숨기시겠습니까?')) this.#controllSelectedDisplay(rows, false);
-      }
+      if (e.target.value === 'delete-selected-categories') this.#handleDeleteSelected();
+      if (e.target.value === 'display-selected-categories') this.#controllSelectedDisplay(true);
+      if (e.target.value === 'hide-selected-categories') this.#controllSelectedDisplay(false);
       e.target.value = 'default';
     });
   }
 
-  #controllSelectedDisplay(rows, boolean) {
-    rows.forEach((row) => (row.querySelector(`.category-display-${boolean ? 'true' : 'false'}`).selected = true));
-    this.#deselectTotal();
+  #handleDeleteSelected() {
+    const rows = this.#getSelectedRows();
+    if (!rows.length) return;
+    if (confirm('선택한 카테고리를 모두 삭제하시겠습니까?')) {
+      rows.forEach((row) => this.#deleteCategory(row));
+      this.#deselectTotal();
+    }
+  }
+
+  #controllSelectedDisplay(boolean) {
+    const rows = this.#getSelectedRows();
+    if (!rows.length) return;
+    const boolText = boolean ? 'true' : 'false';
+    if (confirm('선택한 카테고리의 전시상태를 수정하시겠습니까?')) {
+      for (let i = 0; i < rows.length; i += 1) {
+        rows[i].querySelector(`.category-display-${boolText}`).selected = true;
+      }
+      this.#deselectTotal();
+    }
   }
 
   #toggleTotalSelects() {
