@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-alert */
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
@@ -18,10 +20,10 @@ class ProductManagementController extends ModalController {
 
   #renderTotalSelectCategoriesOption() {
     const selects = $('.product-container').querySelectorAll('.product-categories-select');
-    selects.forEach((select) => {
-      this.#renderCategoriesSelectOptions(select);
-      select.value = this.#productData.convertCategoryNumberToName(select.dataset.category);
-    });
+    for (let i = 0; i < selects.length; i += 1) {
+      this.#renderCategoriesSelectOptions(selects[i]);
+      selects[i].value = this.#productData.convertCategoryNumberToName(selects[i].dataset.category);
+    }
   }
 
   #renderCategoriesSelectOptions(select) {
@@ -41,14 +43,14 @@ class ProductManagementController extends ModalController {
   #getChangedProductsFromInput() {
     const rows = $('#product-management-container').querySelectorAll('.product-inputs-row');
     rows.forEach((row) => {
-      const productNumber = row.dataset.productNumber;
+      const { productNumber } = row.dataset;
       const data = {};
       const inputs = Array.from(row.querySelectorAll('input')).filter((input) => input.type !== 'checkbox');
       const selects = row.querySelectorAll('select');
       inputs.forEach((input, index) => (data[VALUES.inputKeys[index]] = input.value));
       selects.forEach((select, index) => (data[VALUES.selectKeys[index]] = select.value));
       data.category = this.#productData.convertCategoryNameToNumber(data.category);
-      data.display = data.display === 'true' ? true : false;
+      data.display = data.display === 'true';
       this.#productData.updateProduct(productNumber, data);
     });
   }
@@ -126,11 +128,11 @@ class ProductManagementController extends ModalController {
   }
 
   #toggleTotalSelects() {
-    const checked = $('.select-total-product-button').checked;
+    const { checked } = $('.select-total-product-button');
     const rows = $('#product-list-container').querySelectorAll('.product-management-row');
-    rows.forEach((row) => {
-      row.querySelector('.select-product-button').checked = checked;
-    });
+    for (let i = 0; i < rows.length; i += 1) {
+      rows[i].querySelector('.select-product-button').checked = checked;
+    }
   }
 
   #deselectTotal() {

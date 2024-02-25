@@ -116,7 +116,7 @@ const modalComponents = {
           `<td class="quantity"><span data-product-name=${formatter.formatTextToDataSet(
             product.name,
           )} class="editable">${
-            productSaleHistory.filter((productSold) => productSold.name == product.name)[0]?.quantity ?? 0
+            productSaleHistory.filter((productSold) => productSold.name === product.name)[0]?.quantity ?? 0
           }</span></td>`,
       )
       .join('');
@@ -148,10 +148,10 @@ const modalComponents = {
   replaceMethodSpanWithSelect(method) {
     const select = document.createElement('select');
     select.class = 'method';
-    VALUES.paymentMethods.forEach((method) => {
+    VALUES.paymentMethods.forEach((eachMethod) => {
       const option = document.createElement('option');
-      option.value = method;
-      option.text = method;
+      option.value = eachMethod;
+      option.text = eachMethod;
       select.appendChild(option);
     });
     method.parentNode.replaceChild(select, method);

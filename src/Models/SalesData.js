@@ -43,7 +43,7 @@ class SalesData {
     this.#paymentInfo = {
       method: '',
       discountType: 'percentage',
-      totalAmount: totalAmount,
+      totalAmount,
       discountAmount: 0,
       discountValue: 0,
       chargeAmount: totalAmount,

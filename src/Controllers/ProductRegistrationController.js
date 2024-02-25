@@ -100,7 +100,7 @@ class ProductRegistrationController extends ModalController {
       row.querySelectorAll('input').forEach((input, index) => (product[VALUES.inputKeys[index]] = input.value));
       row.querySelectorAll('select').forEach((select, index) => (product[VALUES.selectKeys[index]] = select.value));
       product.number = newestProductNumber + index;
-      product.display = product.display === 'true' ? true : false;
+      product.display = product.display === 'true';
       product.category = this.#productData.convertCategoryNameToNumber(product.category);
       product.salesQuantity = 0;
       products[product.number] = product;

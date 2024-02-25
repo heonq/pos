@@ -120,7 +120,9 @@ class ShoppingCartController {
   #handleProductSalesHistory() {
     const products = this.#productData.getProducts();
     const shoppingCart = this.#shoppingCartData.getShoppingCartData();
-    shoppingCart.forEach((product) => (products[product.number].salesQuantity += product.quantity));
+    for (let i = 0; i < shoppingCart.length; i += 1) {
+      products[shoppingCart[i].number].salesQuantity += shoppingCart[i].quantity;
+    }
     this.#productData.registerProduct(products);
   }
 

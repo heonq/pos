@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-alert */
 import $ from '../../utils/index.js';
 import modalComponents from '../Views/modalComponents.js';
 import ModalController from '../core/modalController.js';
@@ -57,12 +59,12 @@ class CategoryManagementController extends ModalController {
   #getChangedCategoriesFromInputs() {
     const rows = $('#category-list-container').querySelectorAll('.category-management-row');
     rows.forEach((row) => {
-      const categoryNumber = row.dataset.categoryNumber;
+      const { categoryNumber } = row.dataset;
       const data = {};
       const categoryName = row.querySelector('.category-name-input').value;
       const display = row.querySelector('select').value;
       data.name = categoryName;
-      data.display = display === 'true' ? true : false;
+      data.display = display === 'true';
       data.number = categoryNumber;
       this.#productData.updateCategory(categoryNumber, data);
     });
@@ -120,11 +122,11 @@ class CategoryManagementController extends ModalController {
   }
 
   #toggleTotalSelects() {
-    const checked = $('#select-total-category-button').checked;
+    const { checked } = $('#select-total-category-button');
     const rows = $('#category-list-container').querySelectorAll('.category-management-row');
-    rows.forEach((row) => {
-      row.querySelector('.category-select-button').checked = checked;
-    });
+    for (let i = 0; i < rows.length; i += 1) {
+      rows[i].querySelector('.category-select-button').checked = checked;
+    }
   }
 
   #deselectTotal() {
