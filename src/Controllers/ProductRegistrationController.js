@@ -1,8 +1,8 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
 import VALUES from '../../constants/values.js';
 import validator from '../../utils/validator.js';
+import productModalComponents from '../Views/modalComponents/productModalComponents.js';
 
 class ProductRegistrationController extends ModalController {
   #productData;
@@ -45,7 +45,7 @@ class ProductRegistrationController extends ModalController {
 
   #renderProductRegistraiton() {
     this.showModal('big');
-    $('#modal-container').innerHTML = modalComponents.renderProductRegistration();
+    $('#modal-container').innerHTML = productModalComponents.renderProductRegistration();
     this.#addProductInput();
   }
 
@@ -56,7 +56,7 @@ class ProductRegistrationController extends ModalController {
 
   #renderCategoriesSelectOptions(select) {
     const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
-    modalComponents.renderOptions(select, categories);
+    productModalComponents.renderOptions(select, categories);
   }
 
   #addPlusButtonEvent() {
@@ -77,7 +77,7 @@ class ProductRegistrationController extends ModalController {
   }
 
   #addProductInput() {
-    $('#product-registration-container').insertAdjacentHTML('beforeend', modalComponents.renderProductInputs());
+    $('#product-registration-container').insertAdjacentHTML('beforeend', productModalComponents.renderProductInputs());
     this.#renderLastSelectCategoriesOption();
   }
 

@@ -2,9 +2,9 @@
 /* eslint-disable no-alert */
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
 import VALUES from '../../constants/values.js';
 import validator from '../../utils/validator.js';
+import productModalComponents from '../Views/modalComponents/productModalComponents.js';
 
 class ProductManagementController extends ModalController {
   #productData;
@@ -28,7 +28,7 @@ class ProductManagementController extends ModalController {
 
   #renderCategoriesSelectOptions(select) {
     const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
-    modalComponents.renderOptions(select, categories);
+    productModalComponents.renderOptions(select, categories);
   }
 
   #setChangedProductsToStorage() {
@@ -69,7 +69,7 @@ class ProductManagementController extends ModalController {
 
   #renderProductManagement() {
     this.showModal('big');
-    $('#modal-container').innerHTML = modalComponents.renderProductManagementContainer();
+    $('#modal-container').innerHTML = productModalComponents.renderProductManagementContainer();
     this.#renderSearchedProducts();
     this.#addHandleSelectedEvent();
     this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
@@ -80,7 +80,7 @@ class ProductManagementController extends ModalController {
   #renderSearchedProducts() {
     const productFilteredByAllConditions = this.#getFilteredProducts();
     const component = productFilteredByAllConditions
-      .map((product) => modalComponents.renderProductsInputs(product))
+      .map((product) => productModalComponents.renderProductsInputs(product))
       .join('');
     $('#product-list-container').innerHTML = component;
     this.#renderTotalSelectCategoriesOption();

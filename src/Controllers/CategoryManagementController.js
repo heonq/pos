@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-alert */
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
+import categoryModalComponents from '../Views/modalComponents/categoryModalComponents.js';
 import ModalController from '../core/modalController.js';
 import validator from '../../utils/validator.js';
 
@@ -24,9 +24,9 @@ class CategoryManagementController extends ModalController {
   #renderCategoryManagementModal() {
     this.#productData.updateTotalCategoriesFromStorage();
     const categories = Object.values(this.#productData.getCategories());
-    $('#modal-container').innerHTML = modalComponents.renderCategoryManagementModal();
+    $('#modal-container').innerHTML = categoryModalComponents.renderCategoryManagementModal();
     $('#category-list-container').innerHTML = categories
-      .map((category) => modalComponents.renderCategoryRow(category))
+      .map((category) => categoryModalComponents.renderCategoryRow(category))
       .join('');
     this.showModal('small');
     this.#addDeleteCategoryEvent();

@@ -1,7 +1,7 @@
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
 import PaymentModalController from '../core/PaymentModalController.js';
 import validator from '../../utils/validator.js';
+import splitPaymentModalComponents from '../Views/modalComponents/splitPaymentModalComponents.js';
 
 class SplitPaymentController extends PaymentModalController {
   #shoppingCartData;
@@ -26,7 +26,9 @@ class SplitPaymentController extends PaymentModalController {
 
   #renderSplitPayment() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-    $('#modal-container').innerHTML = modalComponents.renderSplitPaymentComponent(this.#salesData.getPaymentInfo());
+    $('#modal-container').innerHTML = splitPaymentModalComponents.renderSplitPaymentComponent(
+      this.#salesData.getPaymentInfo(),
+    );
     this.#renderSplitInput();
     this.showModal('small');
     this.#addSplitInputEvent();

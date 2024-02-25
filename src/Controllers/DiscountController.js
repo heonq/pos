@@ -1,5 +1,5 @@
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
+import discountModalComponents from '../Views/modalComponents/discountModalComponent.js';
 import formatter from '../../utils/formatter.js';
 import validator from '../../utils/validator.js';
 import PaymentModalController from '../core/PaymentModalController.js';
@@ -28,7 +28,7 @@ class DiscountController extends PaymentModalController {
 
   #renderDiscountModal() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-    $('#modal-container').innerHTML = modalComponents.renderDiscountComponent(this.#salesData.getPaymentInfo());
+    $('#modal-container').innerHTML = discountModalComponents.renderDiscountComponent(this.#salesData.getPaymentInfo());
     this.#calculateDiscount();
     this.showModal('small');
     this.#addRadioEvent();

@@ -1,7 +1,7 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
-import modalComponents from '../Views/modalComponents.js';
 import formatter from '../../utils/formatter.js';
+import salesHistoryModalComponents from '../Views/modalComponents/salesHistoryModalComponents.js';
 
 class SalesHistoryController extends ModalController {
   #productData;
@@ -49,7 +49,7 @@ class SalesHistoryController extends ModalController {
   }
 
   renderSalesHistoryContainer() {
-    $('#modal-container').innerHTML = modalComponents.renderSalesHistoryContainer();
+    $('#modal-container').innerHTML = salesHistoryModalComponents.renderSalesHistoryContainer();
     this.addEditButtonEvent();
     this.renderDateSelect();
   }
@@ -57,7 +57,7 @@ class SalesHistoryController extends ModalController {
   renderSalesHistoryTable(dateText = formatter.formatDate(new Date())) {
     const salesHistory = this.#salesData.getSalesHistory(dateText);
     const products = Object.values(this.#productData.getProducts());
-    $('#sales-history-container').innerHTML = modalComponents.renderTable(salesHistory, products);
+    $('#sales-history-container').innerHTML = salesHistoryModalComponents.renderTable(salesHistory, products);
     this.#editing = false;
   }
 
@@ -73,8 +73,8 @@ class SalesHistoryController extends ModalController {
     e.target
       .closest('tr')
       .querySelectorAll('.editable')
-      .forEach((span) => modalComponents.replaceSpanWithInput(span));
-    modalComponents.replaceMethodSpanWithSelect(e.target.closest('tr').querySelector('.method'));
+      .forEach((span) => salesHistoryModalComponents.replaceSpanWithInput(span));
+    salesHistoryModalComponents.replaceMethodSpanWithSelect(e.target.closest('tr').querySelector('.method'));
     e.target.className = 'edit-submit-button';
     e.target.innerText = '확인';
   }
