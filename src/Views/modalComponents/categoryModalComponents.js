@@ -45,8 +45,36 @@ const categoryModalComponents = {
         </div>`;
   },
 
-  // renderCategoryRegistrationModal() {
-  // },
+  renderCategoryRegistrationModal() {
+    return `<div id="category-registration-container">
+      <div id="category-registration-list-container">
+      <div id="category-list-header">
+        <span>카테고리 이름</span>
+        <span>전시여부</span>
+        <span>삭제</span>
+      </div>
+      ${this.renderCategoryInputs()}</div>
+      <div><button id="plus-category-input-button">+</button></div>
+    </div>
+    ${commonModalComponents.renderSubmitAndCancelButtons('category-registration')}`;
+  },
+
+  renderCategoryInputs() {
+    return `<div class="category-registration-row">
+      <span>
+        <input class="category-name-input" type="text" />
+      </span>
+      <span>
+        <select class="category-display-select">
+          <option value="true">전시</option>
+          <option value="false">숨기기</option>
+        </select>
+      </span>
+      <span>
+        <button class="category-delete-button">삭제</button>
+      </span>
+    </div>`;
+  },
 };
 
 export default categoryModalComponents;

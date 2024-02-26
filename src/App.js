@@ -7,6 +7,7 @@ import SalesHistoryController from './Controllers/SalesHistoryController.js';
 import ProductManagementController from './Controllers/ProductManagementController.js';
 import ProductRegistrationController from './Controllers/ProductRegistrationController.js';
 import CategoryManagementController from './Controllers/CategoryManagementController.js';
+import CategoryRegistrationController from './Controllers/CategoryRegistrationController.js';
 import ProductData from './Models/ProductData.js';
 import SalesData from './Models/SalesData.js';
 import ShoppingCartData from './Models/ShoppingCartData.js';
@@ -34,6 +35,7 @@ class App {
     new ProductManagementController(this.#productData).init();
     new ProductRegistrationController(this.#productData).init();
     new CategoryManagementController(this.#productData).init();
+    new CategoryRegistrationController(this.#productData).init();
   }
 }
 

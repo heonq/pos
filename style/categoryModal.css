@@ -1,0 +1,77 @@
+#category-management-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  width: 500px;
+  height: 400px;
+  overflow: auto;
+  margin-top: 50px;
+}
+
+#category-management-buttons-container {
+  min-width: 300px;
+  display: flex;
+  justify-content: end;
+}
+
+#category-management-header {
+  display: flex;
+  max-width: 400px;
+  justify-content: center;
+}
+
+#category-management-header span {
+  width: 100px;
+  text-align: center;
+}
+
+#category-management-header span:first-child,
+#category-management-header span:nth-child(4) {
+  width: 50px;
+}
+
+.category-management-row {
+  display: flex;
+  max-width: 400px;
+  justify-content: center;
+}
+
+.category-management-row span {
+  width: 100px;
+  text-align: center;
+}
+
+.category-management-row input[type='text'] {
+  width: 90px;
+}
+
+.category-management-row span:first-child,
+.category-management-row span:nth-child(4) {
+  width: 50px;
+}
+
+#plus-category-input-button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  border-style: none;
+  font-size: 20px;
+}
+
+#category-registration-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  height: 330px;
+  max-height: 330px;
+  overflow: auto;
+  margin-top: 50px;
+}
+
+#category-list-header span {
+  width: 100px;
+}
