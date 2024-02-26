@@ -42,8 +42,8 @@ class ShoppingCartController {
     $('#product-container').addEventListener('click', (e) => {
       if (e.target.classList.contains('product')) {
         const products = this.#productData.getProductsInOrder().flat();
-        const name = formatter.formatDataSetToText(e.target.dataset.name);
-        const productToAdd = products.find((product) => product.name === name);
+        const number = Number(formatter.formatDataSetToText(e.target.dataset.number));
+        const productToAdd = products.find((product) => product.number === number);
         this.#shoppingCartData.addToShoppingCart(productToAdd);
         this.#salesData.initPaymentInfo();
         this.#renderShoppingCart();
@@ -64,9 +64,9 @@ class ShoppingCartController {
   #addControlQuantity() {
     $('#shopping-cart-box').addEventListener('mousedown', (e) => {
       if (e.target.classList.length) {
-        const productName = formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.name);
+        const productNumber = Number(formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.number));
         const { classList } = e.target;
-        this.#shoppingCartData.handleQuantity(classList, productName);
+        this.#shoppingCartData.handleQuantity(classList, productNumber);
         this.#salesData.initPaymentInfo();
         this.#renderShoppingCart();
         this.#removeDiscountedClass();
@@ -111,7 +111,7 @@ class ShoppingCartController {
   #addSaveSalesHistoryEvent() {
     $('#payment-complete-button').addEventListener('click', () => {
       if (!validator.validatePaymentMethod(this.#salesData.getPaymentInfo())) return;
-      this.#salesData.handleSalesInfo();
+      this.#salesData.setSalesHistoryToStorage();
       this.#handleProductSalesHistory();
       this.#initShoppingCartAndPayment();
     });

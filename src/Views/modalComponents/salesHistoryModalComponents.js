@@ -41,7 +41,7 @@ const salesHistoryModalComponents = {
           `<td class="quantity"><span data-product-name=${formatter.formatTextToDataSet(
             product.name,
           )} class="editable">${
-            productSaleHistory.filter((productSold) => productSold.name === product.name)[0]?.quantity ?? 0
+            productSaleHistory.filter((productSold) => productSold.number === product.number)[0]?.quantity ?? 0
           }</span></td>`,
       )
       .join('');

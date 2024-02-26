@@ -30,35 +30,44 @@ class ShoppingCartData {
 
   addToShoppingCart(product) {
     this.#updateShoppingCart();
-    const productToAdd = product;
-    productToAdd.quantity = 1;
-    const existProduct = this.#shoppingCart.find((cartProduct) => cartProduct.name === productToAdd.name);
+    const productToAdd = this.#createProductData(product);
+    const existProduct = this.#shoppingCart.find((cartProduct) => cartProduct.number === productToAdd.number);
     if (existProduct) existProduct.quantity += 1;
     else this.#shoppingCart.push(productToAdd);
     this.#setShoppingCart();
   }
 
-  handleQuantity(classList, productName) {
+  #createProductData(product) {
+    const productToAdd = {
+      name: product.name,
+      number: product.number,
+      price: product.price,
+      quantity: 1,
+    };
+    return productToAdd;
+  }
+
+  handleQuantity(classList, productNumber) {
     this.#updateShoppingCart();
-    if (classList.contains('plus')) this.#plusQuantity(productName);
-    if (classList.contains('minus')) this.#minusQuantity(productName);
-    if (classList.contains('delete')) this.#deleteFromCart(productName);
+    if (classList.contains('plus')) this.#plusQuantity(productNumber);
+    if (classList.contains('minus')) this.#minusQuantity(productNumber);
+    if (classList.contains('delete')) this.#deleteFromCart(productNumber);
     this.#setShoppingCart();
   }
 
-  #plusQuantity(productName) {
-    const productToPlus = this.#shoppingCart.find((product) => product.name === productName);
+  #plusQuantity(productNumber) {
+    const productToPlus = this.#shoppingCart.find((product) => product.number === productNumber);
     productToPlus.quantity += 1;
   }
 
-  #minusQuantity(productName) {
-    const productToMinus = this.#shoppingCart.find((product) => product.name === productName);
+  #minusQuantity(productNumber) {
+    const productToMinus = this.#shoppingCart.find((product) => product.number === productNumber);
     if (productToMinus.quantity > 1) productToMinus.quantity -= 1;
-    else this.#deleteFromCart(productName);
+    else this.#deleteFromCart(productNumber);
   }
 
-  #deleteFromCart(productName) {
-    const productToDelete = this.#shoppingCart.find((product) => product.name === productName);
+  #deleteFromCart(productNumber) {
+    const productToDelete = this.#shoppingCart.find((product) => product.number === productNumber);
     productToDelete.quantity = 0;
   }
 

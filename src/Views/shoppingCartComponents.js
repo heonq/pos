@@ -7,9 +7,9 @@ const shoppingCartComponents = {
   renderShoppingCart(shoppingCartData) {
     return shoppingCartData
       .map(
-        (product, index) => `<div class="cart-row" data-index=${index} data-name=${formatter.formatTextToDataSet(
-          product.name,
-        )} data-quantity=${product.quantity}>
+        (product, index) => `<div class="cart-row" data-index=${index} data-number="${product.number}" data-name="${
+          product.name
+        }" data-quantity=${product.quantity}>
     <div class="cart-product">
       ${product.name}<br />${formatter.formatNumber(product.price * product.quantity)}원
     </div>

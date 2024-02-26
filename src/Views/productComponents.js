@@ -6,7 +6,9 @@ import formatter from '../../utils/formatter.js';
 const productComponents = {
   renderEachProduct(product) {
     return `
-    <button class="product" data-name=${formatter.formatTextToDataSet(product.name)} data-price=${product.price}>
+    <button class="product" data-number=${product.number} data-name=${formatter.formatTextToDataSet(
+      product.name,
+    )} data-price=${product.price}>
     ${product.name}<br />${formatter.formatNumber(product.price)}원
       </button>`;
   },
