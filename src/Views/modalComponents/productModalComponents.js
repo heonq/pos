@@ -97,9 +97,9 @@ const productModalComponents = {
   renderProductsInputs(product) {
     return `<div data-product-number=${product.number} class="product-management-row product-inputs-row">
       <span><input type="checkbox" class="select-product-button" /></span>
-      <span><input class="product-name-input" value=${product.name}></span>
-      <span><input class="product-price-input" value=${product.price}></span>
-      <span><input class="product-barcode-input" value=${product.barcode}></span>
+      <span><input class="product-name-input" value="${product.name}"></span>
+      <span><input class="product-price-input" value="${product.price}"></span>
+      <span><input class="product-barcode-input" value="${product.barcode}"></span>
       <span>
       <select data-category=${product.category} class="product-categories-select">
       </select>
