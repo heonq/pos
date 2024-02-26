@@ -13,7 +13,7 @@ const categoryModalComponents = {
               <option value="hide-selected-categories">선택한 카테고리 숨기기</option>
             </select>
           </div>
-          <div id="category-list-header">
+          <div id="category-management-header">
             <span>
               <input id="select-total-category-button" type="checkbox" />
             </span>
@@ -21,7 +21,7 @@ const categoryModalComponents = {
             <span>전시여부</span>
             <span>삭제</span>
           </div>
-          <div id="category-list-container"></div>
+          <div id="category-management-list-container"></div>
           ${commonModalComponents.renderSubmitAndCancelButtons('category-management')}
         </div>`;
   },

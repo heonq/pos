@@ -96,13 +96,13 @@ class ProductData {
     store.setStorage('categories', this.#categories);
   }
 
-  getNewestProductNumber() {
-    return Number(store.getStorage('newestProductNumber') ?? 1);
+  getNewestNumber(type) {
+    return Number(store.getStorage(`newest${type}Number`) ?? (type === 'Category' ? 2 : 1));
   }
 
-  updateProductNumberHistory(productCount) {
-    const newestNumber = this.getNewestProductNumber() + productCount;
-    store.setStorage('newestProductNumber', newestNumber);
+  updateNumberHistory(type, count) {
+    const newestNumber = this.getNewestNumber(type) + count;
+    store.setStorage(`newest${type}Number`, newestNumber);
   }
 }
 

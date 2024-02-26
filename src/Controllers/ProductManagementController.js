@@ -36,7 +36,6 @@ class ProductManagementController extends ModalController {
     const dataToValidate = Object.values(this.#productData.getProducts());
     if (!validator.validateProductRegistration(dataToValidate)) return;
     this.#productData.registerProduct();
-    this.#addRerenderProductClass();
     this.hideModal();
   }
 
@@ -57,13 +56,9 @@ class ProductManagementController extends ModalController {
 
   #addRenderProductManagementModal() {
     $('#product-management').addEventListener('click', () => {
-      this.#productData.updateTotalProductsFromStorage();
       this.#renderProductManagement();
-      this.#addDeleteButtonEventForManagement();
-      this.#addSelectTotalEvent();
       this.#initSelectCategoryModal();
       this.#renderCategoriesSelectOptions($('#search-by-category'));
-      $('#management-search-button').addEventListener('click', this.#renderSearchedProducts.bind(this));
     });
   }
 
@@ -71,10 +66,18 @@ class ProductManagementController extends ModalController {
     this.showModal('big');
     $('#modal-container').innerHTML = productModalComponents.renderProductManagementContainer();
     this.#renderSearchedProducts();
+    this.#addEvents();
+  }
+
+  #addEvents() {
     this.#addHandleSelectedEvent();
     this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
-    this.addSubmitButtonEvent('product-management-cancel', this.hideModal.bind(this));
+    this.addCancelButtonEvent();
     this.enableSubmitButton('product-management-submit');
+    this.addRerenderClassName();
+    this.#addDeleteButtonEvent();
+    this.#addSelectTotalEvent();
+    $('#management-search-button').addEventListener('click', this.#renderSearchedProducts.bind(this));
   }
 
   #renderSearchedProducts() {
@@ -98,7 +101,7 @@ class ProductManagementController extends ModalController {
     return productFilteredByAllConditions;
   }
 
-  #addDeleteButtonEventForManagement() {
+  #addDeleteButtonEvent() {
     $('#product-management-container')
       .querySelectorAll('.product-delete-button')
       .forEach((button) => {
@@ -114,11 +117,6 @@ class ProductManagementController extends ModalController {
     const childNode = inputRow;
     $('#product-list-container').removeChild(childNode);
     this.#productData.deleteProduct(targetNumber);
-    this.#addRerenderProductClass();
-  }
-
-  #addRerenderProductClass() {
-    $('#product-management-submit').classList.add('rerender');
   }
 
   #addSelectTotalEvent() {

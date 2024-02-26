@@ -20,11 +20,6 @@ class ProductRegistrationController extends ModalController {
     $('#product-registration').addEventListener('click', () => {
       this.#productData.updateTotalProductsFromStorage();
       this.#renderProductRegistraiton();
-      this.#addPlusButtonEvent();
-      this.#addDeleteButtonEventForRegistration();
-      this.addSubmitButtonEvent('product-registration-submit', this.#setNewProductsToStorage.bind(this));
-      this.addSubmitButtonEvent('product-registration-cancel', this.hideModal.bind(this));
-      this.#addUpdateSubmitButtonEvent();
     });
   }
 
@@ -39,14 +34,24 @@ class ProductRegistrationController extends ModalController {
         Array.from(row.querySelectorAll('input')).filter((input) => input.className !== 'product-barcode-input'),
       )
       .flat();
-    if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton('product-registration-submit');
-    return this.disableSubmitButton('product-registration-submit');
+    if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton();
+    return this.disableSubmitButton();
   }
 
   #renderProductRegistraiton() {
     this.showModal('big');
     $('#modal-container').innerHTML = productModalComponents.renderProductRegistration();
     this.#addProductInput();
+    this.addRerenderClassName();
+    this.#addEvents();
+  }
+
+  #addEvents() {
+    this.#addPlusButtonEvent();
+    this.#addDeleteButtonEventForRegistration();
+    this.addSubmitButtonEvent('product-registration-submit', this.#setNewProductsToStorage.bind(this));
+    this.addCancelButtonEvent();
+    this.#addUpdateSubmitButtonEvent();
   }
 
   #renderLastSelectCategoriesOption() {
@@ -86,30 +91,34 @@ class ProductRegistrationController extends ModalController {
     const dataToValidate = { ...this.#productData.getProducts(), ...newProducts };
     if (!validator.validateProductRegistration(Object.values(dataToValidate))) return;
     this.#productData.registerProduct(newProducts);
-    this.#productData.updateProductNumberHistory(Object.values(newProducts).length);
-    this.#addRerenderProductClass();
+    this.#productData.updateNumberHistory('Product', Object.values(newProducts).length);
     this.hideModal();
   }
 
   #getNewProductsFromInput() {
     const rows = $('#product-registration-container').querySelectorAll('.product-inputs-row');
     const products = {};
-    const newestProductNumber = this.#productData.getNewestProductNumber();
+    const newestProductNumber = this.#productData.getNewestNumber('Product');
     rows.forEach((row, index) => {
-      const product = {};
-      row.querySelectorAll('input').forEach((input, index) => (product[VALUES.inputKeys[index]] = input.value));
-      row.querySelectorAll('select').forEach((select, index) => (product[VALUES.selectKeys[index]] = select.value));
-      product.number = newestProductNumber + index;
-      product.display = product.display === 'true';
-      product.category = this.#productData.convertCategoryNameToNumber(product.category);
-      product.salesQuantity = 0;
+      const product = this.#getInfoFromRow(row, index, newestProductNumber);
       products[product.number] = product;
     });
     return products;
   }
 
-  #addRerenderProductClass() {
-    $('#product-registration-submit').classList.add('rerender');
+  #getInfoFromRow(row, index, newestProductNumber) {
+    const product = {};
+    row.querySelectorAll('input').forEach((input, inputIndex) => {
+      product[VALUES.inputKeys[inputIndex]] = input.value;
+    });
+    row.querySelectorAll('select').forEach((select, inputIndex) => {
+      product[VALUES.selectKeys[inputIndex]] = select.value;
+    });
+    product.number = newestProductNumber + index;
+    product.display = product.display === 'true';
+    product.category = this.#productData.convertCategoryNameToNumber(product.category);
+    product.salesQuantity = 0;
+    return product;
   }
 }
 

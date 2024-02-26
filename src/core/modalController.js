@@ -7,6 +7,10 @@ class ModalController {
     });
   }
 
+  addCancelButtonEvent() {
+    $('.cancel-button').addEventListener('click', this.hideModal.bind(this));
+  }
+
   showModal(modalSize) {
     $('#modal-container').classList.add('show', modalSize);
     $('#background').classList.add('show');
@@ -17,14 +21,18 @@ class ModalController {
     $('#background').className = '';
   }
 
-  enableSubmitButton(submitId) {
-    $(`#${submitId}`).classList.add('submitable');
-    $(`#${submitId}`).disabled = false;
+  enableSubmitButton() {
+    $(`.submit-button`).classList.add('submitable');
+    $(`.submit-button`).disabled = false;
   }
 
-  disableSubmitButton(submitId) {
-    $(`#${submitId}`).classList.remove('submitable');
-    $(`#${submitId}`).disalbed = true;
+  disableSubmitButton() {
+    $(`.submit-button`).classList.remove('submitable');
+    $(`.submit-button`).disalbed = true;
+  }
+
+  addRerenderClassName() {
+    $('.submit-button').classList.add('rerender');
   }
 }
 

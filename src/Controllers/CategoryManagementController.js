@@ -22,23 +22,27 @@ class CategoryManagementController extends ModalController {
   }
 
   #renderCategoryManagementModal() {
-    this.#productData.updateTotalCategoriesFromStorage();
     const categories = Object.values(this.#productData.getCategories());
     $('#modal-container').innerHTML = categoryModalComponents.renderCategoryManagementModal();
-    $('#category-list-container').innerHTML = categories
+    $('#category-management-list-container').innerHTML = categories
       .map((category) => categoryModalComponents.renderCategoryRow(category))
       .join('');
     this.showModal('small');
+    this.#addEvents();
+  }
+
+  #addEvents() {
     this.#addDeleteCategoryEvent();
     this.addSubmitButtonEvent('category-management-submit', this.#setChangedCategoriesToStorage.bind(this));
-    this.addSubmitButtonEvent('category-management-cancel', this.hideModal.bind(this));
+    this.addCancelButtonEvent();
     this.enableSubmitButton('category-management-submit');
-    this.#addToggleTotalSelectsEvent();
     this.#addHandleSelectedEvent();
+    this.#addToggleTotalSelectsEvent();
+    this.addRerenderClassName();
   }
 
   #addDeleteCategoryEvent() {
-    $('#category-list-container')
+    $('#category-management-list-container')
       .querySelectorAll('.delete-category-button')
       .forEach((button) => {
         button.addEventListener('click', (e) => {
@@ -52,12 +56,12 @@ class CategoryManagementController extends ModalController {
     const targetNumber = Number(inputRow.dataset.categoryNumber);
     const childNode = inputRow;
     if (!validator.validateCategoryDelete(targetNumber, Object.values(this.#productData.getProducts()))) return;
-    $('#category-list-container').removeChild(childNode);
+    $('#category-management-list-container').removeChild(childNode);
     this.#productData.deleteCategory(targetNumber);
   }
 
   #getChangedCategoriesFromInputs() {
-    const rows = $('#category-list-container').querySelectorAll('.category-management-row');
+    const rows = $('#category-management-list-container').querySelectorAll('.category-management-row');
     rows.forEach((row) => {
       const { categoryNumber } = row.dataset;
       const data = {};
@@ -75,7 +79,6 @@ class CategoryManagementController extends ModalController {
     const dataToValidate = Object.values(this.#productData.getCategories());
     if (!validator.validateCategories(dataToValidate)) return;
     this.#productData.registerCategory();
-    $('#category-management-submit').classList.add('rerender');
     this.hideModal();
   }
 

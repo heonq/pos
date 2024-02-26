@@ -31,8 +31,13 @@ class SplitPaymentController extends PaymentModalController {
     );
     this.#renderSplitInput();
     this.showModal('small');
+    this.#addEvents();
+  }
+
+  #addEvents() {
     this.#addSplitInputEvent();
-    this.#addSubmitEvent();
+    this.addSubmitButtonEvent('split-payment-submit', this.#handleSplitPayment.bind(this));
+    this.addCancelButtonEvent();
     this.#addHandleDiscountSubmitEvent();
   }
 
@@ -56,13 +61,6 @@ class SplitPaymentController extends PaymentModalController {
     const { chargeAmount } = this.#salesData.getPaymentInfo();
     const index = inputs.indexOf(e.target.id);
     $(`#${inputs[1 - index]}`).value = chargeAmount - $(`#${inputs[index]}`).value;
-  }
-
-  #addSubmitEvent() {
-    this.addSubmitButtonEvent('split-payment-submit', () => {
-      this.#handleSplitPayment();
-    });
-    this.addSubmitButtonEvent('split-payment-cancel', this.hideModal);
   }
 
   #handleSplitPayment() {
