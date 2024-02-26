@@ -42,16 +42,24 @@ class ProductManagementController extends ModalController {
   #getChangedProductsFromInput() {
     const rows = $('#product-management-container').querySelectorAll('.product-inputs-row');
     rows.forEach((row) => {
-      const { productNumber } = row.dataset;
-      const data = {};
-      const inputs = Array.from(row.querySelectorAll('input')).filter((input) => input.type !== 'checkbox');
-      const selects = row.querySelectorAll('select');
-      inputs.forEach((input, index) => (data[VALUES.inputKeys[index]] = input.value));
-      selects.forEach((select, index) => (data[VALUES.selectKeys[index]] = select.value));
-      data.category = this.#productData.convertCategoryNameToNumber(data.category);
-      data.display = data.display === 'true';
-      this.#productData.updateProduct(productNumber, data);
+      this.#handleProductRow(row);
     });
+  }
+
+  #handleProductRow(row) {
+    const { productNumber } = row.dataset;
+    const data = {};
+    const inputs = Array.from(row.querySelectorAll('input')).filter((input) => input.type !== 'checkbox');
+    const selects = row.querySelectorAll('select');
+    inputs.forEach((input, index) => {
+      data[VALUES.inputKeys[index]] = input.value;
+    });
+    selects.forEach((select, index) => {
+      data[VALUES.selectKeys[index]] = select.value;
+    });
+    data.category = this.#productData.convertCategoryNameToNumber(data.category);
+    data.display = data.display === 'true';
+    this.#productData.updateProduct(productNumber, data);
   }
 
   #addRenderProductManagementModal() {
@@ -73,7 +81,7 @@ class ProductManagementController extends ModalController {
     this.#addHandleSelectedEvent();
     this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
     this.addCancelButtonEvent();
-    this.enableSubmitButton('product-management-submit');
+    this.enableSubmitButton();
     this.addRerenderClassName();
     this.#addDeleteButtonEvent();
     this.#addSelectTotalEvent();
