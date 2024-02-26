@@ -11,7 +11,10 @@ class SalesData {
 
   #salesInfo;
 
-  constructor() {
+  #shoppingCartData;
+
+  constructor(shoppingCartData) {
+    this.#shoppingCartData = shoppingCartData;
     this.#getPaymentInfoFromStorage();
     this.initSplitPayment();
     this.initSalesHistory();
@@ -37,9 +40,7 @@ class SalesData {
   }
 
   #setDefaultPaymentInfo() {
-    const totalAmount = store
-      .getStorage('shoppingCart')
-      .reduce((acc, product) => acc + product.quantity * product.price, 0);
+    const totalAmount = this.#shoppingCartData.getTotalAmount();
     this.#paymentInfo = {
       method: '',
       discountType: 'percentage',
@@ -138,7 +139,7 @@ class SalesData {
     const date = new Date();
     this.#salesInfo = {
       number: this.#salesHistory.length + 1,
-      products: store.getStorage('shoppingCart'),
+      products: this.#shoppingCartData.getShoppingCartData(),
       chargeAmount: this.#paymentInfo.chargeAmount,
       method: this.#paymentInfo.method,
       date: formatter.formatDate(date),
@@ -169,7 +170,7 @@ class SalesData {
     }
   }
 
-  handleSalesInfo() {
+  setSalesHistoryToStorage() {
     this.setSalesInfo();
     if (this.#paymentInfo.method === '분할결제') {
       this.handleSplitPayment();

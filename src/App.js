@@ -21,8 +21,8 @@ class App {
 
   constructor() {
     this.#productData = new ProductData();
-    this.#salesData = new SalesData();
     this.#shoppingCartData = new ShoppingCartData();
+    this.#salesData = new SalesData(this.#shoppingCartData);
   }
 
   play() {
