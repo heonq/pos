@@ -139,7 +139,7 @@ class SalesData {
     const date = new Date();
     this.#salesInfo = {
       number: this.#salesHistory.length + 1,
-      products: this.#shoppingCartData.getShoppingCartData(),
+      products: this.#getShoppingCartWithoutName(),
       chargeAmount: this.#paymentInfo.chargeAmount,
       method: this.#paymentInfo.method,
       date: formatter.formatDate(date),
@@ -148,6 +148,15 @@ class SalesData {
       discountType: '',
       note: '',
     };
+  }
+
+  #getShoppingCartWithoutName() {
+    const products = this.#shoppingCartData.getShoppingCartData().map((product) => {
+      const data = { ...product };
+      delete data.name;
+      return data;
+    });
+    return products;
   }
 
   handleETCInfo() {
