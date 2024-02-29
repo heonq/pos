@@ -87,9 +87,9 @@ class CategoryManagementController extends ModalController {
   }
 
   #getSelectedRows() {
-    const rows = Array.from($('#category-list-container').querySelectorAll('.category-management-row')).filter(
-      (row) => row.querySelector('.category-select-button').checked === true,
-    );
+    const rows = Array.from(
+      $('#category-management-list-container').querySelectorAll('.category-management-row'),
+    ).filter((row) => row.querySelector('.category-select-button').checked === true);
     if (!validator.validateSelectedRows(rows.length)) return [];
     return rows;
   }
@@ -126,7 +126,7 @@ class CategoryManagementController extends ModalController {
 
   #toggleTotalSelects() {
     const { checked } = $('#select-total-category-button');
-    const rows = $('#category-list-container').querySelectorAll('.category-management-row');
+    const rows = $('#category-management-list-container').querySelectorAll('.category-management-row');
     for (let i = 0; i < rows.length; i += 1) {
       rows[i].querySelector('.category-select-button').checked = checked;
     }

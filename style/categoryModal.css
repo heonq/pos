@@ -66,12 +66,44 @@
   display: flex;
   flex-direction: column;
   justify-content: start;
+  align-items: center;
   height: 330px;
   max-height: 330px;
   overflow: auto;
   margin-top: 50px;
 }
 
-#category-list-header span {
-  width: 100px;
+#category-list-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-registration-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.category-registration-row input {
+  width: 130px;
+}
+
+.category-name-span {
+  width: 135px;
+  text-align: center;
+}
+
+.select-category-display-span {
+  width: 70px;
+  text-align: center;
+}
+
+.category-display-select {
+  width: 50px;
+}
+
+.delete-category-button-span {
+  width: 45px;
+  text-align: center;
 }

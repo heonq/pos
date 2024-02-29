@@ -49,9 +49,9 @@ const categoryModalComponents = {
     return `<div id="category-registration-container">
       <div id="category-registration-list-container">
       <div id="category-list-header">
-        <span>카테고리 이름</span>
-        <span>전시여부</span>
-        <span>삭제</span>
+        <span class="category-name-span">카테고리 이름</span>
+        <span class="select-category-display-span">전시여부</span>
+        <span class="delete-category-button-span">삭제</span>
       </div>
       ${this.renderCategoryInputs()}</div>
       <div><button id="plus-category-input-button">+</button></div>
@@ -61,16 +61,16 @@ const categoryModalComponents = {
 
   renderCategoryInputs() {
     return `<div class="category-registration-row">
-      <span>
+      <span class="category-name-span">
         <input class="category-name-input" type="text" />
       </span>
-      <span>
+      <span class="select-category-display-span">
         <select class="category-display-select">
           <option value="true">전시</option>
           <option value="false">숨기기</option>
         </select>
       </span>
-      <span>
+      <span class="delete-category-button-span">
         <button class="category-delete-button">삭제</button>
       </span>
     </div>`;
