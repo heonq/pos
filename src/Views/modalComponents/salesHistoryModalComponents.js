@@ -5,8 +5,10 @@ import VALUES from '../../../constants/values.js';
 
 const salesHistoryModalComponents = {
   renderSalesHistoryContainer() {
-    return `<div id="date-select-section"><select id="date-select"></select><button id="search-button">조회</button></div>
-        <div id="sales-history-container"></div>`;
+    return `<div id="date-select-section">
+    <input id="date-select" placeholder="날짜 선택"></input>
+    </div>
+    <div id="sales-history-container"></div>`;
   },
 
   renderTable(salesHistory, products) {

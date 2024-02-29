@@ -89,7 +89,7 @@ class SalesData {
 
   saveSplitPayment(paymentMethod = [], amount = []) {
     this.#splitPayment.methods = paymentMethod;
-    this.#splitPayment.amounts = amount;
+    this.#splitPayment.amounts = amount.map(Number);
     store.setStorage('splitPayment', this.#splitPayment);
   }
 
@@ -213,7 +213,29 @@ class SalesData {
   }
 
   getDateWithSales() {
-    return Object.keys(store.getStorage('salesHistories'));
+    return Object.keys(store.getStorage('salesHistories')).sort((a, b) => b.localeCompare(a));
+  }
+
+  getStatistic(dateText) {
+    this.initSalesHistory(dateText);
+    const totalAmount = this.getTotalChargeAmount(this.#salesHistory);
+    const [cardAmount, cashAmount, wireAmount] = VALUES.methods.map((method) =>
+      this.getTotalChargeAmount(this.getFilteredHistory(method)),
+    );
+    return {
+      totalAmount,
+      cardAmount,
+      cashAmount,
+      wireAmount,
+    };
+  }
+
+  getTotalChargeAmount(filteredHistory) {
+    return filteredHistory.reduce((acc, history) => acc + history.chargeAmount, 0);
+  }
+
+  getFilteredHistory(method) {
+    return this.#salesHistory.filter((sale) => sale.method === method);
   }
 }
 
