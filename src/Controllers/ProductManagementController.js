@@ -101,7 +101,9 @@ class ProductManagementController extends ModalController {
     const [category, display] = [$('#search-by-category').value, VALUES.display[$('#search-by-display').value]];
     const products = Object.values(this.#productData.getProducts());
     const productFilteredByCategory =
-      category !== 'default' ? products.filter((product) => product.category === category) : products;
+      category !== 'default'
+        ? products.filter((product) => product.category === this.#productData.convertCategoryNameToNumber(category))
+        : products;
     const productFilteredByAllConditions =
       display !== 'default'
         ? productFilteredByCategory.filter((product) => product.display === display)
