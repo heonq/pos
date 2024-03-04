@@ -1,0 +1,24 @@
+.cash-check-history-row,
+#cash-check-history-header,
+#cash-check-row,
+#cash-check-header {
+  display: flex;
+  justify-content: center;
+}
+
+.cash-check-history-row span,
+#cash-check-history-header span,
+#cash-check-row span,
+#cash-check-header span {
+  text-align: center;
+  width: 100px;
+  margin-right: 20px;
+}
+
+#cash-check-row input {
+  width: 70px;
+}
+
+#cash-check-history-container {
+  margin-top: 50px;
+}

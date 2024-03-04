@@ -5,6 +5,7 @@ const VALUES = Object.freeze({
   selectKeys: ['category', 'display'],
   display: { true: true, false: false, default: 'default' },
   methods: ['카드결제', '현금결제', '계좌이체'],
+  currencyUnits: [1000, 5000, 10000, 50000],
 });
 
 export default VALUES;

@@ -12,6 +12,8 @@ import StatisticController from './Controllers/StatisticController.js';
 import ProductData from './Models/ProductData.js';
 import SalesData from './Models/SalesData.js';
 import ShoppingCartData from './Models/ShoppingCartData.js';
+import CashCheckController from './Controllers/CashCheckController.js';
+import CashCheckData from './Models/CashCheckData.js';
 
 class App {
   #productData;
@@ -20,10 +22,13 @@ class App {
 
   #shoppingCartData;
 
+  #cashCheckData;
+
   constructor() {
     this.#productData = new ProductData();
     this.#shoppingCartData = new ShoppingCartData();
     this.#salesData = new SalesData(this.#shoppingCartData);
+    this.#cashCheckData = new CashCheckData();
   }
 
   play() {
@@ -38,6 +43,7 @@ class App {
     new CategoryManagementController(this.#productData).init();
     new CategoryRegistrationController(this.#productData).init();
     new StatisticController(this.#salesData).init();
+    new CashCheckController(this.#salesData, this.#cashCheckData).init();
   }
 }
 
