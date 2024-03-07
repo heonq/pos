@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable no-alert */
 
 const validator = {
@@ -148,6 +149,23 @@ const validator = {
     }
     if (products.some((product) => Number(product.category) === Number(categoryNumber))) {
       alert('상품이 존재하는 카테고리는 삭제할 수 없습니다.');
+      return false;
+    }
+    return true;
+  },
+
+  validateCashCheckInputs(values) {
+    if (!values.every((value) => this.validateInteger(value))) {
+      alert('0 이상의 자연수를 입력해주세요.');
+      return false;
+    }
+    return true;
+  },
+
+  validateRefund(refundHistory) {
+    if (!confirm('선택하신 주문 건을 반품하시겠습니까?')) return false;
+    if (refundHistory === 'true') {
+      alert('이미 환불이 완료된 주문 건 입니다.');
       return false;
     }
     return true;

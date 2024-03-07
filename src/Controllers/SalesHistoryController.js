@@ -1,7 +1,7 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
-import formatter from '../../utils/formatter.js';
 import salesHistoryModalComponents from '../Views/modalComponents/salesHistoryModalComponents.js';
+import validator from '../../utils/validator.js';
 
 class SalesHistoryController extends ModalController {
   #productData;
@@ -18,65 +18,93 @@ class SalesHistoryController extends ModalController {
   }
 
   init() {
-    this.addSalesHistoryButtonEvent();
+    this.#addSalesHistoryButtonEvent();
   }
 
-  addSalesHistoryButtonEvent() {
+  #addSalesHistoryButtonEvent() {
     $('#sales-history-button').addEventListener('click', () => {
-      this.renderSalesHistoryContainer();
-      this.renderSalesHistoryTable();
-      this.showModal('wide');
+      this.#renderSalesHistoryContainer();
     });
   }
 
-  addSearchEvent() {
-    $('#search-button').addEventListener('click', () => {
-      this.renderSalesHistoryTable($('#date-select').value);
+  #renderDateSelect() {
+    const dates = this.#salesData.getDateWithSales();
+    flatpickr('#date-select', {
+      defaultDate: dates[0],
+      enable: dates,
+      locale: 'ko',
     });
+    $('#date-select').addEventListener('change', this.#renderSalesHistoryTable.bind(this));
   }
 
-  renderDateSelect() {
-    this.#salesData
-      .getDateWithSales()
-      .sort((a, b) => b.localeCompare(a))
-      .forEach((date) => {
-        const option = document.createElement('option');
-        option.value = date;
-        option.text = date;
-        $('#date-select').appendChild(option);
-      });
-    this.addSearchEvent();
-  }
-
-  renderSalesHistoryContainer() {
+  #renderSalesHistoryContainer() {
     $('#modal-container').innerHTML = salesHistoryModalComponents.renderSalesHistoryContainer();
-    this.addEditButtonEvent();
-    this.renderDateSelect();
+    this.#renderDateSelect();
+    this.#renderSalesHistoryTable();
+    this.showModal('wide');
+    this.#addEvents();
   }
 
-  renderSalesHistoryTable(dateText = formatter.formatDate(new Date())) {
+  #addEvents() {
+    this.#addRefundEvent();
+    this.#addCloseButtonEvent();
+    this.#addEditButtonEvent();
+  }
+
+  #renderSalesHistoryTable() {
+    const dateText = $('#date-select').value;
     const salesHistory = this.#salesData.getSalesHistory(dateText);
     const products = Object.values(this.#productData.getProducts());
-    $('#sales-history-container').innerHTML = salesHistoryModalComponents.renderTable(salesHistory, products);
+    $('#sales-history-table').innerHTML = salesHistoryModalComponents.renderTable(salesHistory, products);
+  }
+
+  #addRefundEvent() {
+    $('#sales-history-table').addEventListener('click', (e) => {
+      if (e.target.classList.contains('refund-button')) this.#refund(e);
+    });
+  }
+
+  #refund(e) {
+    if (!validator.validateRefund(e.target.closest('tr').dataset.refund)) return;
+    const [date, salesNumber] = this.#getDateAndSalesNumber(e);
+    this.#salesData.refund(date, salesNumber);
+    this.#renderSalesHistoryTable();
+  }
+
+  #addCloseButtonEvent() {
+    $('#close-button').addEventListener('click', this.hideModal.bind(this));
+  }
+
+  #getDateAndSalesNumber(e) {
+    const date = e.target.closest('tr').querySelector('.date').innerText;
+    const salesNumber = Number(e.target.closest('tr').querySelector('.sales-number').innerText);
+    return [date, salesNumber];
+  }
+
+  #addEditButtonEvent() {
+    $('#sales-history-table').addEventListener('click', (e) => {
+      if (!this.#editing && e.target.classList.contains('edit-button')) this.#handleEditButton(e);
+      else if (this.#editing && e.target.classList.contains('submit-edit-button')) this.#handleSubmitButton(e);
+    });
+  }
+
+  #handleEditButton(e) {
+    salesHistoryModalComponents.replaceNoteSpanWithInput(e.target.closest('tr').querySelector('.note-span'));
+    this.#editing = true;
+    salesHistoryModalComponents.replaceEditButtonToSubmit(e);
+  }
+
+  #handleSubmitButton(e) {
+    this.#editNote(e);
+    salesHistoryModalComponents.replaceSubmitButtonToEdit(e);
+    salesHistoryModalComponents.replaceNoteInputWithSpan(e.target.closest('tr').querySelector('.note-input'));
     this.#editing = false;
   }
 
-  addEditButtonEvent() {
-    $('#sales-history-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('edit-button')) this.handleEdit(e);
-    });
-  }
-
-  handleEdit(e) {
-    if (this.#editing) return;
-    this.#editing = true;
-    e.target
-      .closest('tr')
-      .querySelectorAll('.editable')
-      .forEach((span) => salesHistoryModalComponents.replaceSpanWithInput(span));
-    salesHistoryModalComponents.replaceMethodSpanWithSelect(e.target.closest('tr').querySelector('.method'));
-    e.target.className = 'edit-submit-button';
-    e.target.innerText = '확인';
+  #editNote(e) {
+    const [date, salesNumber] = this.#getDateAndSalesNumber(e);
+    const editedNote = e.target.closest('tr').querySelector('.note-input').value;
+    this.#salesData.editNote(date, salesNumber, editedNote);
   }
 }
 

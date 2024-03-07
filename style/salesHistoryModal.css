@@ -1,46 +1,86 @@
 #sales-history-container {
   overflow: scroll;
   width: 1200px;
-  margin-top: 50px;
   margin-bottom: 50px;
 }
 
-td,
-th {
-  width: 90px;
-  min-width: 90px;
-  padding: 10px;
-  text-align: center;
+#sales-history-header {
+  display: flex;
+  width: 1200px;
+  height: 50px;
+  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-tr :nth-child(7),
-tr :nth-child(8) {
-  width: 50px;
-  min-width: 50px;
-}
-
-td input {
-  width: 80px;
-  text-align: center;
-}
-
-thead th {
-  position: sticky;
+#sales-history-title {
+  margin: 0;
 }
 
 #date-select-section {
-  position: absolute;
-  right: 30px;
-  top: 20px;
+  display: flex;
+  width: 1200px;
+  justify-content: end;
+  margin-top: 20px;
 }
 
-#date-select-section select {
+#close-button {
+  height: 30px;
+  width: 30px;
+  background-color: white;
+  font-size: 20px;
+}
+
+#close-button:hover {
+  filter: brightness(1);
+}
+
+#sales-history-table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+#sales-history-table td,
+#sales-history-table th {
+  min-width: 100px;
+  padding: 10px;
+  text-align: center;
+  border-style: solid;
+  margin: 0px;
+  border-width: 0.5px;
+  border-color: rgb(200, 200, 200);
+}
+
+#date-select-section {
+  margin-bottom: 20px;
+}
+
+#sales-history-table tr :nth-child(1) {
+  min-width: 60px;
+  width: 60px;
+}
+
+#sales-history-table tr :nth-child(4) {
+  min-width: 200px;
+}
+
+#sales-history-table tr :nth-child(7),
+#sales-history-table tr :nth-child(8) {
+  min-width: 50px;
+  width: 50px;
+}
+
+#sales-history-table td input {
+  width: 200px;
+  text-align: center;
+}
+
+#sales-history-table thead th {
+  background-color: rgb(240, 240, 240);
+}
+
+#date-select {
   width: 90px;
   height: 25px;
-  border-style: none;
-}
-
-#date-select-section button {
-  width: 50px;
-  height: 25px;
+  text-align: center;
 }

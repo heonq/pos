@@ -1,19 +1,23 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import formatter from '../../../utils/formatter.js';
-import VALUES from '../../../constants/values.js';
 
 const salesHistoryModalComponents = {
   renderSalesHistoryContainer() {
-    return `<div id="date-select-section">
+    return `
+    <div id="sales-history-header"><h3 id="sales-history-title">판매내역</h3><button id="close-button">X</button></div>
+    <div id="date-select-section">
     <input id="date-select" placeholder="날짜 선택"></input>
     </div>
-    <div id="sales-history-container"></div>`;
+    <div id="sales-history-container">
+    <div id="table-container">
+    <table id="sales-history-table"></table>
+    </div>
+    </div>`;
   },
 
   renderTable(salesHistory, products) {
-    return `<table>
-        <thead>
+    return `<thead>
         <tr id="thead-tr">
         <th>판매번호</th>
         <th>판매금액</th>
@@ -21,67 +25,70 @@ const salesHistoryModalComponents = {
         <th>비고</th>
         <th>날짜</th>
         <th>시간</th>
-        <th>반품</th>
+        <th>환불</th>
         <th>수정</th>
         ${this.renderProductsTh(products)}
         </tr>
         </thead>
         <tbody>
-        ${salesHistory.map((salesInfo) => this.renderTbody(salesInfo, products)).join('')}
-    </tbody>
-        </table>`;
+        ${salesHistory.map((salesInfo) => this.renderTr(salesInfo, products)).join('')}
+    </tbody>`;
   },
 
   renderProductsTh(products) {
-    return products.map((product) => `<th class=${product.name}>${product.name}</th>`).join('');
+    return products.map((product) => `<th data-product-number="${product.number}">${product.name}</th>`).join('');
   },
 
   renderSalesTd(productsData, productSaleHistory) {
     return productsData
       .map(
         (product) =>
-          `<td class="quantity"><span data-product-name=${formatter.formatTextToDataSet(
-            product.name,
-          )} class="editable">${
+          `<td class="quantity" data-product-name="${product.number}"><span>${
             productSaleHistory.filter((productSold) => productSold.number === product.number)[0]?.quantity ?? 0
           }</span></td>`,
       )
       .join('');
   },
 
-  renderTbody(salesInfo, productsData) {
+  renderTr(salesInfo, productsData) {
     return `
-        <tr>
+        <tr data-refund="${salesInfo.refund}">
           <td class="sales-number"><span>${salesInfo.number}</span></td>
-          <td class="charge-amount"><span class="editable">${formatter.formatNumber(salesInfo.chargeAmount)}</span></td>
-          <td class="payment-method"><span class="method">${salesInfo.method}</span></td>
-          <td class="note"><span class="editable">${salesInfo.note}</span></td>
-          <td class="date"><span class="editable">${salesInfo.date}</span></td>
-          <td class="time"><span class="editable">${salesInfo.time}</span></td>
-          <td class="refund-button"><button>반품</button></td>
-          <td><button class="edit-button" data-sales-number=${salesInfo.number}>수정</button></td>
+          <td class="charge-amount"><span>${formatter.formatNumber(salesInfo.chargeAmount)}</span></td>
+          <td class="payment-method"><span class="method-span">${salesInfo.method}</span></td>
+          <td class="note"><span class="note-span">${salesInfo.note}</span></td>
+          <td class="date"><span class="date-span">${salesInfo.date}</span></td>
+          <td class="time"><span>${salesInfo.time}</span></td>
+          <td><button class="refund-button">환불</button></td>
+          <td><button class="edit-button">수정</button></td>
           ${this.renderSalesTd(productsData, salesInfo.products)}
         </tr>
         `;
   },
 
-  replaceSpanWithInput(span) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = span.innerText;
-    span.parentNode.replaceChild(input, span);
+  replaceEditButtonToSubmit(e) {
+    e.target.className = 'submit-edit-button';
+    e.target.innerText = '확인';
   },
 
-  replaceMethodSpanWithSelect(method) {
-    const select = document.createElement('select');
-    select.class = 'method';
-    VALUES.paymentMethods.forEach((eachMethod) => {
-      const option = document.createElement('option');
-      option.value = eachMethod;
-      option.text = eachMethod;
-      select.appendChild(option);
-    });
-    method.parentNode.replaceChild(select, method);
+  replaceSubmitButtonToEdit(e) {
+    e.target.className = 'edit-button';
+    e.target.innerText = '수정';
+  },
+
+  replaceNoteSpanWithInput(span) {
+    const noteInput = document.createElement('input');
+    noteInput.className = 'note-input';
+    noteInput.type = 'text';
+    noteInput.value = span.innerText;
+    span.parentNode.replaceChild(noteInput, span);
+  },
+
+  replaceNoteInputWithSpan(input) {
+    const noteSpan = document.createElement('span');
+    noteSpan.className = 'note-span';
+    noteSpan.innerText = input.value;
+    input.parentNode.replaceChild(noteSpan, input);
   },
 };
 

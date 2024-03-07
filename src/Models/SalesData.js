@@ -145,6 +145,7 @@ class SalesData {
       date: formatter.formatDate(date),
       time: formatter.formatTime(date),
       discount: false,
+      refund: false,
       discountType: '',
       note: '',
     };
@@ -188,6 +189,43 @@ class SalesData {
     salesHistories[formatter.formatDate(new Date())] = this.#salesHistory;
     store.setStorage('salesHistories', salesHistories);
     this.initPaymentInfo();
+  }
+
+  #getSalesHistoryForUpdate(date, salesNumber) {
+    const totalSalesHistories = store.getStorage('salesHistories');
+    const salesHistoriesOfDate = totalSalesHistories[date];
+    const originalHistory = salesHistoriesOfDate[salesNumber - 1];
+    return [totalSalesHistories, salesHistoriesOfDate, originalHistory];
+  }
+
+  refund(date, salesNumber) {
+    const [totalSalesHistories, salesHistoriesOfDate, originalHistory] = this.#getSalesHistoryForUpdate(
+      date,
+      salesNumber,
+    );
+    originalHistory.refund = true;
+    const refundHistory = this.#makeRefundHistory(originalHistory);
+    refundHistory.number = salesHistoriesOfDate.length + 1;
+    refundHistory.note = `${date} ${salesNumber}번 환불`;
+    totalSalesHistories[formatter.formatDate(new Date())].push(refundHistory);
+    store.setStorage('salesHistories', totalSalesHistories);
+  }
+
+  #makeRefundHistory(originalHistory) {
+    const refundHistory = { ...originalHistory };
+    const products = refundHistory.products.map((product) => ({ ...product }));
+    for (let i = 0; i < products.length; i += 1) products[i].quantity *= -1;
+    refundHistory.products = products;
+    refundHistory.chargeAmount *= -1;
+    refundHistory.date = formatter.formatDate(new Date());
+    refundHistory.time = formatter.formatTime(new Date());
+    return refundHistory;
+  }
+
+  editNote(date, salesNumber, editedNote) {
+    const [totalSalesHistories, _, originalHistory] = this.#getSalesHistoryForUpdate(date, salesNumber);
+    originalHistory.note = editedNote;
+    store.setStorage('salesHistories', totalSalesHistories);
   }
 
   handleSplitPayment() {
