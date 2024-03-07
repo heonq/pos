@@ -1,33 +1,35 @@
 #category-management-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  width: 500px;
   height: 400px;
   overflow: auto;
-  margin-top: 50px;
+  margin-top: 10px;
 }
 
 #category-management-buttons-container {
-  min-width: 300px;
   display: flex;
   justify-content: end;
+}
+
+#category-management-table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+#category-management-table * {
+  border-width: 0.1px;
 }
 
 #category-management-header {
   display: flex;
   max-width: 400px;
   justify-content: center;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+  outline: 1px solid transparent;
 }
 
-#category-management-header span {
-  width: 100px;
-  text-align: center;
-}
-
-#category-management-header span:first-child,
-#category-management-header span:nth-child(4) {
+#category-management-header th:first-child,
+#category-management-header th:nth-child(4),
+.category-management-row td:first-child,
+.category-management-row td:nth-child(4) {
   width: 50px;
 }
 
@@ -37,18 +39,81 @@
   justify-content: center;
 }
 
-.category-management-row span {
+#category-management-header th,
+.category-management-row td {
   width: 100px;
   text-align: center;
+  padding: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.category-management-row td {
+  border-top: solid;
+  border-color: rgb(200, 200, 200);
 }
 
 .category-management-row input[type='text'] {
   width: 90px;
 }
 
-.category-management-row span:first-child,
-.category-management-row span:nth-child(4) {
-  width: 50px;
+#category-registration-container {
+  position: relative;
+  height: 350px;
+  overflow: auto;
+  margin-top: 10px;
+}
+
+#category-registration-header {
+  max-width: 400px;
+  justify-content: center;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+  outline: 1px solid transparent;
+}
+
+#category-registration-list-table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+#category-registration-list-table * {
+  border-width: 0.1px;
+}
+
+#category-registration-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-registration-row {
+  display: flex;
+  justify-content: center;
+  border-top: solid;
+  border-color: rgb(200, 200, 200);
+}
+
+#category-registration-header th,
+.category-registration-row td {
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-width: 50px;
+  text-align: center;
+}
+
+#category-registration-header th:first-child,
+.category-registration-row td:first-child {
+  width: 130px;
+}
+
+.category-registration-row input {
+  width: 120px;
+}
+
+#plus-category-input-button-container {
+  display: flex;
+  justify-content: center;
 }
 
 #plus-category-input-button {
@@ -59,51 +124,4 @@
   border-radius: 35px;
   border-style: none;
   font-size: 20px;
-}
-
-#category-registration-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  height: 330px;
-  max-height: 330px;
-  overflow: auto;
-  margin-top: 50px;
-}
-
-#category-list-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.category-registration-row {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.category-registration-row input {
-  width: 130px;
-}
-
-.category-name-span {
-  width: 135px;
-  text-align: center;
-}
-
-.select-category-display-span {
-  width: 70px;
-  text-align: center;
-}
-
-.category-display-select {
-  width: 50px;
-}
-
-.delete-category-button-span {
-  width: 45px;
-  text-align: center;
 }

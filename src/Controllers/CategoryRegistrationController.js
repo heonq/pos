@@ -32,7 +32,7 @@ class CategoryRegistrationController extends ModalController {
   }
 
   #addUpdateSubmitButtonEvent() {
-    $('#category-registration-list-container').addEventListener('input', this.#updateSubmitButton.bind(this));
+    $('#category-registration-list-table').addEventListener('input', this.#updateSubmitButton.bind(this));
   }
 
   #updateSubmitButton() {
@@ -74,7 +74,7 @@ class CategoryRegistrationController extends ModalController {
   }
 
   #getNewCategoriesFromInput() {
-    const rows = $('#category-registration-list-container').querySelectorAll('.category-registration-row');
+    const rows = $('#category-registration-list-table').querySelectorAll('.category-registration-row');
     const categories = {};
     const newestCategoryNumber = this.#productData.getNewestNumber('Category');
     rows.forEach((row, index) => {
