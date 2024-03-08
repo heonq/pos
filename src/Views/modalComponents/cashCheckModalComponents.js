@@ -34,11 +34,11 @@ const cashCheckModalComponents = {
         </span>
       </div>
     </div>
-    <div id="cash-check-history-container">
+    <div>
     <h3>현금 점검 내역</h3>
-    <div id="cash-check-history-header">
-        ${this.renderCashCheckHeader()}
-    </div></div></div>${commonModalComponents.renderSubmitAndCancelButtons('cash-check')}`;
+    <table id="cash-check-history-table">
+        ${this.renderCashCheckHistoryHeader()}
+    </table></div></div>${commonModalComponents.renderSubmitAndCancelButtons('cash-check')}`;
   },
 
   renderCashCheckHeader() {
@@ -54,19 +54,39 @@ const cashCheckModalComponents = {
         <span>50,000</span>`;
   },
 
+  renderCashCheckHistoryHeader() {
+    return `
+    <thead id="cash-check-history-header">
+    <tr>
+    <th>점검시간</th>
+    <th>준비금</th>
+    <th>현금 판매 금액</th>
+    <th>예상 현금</th>
+    <th>실제 현금</th>
+    <th>일치 여부</th>
+    <th>1,000</th>
+    <th>5,000</th>
+    <th>10,000</th>
+    <th>50,000</th>
+    </tr>
+    </thead>
+    <tbody id="cash-check-history-body"></tbody>
+    `;
+  },
+
   renderCashCheckHistoryRow(history) {
-    return `<div class="cash-check-history-row">
-    <span>${history.time}</span>
-    <span>${formatter.formatNumber(history.pettyCash)}</span>
-    <span>${formatter.formatNumber(history.cashSalesAmount)}</span>
-    <span>${formatter.formatNumber(history.expectedAmount)}</span>
-    <span>${formatter.formatNumber(history.countedAmount)}</span>
-    <span>${history.correctBoolean ? 'O' : 'X'}</span>
-    <span>${formatter.formatNumber(history.currency[1000])}</span>
-    <span>${formatter.formatNumber(history.currency[5000])}</span>
-    <span>${formatter.formatNumber(history.currency[10000])}</span>
-    <span>${formatter.formatNumber(history.currency[50000])}</span>
-    </div>
+    return `<tr class="cash-check-history-row">
+    <td>${history.time}</td>
+    <td>${formatter.formatNumber(history.pettyCash)}</td>
+    <td>${formatter.formatNumber(history.cashSalesAmount)}</td>
+    <td>${formatter.formatNumber(history.expectedAmount)}</td>
+    <td>${formatter.formatNumber(history.countedAmount)}</td>
+    <td>${history.correctBoolean ? 'O' : 'X'}</td>
+    <td>${formatter.formatNumber(history.currency[1000])}</td>
+    <td>${formatter.formatNumber(history.currency[5000])}</td>
+    <td>${formatter.formatNumber(history.currency[10000])}</td>
+    <td>${formatter.formatNumber(history.currency[50000])}</td>
+    </tr>
     `;
   },
 };

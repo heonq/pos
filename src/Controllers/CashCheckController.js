@@ -82,7 +82,7 @@ class CashCheckController extends ModalController {
     const historyComponents = cashCheckHistories
       .map((history) => cashCheckModalComponents.renderCashCheckHistoryRow(history))
       .join('');
-    $('#cash-check-history-container').insertAdjacentHTML('beforeend', historyComponents);
+    $('#cash-check-history-body').insertAdjacentHTML('beforeend', historyComponents);
   }
 
   #checkAllInputFilled() {
