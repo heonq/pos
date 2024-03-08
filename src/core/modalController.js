@@ -28,7 +28,7 @@ class ModalController {
 
   disableSubmitButton() {
     $(`.submit-button`).classList.remove('submitable');
-    $(`.submit-button`).disalbed = true;
+    $(`.submit-button`).disabled = true;
   }
 
   addRerenderClassName() {
