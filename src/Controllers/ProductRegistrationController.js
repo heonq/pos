@@ -24,11 +24,11 @@ class ProductRegistrationController extends ModalController {
   }
 
   #addUpdateSubmitButtonEvent() {
-    $('#product-registration-modal').addEventListener('input', this.#updateSubmitButton.bind(this));
+    $('#product-registration-container').addEventListener('input', this.#updateSubmitButton.bind(this));
   }
 
   #updateSubmitButton() {
-    const rows = Array.from($('#product-registration-container').querySelectorAll('.product-inputs-row'));
+    const rows = Array.from($('#product-registration-container').querySelectorAll('.product-registration-row'));
     const inputs = rows
       .map((row) =>
         Array.from(row.querySelectorAll('input')).filter((input) => input.className !== 'product-barcode-input'),
@@ -77,12 +77,13 @@ class ProductRegistrationController extends ModalController {
   }
 
   #deleteInputs(e) {
-    const targetNode = e.target.closest('.product-inputs-row');
+    const targetNode = e.target.closest('.product-registration-row');
+    if (targetNode.parentNode.querySelectorAll('.product-registration-row').length === 1) return;
     targetNode.parentNode.removeChild(targetNode);
   }
 
   #addProductInput() {
-    $('#product-registration-container').insertAdjacentHTML('beforeend', productModalComponents.renderProductInputs());
+    $('#product-registration-table-body').insertAdjacentHTML('beforeend', productModalComponents.renderProductInputs());
     this.#renderLastSelectCategoriesOption();
   }
 
@@ -96,7 +97,7 @@ class ProductRegistrationController extends ModalController {
   }
 
   #getNewProductsFromInput() {
-    const rows = $('#product-registration-container').querySelectorAll('.product-inputs-row');
+    const rows = $('#product-registration-container').querySelectorAll('.product-registration-row');
     const products = {};
     const newestProductNumber = this.#productData.getNewestNumber('Product');
     rows.forEach((row, index) => {

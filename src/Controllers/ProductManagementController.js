@@ -95,6 +95,7 @@ class ProductManagementController extends ModalController {
       .join('');
     $('#product-list-container').innerHTML = component;
     this.#renderTotalSelectCategoriesOption();
+    this.#addDeleteButtonEvent();
   }
 
   #getFilteredProducts() {

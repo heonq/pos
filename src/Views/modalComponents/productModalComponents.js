@@ -1,27 +1,34 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import commonModalComponents from './commonModalComponents.js';
+import formatter from '../../../utils/formatter.js';
 
 const productModalComponents = {
   renderProductRegistration() {
-    return `<div id="product-registration-modal">
+    return `
     <div id="product-registration-container" class="product-container">
-    <div id="product-registration-header">
-    <span>상품명</span>
-    <span>가격</span>
-    <span>바코드</span>
-    <span>카테고리</span>
-    <span>전시여부</span>
-    <span>삭제</span>
-    </div>
-    </div>
-    <div>
+    <div><h3>상품등록</h3></div>
+    <table id="product-registration-table">
+    <thead>
+    <tr id="product-registration-header">
+    <th>상품명</th>
+    <th>가격</th>
+    <th>바코드</th>
+    <th>카테고리</th>
+    <th>전시여부</th>
+    <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody id="product-registration-table-body"></tbody>
+    </table>
+    <div id="plus-product-input-button-container">
     <button id="plus-product-input-button">+</button>
     </div>
     </div>
     ${commonModalComponents.renderSubmitAndCancelButtons('product-registration')}
     `;
   },
+
   renderOptions(select, categories) {
     const options = [];
     categories.forEach((category) => {
@@ -34,17 +41,17 @@ const productModalComponents = {
   },
 
   renderProductInputs() {
-    return `<div class="product-registration-row product-inputs-row">
-      <div><input class="product-name-input" /></div>
-      <div><input class="product-price-input" /></div>
-      <div><input class="product-barcode-input" /></div>
-      <div><select class="product-categories-select"></select></div>
-      <div><select class="product-display-select">
+    return `<tr class="product-registration-row">
+      <td><input class="product-name-input" /></td>
+      <td><input class="product-price-input" /></td>
+      <td><input class="product-barcode-input" /></td>
+      <td><select class="product-categories-select"></select></td>
+      <td><select class="product-display-select">
         <option value="true">전시</option>
         <option value="false">숨김</option>
-      </select></div>
-      <div><button class="product-delete-button">삭제</button></div>
-    </div>`;
+      </select></td>
+      <td><button class="product-delete-button">삭제</button></td>
+    </tr>`;
   },
 
   renderProductManagementContainer() {
@@ -60,6 +67,7 @@ const productModalComponents = {
     </div>
     </div>
     </div>
+    <div><h3>상품 관리</h3></div>
       <div id="product-management-buttons-container">
         <select id="product-management-buttons">
           <option value="default" hidden>선택한 상품 수정하기</option>
@@ -78,43 +86,45 @@ const productModalComponents = {
         </select>
         <button id="management-search-button">검색</button>
       </div>
-      
-      <div id="product-list-header">
-      <span><input type="checkbox" class="select-total-product-button" /></span>
-      <span>상품명</span>
-      <span>가격</span>
-      <span>바코드</span>
-      <span>카테고리</span>
-      <span>전시여부</span>
-      <span>판매수량</span>
-      <span>삭제</span>
-      </div>
-      <div id="product-list-container"></div>
-      
+      <table id="product-management-table">
+      <thead id="product-list-header">
+        <tr>
+      <th><input type="checkbox" class="select-total-product-button" /></th>
+      <th>상품명</th>
+      <th>가격</th>
+      <th>바코드</th>
+      <th>카테고리</th>
+      <th>전시여부</th>
+      <th>판매수량</th>
+      <th>삭제</th>
+      </tr>
+      </thead>
+      <tbody id="product-list-container"></tbody>
+      </table>
     </div>${commonModalComponents.renderSubmitAndCancelButtons('product-management')}`;
   },
 
   renderProductsInputs(product) {
-    return `<div data-product-number=${product.number} class="product-management-row product-inputs-row">
-      <span><input type="checkbox" class="select-product-button" /></span>
-      <span><input class="product-name-input" value="${product.name}"></span>
-      <span><input class="product-price-input" value="${product.price}"></span>
-      <span><input class="product-barcode-input" value="${product.barcode}"></span>
-      <span>
+    return `<tr data-product-number=${product.number} class="product-management-row product-inputs-row">
+      <td><input type="checkbox" class="select-product-button" /></td>
+      <td><input class="product-name-input" value="${product.name}"></td>
+      <td><input class="product-price-input" value="${product.price}"></td>
+      <td><input class="product-barcode-input" value="${product.barcode}"></td>
+      <td>
       <select data-category=${product.category} class="product-categories-select">
       </select>
-      </span>
-      <span>
+      </td>
+      <td>
       <select>
       <option class="product-display-true" value="true" ${product.display ? 'selected' : ''}>전시</option>
       <option class="product-display-false" value="false" ${product.display ? '' : 'selected'}>숨김</option>
       </select>
-      </span>
-      <span>
-      ${product.salesQuantity}
-      </span>
-      <span><button class="product-delete-button">삭제</button></span>
-    </div>`;
+      </td>
+      <td>
+      ${formatter.formatNumber(product.salesQuantity)}
+      </td>
+      <td><button class="product-delete-button">삭제</button></td>
+    </tr>`;
   },
 };
 

@@ -22,12 +22,14 @@
   width: 175px;
   height: 70px;
   margin-right: 10px;
-  border-style: solid;
+  border-style: none;
   border-width: 0.5px;
   scroll-snap-align: start;
   text-align: center;
   cursor: pointer;
   line-height: 35px;
+  background-color: rgb(240, 240, 240);
+  border-radius: 5px;
 }
 
 .product span {
