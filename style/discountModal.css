@@ -1,11 +1,12 @@
 #discount-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   height: 500px;
   font-size: 18px;
   line-height: 25px;
+  margin-top: 50px;
 }
 
 #select-discount-type-section {
@@ -63,7 +64,7 @@
 #split-payment-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   height: 500px;
   width: 280px;

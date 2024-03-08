@@ -22,8 +22,10 @@
   position: absolute;
   z-index: -999;
   background-color: white;
+  justify-content: start;
   opacity: 0;
-  box-shadow: 10px 15px 15px rgb(73, 73, 73);
+  box-shadow: 15px 15px 15px rgba(69, 69, 69, 0.5);
+  border-radius: 10px;
 }
 
 #modal-container.wide {
@@ -42,42 +44,9 @@
   width: 500px;
   height: 500px;
   top: 200px;
-  display: flex;
-  justify-content: center;
 }
 
 #modal-container.show {
   opacity: 1;
   z-index: 2000;
-}
-
-#submit-buttons {
-  position: absolute;
-  bottom: 30px;
-  width: 280px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#cancel {
-  background-color: rgb(237, 237, 237);
-}
-
-.submit-button {
-  background-color: blue;
-  color: white;
-  opacity: 0.5;
-}
-
-#submit-buttons button {
-  font-size: 18px;
-  width: 130px;
-  height: 50px;
-  border-width: 0.5px;
-  cursor: pointer;
-}
-
-.submitable {
-  opacity: 1;
 }

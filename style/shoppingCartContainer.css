@@ -10,23 +10,25 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  border-width: 0px;
 }
 
 .cart-product {
   width: 70%;
   height: 100%;
-  box-shadow: 0 0 0 0.5px #000 inset;
   text-align: center;
 }
 
 .cart-product {
   line-height: 35px;
+  border-right: 0.5px solid;
+  border-bottom: 0.5px solid;
 }
 
 .quantity-box {
   width: 30%;
   height: 100%;
-  box-shadow: 0 0 0 0.5px #000 inset;
+  border-bottom: 0.5px solid;
   text-align: center;
   line-height: 70px;
   display: flex;
