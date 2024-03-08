@@ -77,9 +77,16 @@ const validator = {
 
   validatePrice(products) {
     const prices = products.map((product) => product.price);
-    const regex = /[^0-9]/g;
-    if (prices.some((price) => Number(price) < 0 || regex.test(price))) {
+    if (!prices.every((price) => this.validateInteger(price))) {
       alert(`가격은 0 이상의 자연수여야 합니다.`);
+      return false;
+    }
+    return true;
+  },
+
+  validateInteger(number) {
+    const regex = /[^0-9]/g;
+    if (Number(number) < 0 || regex.test(number)) {
       return false;
     }
     return true;
