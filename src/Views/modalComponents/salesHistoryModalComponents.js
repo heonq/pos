@@ -44,7 +44,7 @@ const salesHistoryModalComponents = {
       .map(
         (product) =>
           `<td class="quantity" data-product-name="${product.number}"><span>${
-            productSaleHistory.filter((productSold) => productSold.number === product.number)[0]?.quantity ?? 0
+            productSaleHistory.find((productSold) => productSold.number === product.number)?.quantity ?? 0
           }</span></td>`,
       )
       .join('');
