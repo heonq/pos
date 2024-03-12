@@ -193,21 +193,19 @@ class SalesData {
 
   #getSalesHistoryForUpdate(date, salesNumber) {
     const totalSalesHistories = store.getStorage('salesHistories');
-    const salesHistoriesOfDate = totalSalesHistories[date];
-    const originalHistory = salesHistoriesOfDate[salesNumber - 1];
-    return [totalSalesHistories, salesHistoriesOfDate, originalHistory];
+    const originalHistory = totalSalesHistories[date][salesNumber - 1];
+    return [totalSalesHistories, originalHistory];
   }
 
   refund(date, salesNumber) {
-    const [totalSalesHistories, salesHistoriesOfDate, originalHistory] = this.#getSalesHistoryForUpdate(
-      date,
-      salesNumber,
-    );
+    const [totalSalesHistories, originalHistory] = this.#getSalesHistoryForUpdate(date, salesNumber);
     originalHistory.refund = true;
     const refundHistory = this.#makeRefundHistory(originalHistory);
-    refundHistory.number = salesHistoriesOfDate.length + 1;
+    const today = formatter.formatDate(new Date());
+    if (!totalSalesHistories[today]) totalSalesHistories[today] = [];
+    refundHistory.number = totalSalesHistories[today].length + 1;
     refundHistory.note = `${date} ${salesNumber}번 환불`;
-    totalSalesHistories[formatter.formatDate(new Date())].push(refundHistory);
+    totalSalesHistories[today].push(refundHistory);
     store.setStorage('salesHistories', totalSalesHistories);
   }
 
@@ -223,7 +221,7 @@ class SalesData {
   }
 
   editNote(date, salesNumber, editedNote) {
-    const [totalSalesHistories, _, originalHistory] = this.#getSalesHistoryForUpdate(date, salesNumber);
+    const [totalSalesHistories, originalHistory] = this.#getSalesHistoryForUpdate(date, salesNumber);
     originalHistory.note = editedNote;
     store.setStorage('salesHistories', totalSalesHistories);
   }
