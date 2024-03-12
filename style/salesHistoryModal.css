@@ -55,12 +55,11 @@
   margin-bottom: 20px;
 }
 
-#sales-history-table tr :nth-child(1) {
-  min-width: 60px;
+#sales-history-table tr td:nth-of-type(1) {
   width: 60px;
 }
 
-#sales-history-table tr :nth-child(4) {
+#sales-history-table tr td:nth-child(4) {
   min-width: 200px;
 }
 
@@ -71,8 +70,14 @@
 }
 
 #sales-history-table td input {
-  width: 200px;
+  width: 190px;
+  height: 15px;
   text-align: center;
+}
+
+#sales-history-table thead {
+  position: sticky;
+  top: 0px;
 }
 
 #sales-history-table thead th {
