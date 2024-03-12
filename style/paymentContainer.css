@@ -40,14 +40,14 @@
   overflow: visible;
 }
 
-#amount {
+#amount-container {
   border-left: 0.5px solid;
   border-right: 0.5px solid;
   border-bottom: 0.5px solid;
   width: 66.66%;
   height: 100%;
   text-align: center;
-  line-height: 140px;
+  line-height: 123.25px;
   font-size: 20px;
 }
 
