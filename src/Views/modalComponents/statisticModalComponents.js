@@ -1,40 +1,39 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
-import formatter from '../../../utils/formatter.js';
 
 const statisticModalComponents = {
   renderStatisticModalComponents() {
-    return `<div id="statistic-container">
-    <div id="statistic-row-container">
-      <div id="statistic-header">
-        <span>날짜</span>
-        <span>총 판매액</span>
-        <span>카드 판매액</span>
-        <span>현금 판매액</span>
-        <span>계좌이체 판매액</span>
-        <span>삭제</span>
-      </div>
-      </div>
-      <div><button id="plus-statistic-row-button">+</button></div>
+    return `<div id="statistic-modal">
+    <div id="statistic-modal-header">
+    <h3>판매 통계</h3>
+    <button id="close-button">X</button>
+    </div>
+    <table id="statistic-table">
+      <thead id="statistic-header">
+      <tr>
+        <th>날짜</th>
+        <th>총 판매액</th>
+        <th>카드 판매액</th>
+        <th>현금 판매액</th>
+        <th>계좌이체 판매액</th>
+        </tr>
+      </thead>
+      <tbody id="statistic-body">
+      </tbody>
+      </table>
+      <div id="plus-statistic-row-button-container"><button id="plus-statistic-row-button">+</button></div>
     </div>`;
   },
   renderStatisticRow() {
-    return `<div class="statistic-row">
-      <span>
-      <input class="statistic-date-select" placeholder="날짜 선택"></input>
-      </span>
-      <div class="statistic-content"></div>
-      <span>
-      <button class="statistic-delete-button">삭제</button>
-      </span>
-    </div>`;
-  },
-
-  renderStatistic(salesStatistic) {
-    return `<span>${formatter.formatNumber(salesStatistic.totalAmount)}</span>
-    <span>${formatter.formatNumber(salesStatistic.cardAmount)}</span>
-    <span>${formatter.formatNumber(salesStatistic.cashAmount)}</span>
-    <span>${formatter.formatNumber(salesStatistic.wireAmount)}</span>`;
+    return `<tr class="statistic-row">
+      <td>
+      <input class="statistic-date-select"></input>
+      </td>
+      <td class="statistic"></td>
+      <td class="statistic"></td>
+      <td class="statistic"></td>
+      <td class="statistic"></td>
+    </tr>`;
   },
 
   renderDateSelect(dates) {

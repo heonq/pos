@@ -2,6 +2,7 @@ import $ from '../../utils/index.js';
 import ModalController from '../core/modalController.js';
 import statisticModalComponents from '../Views/modalComponents/statisticModalComponents.js';
 import formatter from '../../utils/formatter.js';
+import VALUES from '../../constants/values.js';
 
 class StatisticController extends ModalController {
   #salesData;
@@ -16,64 +17,65 @@ class StatisticController extends ModalController {
   }
 
   #addRenderStatisticEvent() {
-    $('#statistic-button').addEventListener(
-      'click',
-      this.#renderStatistic.bind(this, formatter.formatDate(new Date())),
-    );
+    $('#statistic-button').addEventListener('click', this.#renderStatisticModal.bind(this));
   }
 
-  #renderStatistic() {
-    this.showModal('big');
+  #renderStatisticModal() {
+    this.showModal('midium');
     $('#modal-container').innerHTML = statisticModalComponents.renderStatisticModalComponents();
-    this.#plusStatisticRow();
     this.#addPlusStatisticRowEvent();
-    this.#addDeleteStatisticEvent();
-  }
-
-  #renderDateSelect() {
-    const rows = Array.from($('#statistic-row-container').querySelectorAll('.statistic-row'));
-    const dates = this.#salesData.getDateWithSales();
-    const statistic = this.#salesData.getStatistic(dates[0]);
-    flatpickr(rows[rows.length - 1].querySelector('.statistic-date-select'), {
-      defaultDate: dates[0],
-      enable: dates,
-      locale: 'ko',
-    });
-
-    rows[rows.length - 1].addEventListener('change', (e) => this.#searchBySelect(e.target));
-    this.#renderStatisticContent(rows[rows.length - 1], statistic);
+    this.#renderStatistics();
+    this.addCloseButtonEvent();
   }
 
   #addPlusStatisticRowEvent() {
-    $('#plus-statistic-row-button').addEventListener('click', this.#plusStatisticRow.bind(this));
+    $('#plus-statistic-row-button').addEventListener('click', this.#renderStatistics.bind(this));
   }
 
-  #plusStatisticRow() {
-    $('#statistic-row-container').insertAdjacentHTML('beforeend', statisticModalComponents.renderStatisticRow());
-    this.#renderDateSelect();
+  #renderStatistics() {
+    const tableBody = $('#statistic-body');
+    const dates = this.#salesData.getDateWithSales();
+    const statistics = dates.map((date) => this.#salesData.getStatistic(date));
+    const renderedRows = Array.from(tableBody.querySelectorAll('tr'));
+    for (let i = renderedRows.length; i < renderedRows.length + VALUES.statisticPlusCount; i++) {
+      if (statistics.length <= i) {
+        $('#plus-statistic-row-button').classList.add('hide');
+        break;
+      }
+      tableBody.insertAdjacentHTML('beforeend', statisticModalComponents.renderStatisticRow());
+      const rows = tableBody.querySelectorAll('tr');
+      this.#addSelectDateEvent(rows[rows.length - 1]);
+      this.#renderDateSelect(rows[rows.length - 1], dates, i);
+      this.#renderStatisticContent(rows[rows.length - 1], statistics[i]);
+    }
+  }
+
+  #renderDateSelect(row, dates, index) {
+    flatpickr(row.querySelector('.statistic-date-select'), {
+      defaultDate: dates[index],
+      enable: dates,
+      locale: 'ko',
+    });
   }
 
   #renderStatisticContent(row, statistic) {
-    const targetRow = row;
-    targetRow.querySelector('.statistic-content').innerHTML = statisticModalComponents.renderStatistic(statistic);
+    const tds = row.querySelectorAll('.statistic');
+    VALUES.statisticKeys.forEach((key, index) => (tds[index].innerText = formatter.formatNumber(statistic[key])));
   }
 
-  #searchBySelect(target) {
+  #addSelectDateEvent(row) {
+    row.addEventListener('change', (e) => {
+      if (e.target.classList.contains('statistic-date-select')) {
+        this.#renderStatisticBySelectedDate(e.target);
+      }
+    });
+  }
+
+  #renderStatisticBySelectedDate(target) {
     const row = target.closest('.statistic-row');
     const dateText = target.value;
     const statistic = this.#salesData.getStatistic(dateText);
     this.#renderStatisticContent(row, statistic);
-  }
-
-  #addDeleteStatisticEvent() {
-    $('#statistic-row-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('statistic-delete-button')) this.#deleteStatistic(e);
-    });
-  }
-
-  #deleteStatistic(e) {
-    const targetNode = e.target.closest('.statistic-row');
-    targetNode.parentNode.removeChild(targetNode);
   }
 }
 
