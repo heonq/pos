@@ -47,7 +47,7 @@ class SalesHistoryController extends ModalController {
 
   #addEvents() {
     this.#addRefundEvent();
-    this.#addCloseButtonEvent();
+    this.addCloseButtonEvent();
     this.#addEditButtonEvent();
   }
 
@@ -69,10 +69,6 @@ class SalesHistoryController extends ModalController {
     const [date, salesNumber] = this.#getDateAndSalesNumber(e);
     this.#salesData.refund(date, salesNumber);
     this.#renderSalesHistoryTable();
-  }
-
-  #addCloseButtonEvent() {
-    $('#close-button').addEventListener('click', this.hideModal.bind(this));
   }
 
   #getDateAndSalesNumber(e) {

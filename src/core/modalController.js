@@ -11,6 +11,10 @@ class ModalController {
     $('.cancel-button').addEventListener('click', this.hideModal.bind(this));
   }
 
+  addCloseButtonEvent() {
+    $('#close-button').addEventListener('click', this.hideModal.bind(this));
+  }
+
   showModal(modalSize) {
     $('#modal-container').classList.add('show', modalSize);
     $('#background').classList.add('show');
