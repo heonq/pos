@@ -100,6 +100,7 @@ class ProductManagementController extends ModalController {
 
   #getFilteredProducts() {
     const [category, display] = [$('#search-by-category').value, VALUES.display[$('#search-by-display').value]];
+    this.#productData.updateTotalProductsFromStorage();
     const products = Object.values(this.#productData.getProducts());
     const productFilteredByCategory =
       category !== 'default'

@@ -11,12 +11,10 @@ class ProductData {
   }
 
   getProducts() {
-    this.updateTotalProductsFromStorage();
     return this.#products;
   }
 
   getCategories() {
-    this.updateTotalCategoriesFromStorage();
     return this.#categories;
   }
 

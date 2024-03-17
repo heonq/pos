@@ -22,6 +22,7 @@ class CategoryManagementController extends ModalController {
   }
 
   #renderCategoryManagementModal() {
+    this.#productData.updateTotalCategoriesFromStorage();
     const categories = Object.values(this.#productData.getCategories());
     $('#modal-container').innerHTML = categoryModalComponents.renderCategoryManagementModal();
     $('#category-management-list-container').innerHTML = categories
