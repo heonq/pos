@@ -11,10 +11,7 @@ class SalesData {
 
   #salesInfo;
 
-  #shoppingCartData;
-
-  constructor(shoppingCartData) {
-    this.#shoppingCartData = shoppingCartData;
+  constructor() {
     this.#getPaymentInfoFromStorage();
     this.initSplitPayment();
     this.initSalesHistory();
@@ -40,7 +37,8 @@ class SalesData {
   }
 
   #setDefaultPaymentInfo() {
-    const totalAmount = this.#shoppingCartData.getTotalAmount();
+    const shoppingCart = store.getStorage('shoppingCart') ?? [];
+    const totalAmount = shoppingCart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
     this.#paymentInfo = {
       method: '',
       discountType: 'percentage',
@@ -152,11 +150,13 @@ class SalesData {
   }
 
   #getShoppingCartWithoutName() {
-    const products = this.#shoppingCartData.getShoppingCartData().map((product) => {
-      const data = { ...product };
-      delete data.name;
-      return data;
-    });
+    const products =
+      store.getStorage('shoppingCart') ??
+      [].map((product) => {
+        const data = { ...product };
+        delete data.name;
+        return data;
+      });
     return products;
   }
 
