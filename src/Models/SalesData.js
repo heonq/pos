@@ -1,6 +1,7 @@
 import store from '../../utils/store.js';
 import formatter from '../../utils/formatter.js';
 import VALUES from '../../constants/values.js';
+import deepCopy from '../../utils/deepCopy.js';
 
 class SalesData {
   #salesHistory;
@@ -210,10 +211,8 @@ class SalesData {
   }
 
   #makeRefundHistory(originalHistory) {
-    const refundHistory = { ...originalHistory };
-    const products = refundHistory.products.map((product) => ({ ...product }));
-    for (let i = 0; i < products.length; i += 1) products[i].quantity *= -1;
-    refundHistory.products = products;
+    const refundHistory = deepCopy(originalHistory);
+    for (let i = 0; i < refundHistory.products.length; i += 1) refundHistory.products[i].quantity *= -1;
     refundHistory.chargeAmount *= -1;
     refundHistory.date = formatter.formatDate(new Date());
     refundHistory.time = formatter.formatTime(new Date());
