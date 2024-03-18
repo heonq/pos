@@ -141,7 +141,7 @@ const validator = {
   },
 
   validateLastStringBlank(names) {
-    const regex = /^\s*|\s*$/;
+    const regex = /^\s+|\s+$/;
     if (names.some((name) => regex.test(name))) {
       alert('이름의 첫번째와 마지막 글자는 공백으로 설정할 수 없습니다.');
       return false;
