@@ -17,11 +17,12 @@
 #statistic-table {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   border-collapse: collapse;
   border-spacing: 0;
   min-width: 770px;
+  overflow: auto;
+  margin-bottom: 20px;
 }
 
 #plus-statistic-row-button-container {
@@ -30,7 +31,6 @@
 }
 
 #plus-statistic-row-button {
-  margin-top: 20px;
   margin-bottom: 20px;
   width: 35px;
   height: 35px;
@@ -54,7 +54,10 @@
   padding: 10px;
 }
 
-#statistic-header tr {
+#statistic-header {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
   outline: 1px solid transparent;
+  position: sticky;
+  top: 0;
+  background-color: white;
 }
