@@ -33,21 +33,26 @@ class StatisticController extends ModalController {
   }
 
   #renderStatistics() {
-    const tableBody = $('#statistic-body');
     const dates = this.#salesData.getDateWithSales();
     const statistics = dates.map((date) => this.#salesData.getStatistic(date));
-    const renderedRows = Array.from(tableBody.querySelectorAll('tr'));
-    for (let i = renderedRows.length; i < renderedRows.length + VALUES.statisticPlusCount; i++) {
+    const renderedRows = Array.from($('#statistic-body').querySelectorAll('tr'));
+    for (let i = renderedRows.length; i < renderedRows.length + VALUES.statisticPlusCount; i += 1) {
       if (statistics.length <= i) {
         $('#plus-statistic-row-button').classList.add('hide');
         break;
       }
-      tableBody.insertAdjacentHTML('beforeend', statisticModalComponents.renderStatisticRow());
-      const rows = tableBody.querySelectorAll('tr');
-      this.#addSelectDateEvent(rows[rows.length - 1]);
-      this.#renderDateSelect(rows[rows.length - 1], dates, i);
-      this.#renderStatisticContent(rows[rows.length - 1], statistics[i]);
+      this.#renderStatisticRow(dates, statistics, i);
     }
+    if (statistics.length <= $('#statistic-body').querySelectorAll('tr').length)
+      $('#plus-statistic-row-button').classList.add('hide');
+  }
+
+  #renderStatisticRow(dates, statistics, i) {
+    $('#statistic-body').insertAdjacentHTML('beforeend', statisticModalComponents.renderStatisticRow());
+    const rows = $('#statistic-body').querySelectorAll('tr');
+    this.#addSelectDateEvent(rows[rows.length - 1]);
+    this.#renderDateSelect(rows[rows.length - 1], dates, i);
+    this.#renderStatisticContent(rows[rows.length - 1], statistics[i]);
   }
 
   #renderDateSelect(row, dates, index) {
@@ -60,7 +65,9 @@ class StatisticController extends ModalController {
 
   #renderStatisticContent(row, statistic) {
     const tds = row.querySelectorAll('.statistic');
-    VALUES.statisticKeys.forEach((key, index) => (tds[index].innerText = formatter.formatNumber(statistic[key])));
+    for (let i = 0; i < VALUES.statisticKeys.length; i += 1) {
+      tds[i].innerText = formatter.formatNumber(statistic[VALUES.statisticKeys[i]]);
+    }
   }
 
   #addSelectDateEvent(row) {
