@@ -5,7 +5,7 @@ import formatter from '../../../utils/formatter.js';
 const salesHistoryModalComponents = {
   renderSalesHistoryContainer() {
     return `
-    <div id="sales-history-header"><h3 id="sales-history-title">판매내역</h3><button id="close-button">X</button></div>
+    <div id="sales-history-header"><h3 id="sales-history-title">판매내역</h3><button class="sales-history-close-button" id="close-button">X</button></div>
     <div id="date-select-section">
     <input id="date-select" placeholder="날짜 선택"></input>
     </div>

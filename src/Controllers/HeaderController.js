@@ -8,7 +8,6 @@ class HeaderController extends ModalController {
     this.#addToggleViewMode();
     this.#addToggleViewModeMenu();
     this.#addToggleProductManagement();
-    this.#setBackgroundHideModal();
     this.#selectButton();
     this.#preventDefaultForm();
     this.#preventModalEnterKey();
@@ -86,12 +85,6 @@ class HeaderController extends ModalController {
   #foldProductManagementList(targetId) {
     if (targetId !== 'product-management-button')
       $('#product-management-button-container').classList.remove('expanded');
-  }
-
-  #setBackgroundHideModal() {
-    $('#background').addEventListener('click', () => {
-      this.hideModal();
-    });
   }
 
   #preventDefaultForm() {

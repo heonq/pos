@@ -27,6 +27,7 @@ class ShoppingCartController {
     this.#addETCPayEvent();
     this.#addSaveSalesHistoryEvent();
     this.#addSubmitButtonRerenderEvent();
+    this.#addCloseButtonRenderSalesNumberEvent();
   }
 
   #renderShoppingCart() {
@@ -156,6 +157,14 @@ class ShoppingCartController {
   #renderSalesNumber() {
     const salesNumber = this.#salesData.getSalesNumber();
     $('#sales-number').innerText = salesNumber;
+  }
+
+  #addCloseButtonRenderSalesNumberEvent() {
+    $('#modal-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('sales-history-close-button')) {
+        this.#renderSalesNumber();
+      }
+    });
   }
 }
 
