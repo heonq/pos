@@ -30,13 +30,9 @@ const validator = {
     return true;
   },
 
-  validateSplitPayment(paymentMethods, amounts, totalAmount) {
+  validateSplitPayment(amounts, totalAmount) {
     const totalSplitAmount = amounts.reduce((acc, curr) => acc + Number(curr), 0);
-    if (paymentMethods.some((method) => method === '')) {
-      alert('결제 수단을 선택해주세요.');
-      return false;
-    }
-    if (totalSplitAmount !== totalAmount || amounts.some((amount) => amount <= 0)) {
+    if (totalSplitAmount !== totalAmount || !amounts.every((amount) => this.validateInteger(amount))) {
       alert('결제 금액을 올바르게 입력해주세요.');
       return false;
     }
@@ -85,8 +81,7 @@ const validator = {
   },
 
   validateInteger(number) {
-    const regex = /[^0-9]/g;
-    if (Number(number) < 0 || regex.test(number)) {
+    if (Number(number) < 0 || !Number.isInteger(Number(number))) {
       return false;
     }
     return true;

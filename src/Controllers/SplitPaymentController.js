@@ -66,7 +66,7 @@ class SplitPaymentController extends PaymentModalController {
   #handleSplitPayment() {
     const amounts = [$('#first-split-input').value, $('#second-split-input').value];
     const paymentMethods = [$('#first-method').value, $('#second-method').value];
-    if (!validator.validateSplitPayment(paymentMethods, amounts, this.#salesData.getPaymentInfo().chargeAmount)) return;
+    if (!validator.validateSplitPayment(amounts, this.#salesData.getPaymentInfo().chargeAmount)) return;
     this.#salesData.updatePaymentMethod('분할결제');
     $('#split').classList.add('selected');
     this.#salesData.saveSplitPayment(paymentMethods, amounts);
