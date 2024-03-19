@@ -16,7 +16,7 @@ const salesHistoryModalComponents = {
     </div>`;
   },
 
-  renderTable(salesHistory, products) {
+  renderTable(products) {
     return `<thead>
         <tr id="thead-tr">
         <th>판매번호</th>
@@ -31,7 +31,6 @@ const salesHistoryModalComponents = {
         </tr>
         </thead>
         <tbody>
-        ${salesHistory.map((salesInfo) => this.renderTr(salesInfo, products)).join('')}
     </tbody>`;
   },
 
@@ -39,31 +38,42 @@ const salesHistoryModalComponents = {
     return products.map((product) => `<th data-product-number="${product.number}">${product.name}</th>`).join('');
   },
 
-  renderSalesTd(productsData, productSaleHistory) {
+  renderSalesTd(productsSold, productsData) {
     return productsData
       .map(
         (product) =>
           `<td class="quantity" data-product-name="${product.number}"><span>${
-            productSaleHistory.find((productSold) => productSold.number === product.number)?.quantity ?? 0
+            productsSold.find((productSold) => productSold.number === product.number)?.quantity ?? 0
           }</span></td>`,
       )
       .join('');
   },
 
-  renderTr(salesInfo, productsData) {
+  renderTr(eachSalesHistory, productsData) {
     return `
-        <tr data-refund="${salesInfo.refund}">
-          <td class="sales-number"><span>${salesInfo.number}</span></td>
-          <td class="charge-amount"><span>${formatter.formatNumber(salesInfo.chargeAmount)}</span></td>
-          <td class="payment-method"><span class="method-span">${salesInfo.method}</span></td>
-          <td class="note"><span class="note-span">${salesInfo.note}</span></td>
-          <td class="date"><span class="date-span">${salesInfo.date}</span></td>
-          <td class="time"><span>${salesInfo.time}</span></td>
+        <tr data-refund="${eachSalesHistory.refund}">
+          <td class="sales-number"><span>${eachSalesHistory.number}</span></td>
+          <td class="charge-amount"><span>${formatter.formatNumber(eachSalesHistory.chargeAmount)}</span></td>
+          <td class="payment-method"><span class="method-span">${eachSalesHistory.method}</span></td>
+          <td class="note"><span class="note-span">${eachSalesHistory.note}</span></td>
+          <td class="date"><span class="date-span">${eachSalesHistory.date}</span></td>
+          <td class="time"><span>${eachSalesHistory.time}</span></td>
           <td><button class="refund-button">환불</button></td>
           <td><button class="edit-button">수정</button></td>
-          ${this.renderSalesTd(productsData, salesInfo.products)}
+          ${this.renderSalesTd(eachSalesHistory.products, productsData)}
         </tr>
         `;
+  },
+
+  renderTfoot(totalAmount, productsQuantityArray) {
+    return `<tfoot>
+    <tr>
+    <td>합계</td>
+    <td>${formatter.formatNumber(totalAmount)}</td>
+    <td colspan="6"></td>
+    ${productsQuantityArray.map((productQuantity) => `<td><span>${productQuantity}</span></td>`).join('')}
+    </tr>
+    </tfoot>`;
   },
 
   replaceEditButtonToSubmit(e) {

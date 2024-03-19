@@ -55,7 +55,31 @@ class SalesHistoryController extends ModalController {
     const dateText = $('#date-select').value;
     const salesHistory = this.#salesData.getSalesHistory(dateText);
     const products = Object.values(this.#productData.getProducts());
-    $('#sales-history-table').innerHTML = salesHistoryModalComponents.renderTable(salesHistory, products);
+    this.#renderTbody(products, salesHistory);
+    this.#renderTfoot(salesHistory);
+  }
+
+  #renderTbody(products, salesHistory) {
+    const salesHistoryTable = $('#sales-history-table');
+    salesHistoryTable.innerHTML = salesHistoryModalComponents.renderTable(products);
+    salesHistoryTable.querySelector('tbody').innerHTML = salesHistory
+      .map((eachSalesHistory) => salesHistoryModalComponents.renderTr(eachSalesHistory, products))
+      .join('');
+  }
+
+  #renderTfoot(salesHistory) {
+    const totalAmount = salesHistory.reduce((acc, sales) => acc + sales.chargeAmount, 0);
+    const productsNumber = Object.keys(this.#productData.getProducts());
+    const productSold = salesHistory.map((sales) => sales.products).flat();
+    const productSoldObj = productSold.reduce((acc, product) => {
+      acc[product.number] = (acc[product.number] || 0) + product.quantity;
+      return acc;
+    }, {});
+    const productsQuantityArray = productsNumber.map((number) => productSoldObj[number] ?? 0);
+    $('#sales-history-table').insertAdjacentHTML(
+      'beforeend',
+      salesHistoryModalComponents.renderTfoot(totalAmount, productsQuantityArray),
+    );
   }
 
   #addRefundEvent() {

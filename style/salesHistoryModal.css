@@ -63,6 +63,10 @@
   min-width: 200px;
 }
 
+#sales-history-table tfoot tr td:nth-child(4) {
+  min-width: 100px;
+}
+
 #sales-history-table tr :nth-child(7),
 #sales-history-table tr :nth-child(8) {
   min-width: 50px;
