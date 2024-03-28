@@ -8,6 +8,7 @@ body {
   display: flex;
   justify-content: center;
   overflow: hidden;
+  background-color: #f9fafc;
 }
 
 button {

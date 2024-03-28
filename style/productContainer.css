@@ -19,16 +19,15 @@
 
 .product {
   flex: 0 0 auto;
-  width: 175px;
+  width: 173px;
   height: 70px;
-  margin-right: 10px;
   border-style: none;
   border-width: 0.5px;
   scroll-snap-align: start;
   text-align: center;
   cursor: pointer;
   line-height: 35px;
-  background-color: rgb(240, 240, 240);
+  background-color: rgb(248, 248, 248);
   border-radius: 5px;
 }
 
@@ -48,5 +47,10 @@
 }
 
 #total-product-container .product {
+  margin-right: 10px;
   margin-bottom: 10px;
+}
+
+.scroll-container .product {
+  margin-right: 10px;
 }
