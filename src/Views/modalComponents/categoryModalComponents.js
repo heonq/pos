@@ -32,7 +32,7 @@ const categoryModalComponents = {
   renderCategoryRow(category) {
     return `<tr data-category-number=${category.number} class="category-management-row">
           <td><input type="checkbox" class="category-select-button" /></td>
-          <td><input type="text" class="category-name-input" value=${category.name}></td>
+          <td><input type="text" class="category-name-input" value="${category.name}"></td>
           <td>
           <select>
           <option class="category-display-true" value="true" ${
