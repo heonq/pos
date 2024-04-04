@@ -19,7 +19,8 @@ class ShoppingCartController {
 
   init() {
     this.#renderShoppingCart();
-    this.#addProductRender();
+    this.#setTotalProductButtons();
+    this.#setButtonsWhenViewModeChange();
     this.#addControlQuantity();
     this.#setPaymentMethod();
     this.#addInitiateButtonEvent();
@@ -39,17 +40,29 @@ class ShoppingCartController {
     this.#renderSelectedMethod();
   }
 
-  #addProductRender() {
-    $('#product-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('product')) {
-        const products = this.#productData.getProductsInOrder().flat();
-        const number = Number(formatter.formatDataSetToText(e.target.dataset.number));
-        const productToAdd = products.find((product) => product.number === number);
-        this.#shoppingCartData.addToShoppingCart(productToAdd);
-        this.#salesData.initPaymentInfo();
-        this.#renderShoppingCart();
-        this.#renderAmountToPay();
-      }
+  #setButtonsWhenViewModeChange() {
+    $('#hidden-view-list')
+      .querySelectorAll('div')
+      .forEach((div) => div.addEventListener('click', this.#setTotalProductButtons.bind(this)));
+  }
+
+  #setTotalProductButtons() {
+    $('#product-container')
+      .querySelectorAll('.product')
+      .forEach((productButton) => {
+        this.#addShoppingCartEvent(productButton);
+      });
+  }
+
+  #addShoppingCartEvent(button) {
+    const number = Number(button.dataset.number);
+    button.addEventListener('click', () => {
+      const products = this.#productData.getProductsInOrder().flat();
+      const productToAdd = products.find((product) => product.number === number);
+      this.#shoppingCartData.addToShoppingCart(productToAdd);
+      this.#salesData.initPaymentInfo();
+      this.#renderShoppingCart();
+      this.#renderAmountToPay();
     });
   }
 
@@ -121,9 +134,9 @@ class ShoppingCartController {
   #handleProductSalesHistory() {
     const products = this.#productData.getProducts();
     const shoppingCart = this.#shoppingCartData.getShoppingCartData();
-    for (let i = 0; i < shoppingCart.length; i += 1) {
-      products[shoppingCart[i].number].salesQuantity += shoppingCart[i].quantity;
-    }
+    shoppingCart.forEach((product) => {
+      products[product.number].salesQuantity += product.quantity;
+    });
     this.#productData.registerProduct(products);
   }
 
@@ -141,6 +154,7 @@ class ShoppingCartController {
     $('#modal-container').addEventListener('click', (e) => {
       if (e.target.classList.contains('rerender')) {
         this.#initShoppingCartAndPayment();
+        this.#setTotalProductButtons();
       }
     });
   }
