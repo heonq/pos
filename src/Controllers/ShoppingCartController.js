@@ -21,7 +21,6 @@ class ShoppingCartController {
     this.#renderShoppingCart();
     this.#setTotalProductButtons();
     this.#setButtonsWhenViewModeChange();
-    this.#addControlQuantity();
     this.#setPaymentMethod();
     this.#addInitiateButtonEvent();
     this.#renderSelectedMethod();
@@ -35,9 +34,62 @@ class ShoppingCartController {
     $('#shopping-cart-box').innerHTML = shoppingCartComponents.renderShoppingCart(
       this.#shoppingCartData.getShoppingCartData(),
     );
+    $('#shopping-cart-box')
+      .querySelectorAll('.cart-row')
+      .forEach((cartList) => this.#addControlQuantityEvent(cartList));
     this.#renderAmountToPay();
     this.#renderSalesNumber();
     this.#renderSelectedMethod();
+  }
+
+  #handleProductClick(number) {
+    const shoppingCart = this.#shoppingCartData.getShoppingCartData();
+    const productIndex = shoppingCart.findIndex((product) => product.number === number);
+    const productToAdd = shoppingCart[productIndex];
+    if (productToAdd.quantity === 1) this.#addProductToShoppingCart(productToAdd);
+    else shoppingCartComponents.rerenderQuantityPrice(productToAdd, productIndex);
+  }
+
+  #addProductToShoppingCart(productToAdd) {
+    $('#shopping-cart-box').insertAdjacentHTML('beforeend', shoppingCartComponents.renderEachCartProduct(productToAdd));
+    const cartListNodes = $('#shopping-cart-box').querySelectorAll('.cart-row');
+    const targetNode = cartListNodes[cartListNodes.length - 1];
+    this.#addControlQuantityEvent(targetNode);
+  }
+
+  #addControlQuantityEvent(cartProductNode) {
+    const number = Number(cartProductNode.dataset.number);
+    cartProductNode.querySelector('.quantity-box').addEventListener('click', (e) => {
+      const shoppingCart = this.#shoppingCartData.getShoppingCartData();
+      const index = shoppingCart.findIndex((product) => Number(product.number) === number);
+      this.#controlQuantity(e.target.className, shoppingCart[index], index);
+      this.#salesData.initPaymentInfo();
+      this.#removeDiscountedClass();
+    });
+  }
+
+  #controlQuantity(className, product, index) {
+    if (className === 'plus') this.#handlePlus(product, index);
+    if (className === 'minus') this.#handleMinus(product, index);
+    if (className === 'delete') this.#handleDelete(product, index);
+  }
+
+  #handlePlus(product, index) {
+    this.#shoppingCartData.plusQuantity(product.number);
+    shoppingCartComponents.rerenderQuantityPrice(product, index);
+  }
+
+  #handleMinus(product, index) {
+    if (product.quantity > 1) {
+      this.#shoppingCartData.minusQuantity(product.number);
+      return shoppingCartComponents.rerenderQuantityPrice(product, index);
+    }
+    return this.#handleDelete(product, index);
+  }
+
+  #handleDelete(product, index) {
+    shoppingCartComponents.removeCartList(index);
+    return this.#shoppingCartData.deleteFromCart(product.number);
   }
 
   #setButtonsWhenViewModeChange() {
@@ -50,18 +102,18 @@ class ShoppingCartController {
     $('#product-container')
       .querySelectorAll('.product')
       .forEach((productButton) => {
-        this.#addShoppingCartEvent(productButton);
+        this.#addProductClickEvent(productButton);
       });
   }
 
-  #addShoppingCartEvent(button) {
+  #addProductClickEvent(button) {
     const number = Number(button.dataset.number);
     button.addEventListener('click', () => {
       const products = this.#productData.getProductsInOrder().flat();
       const productToAdd = products.find((product) => product.number === number);
       this.#shoppingCartData.addToShoppingCart(productToAdd);
       this.#salesData.initPaymentInfo();
-      this.#renderShoppingCart();
+      this.#handleProductClick(number);
       this.#renderAmountToPay();
     });
   }
@@ -73,19 +125,6 @@ class ShoppingCartController {
   #removeDiscountedClass() {
     $('#discount').classList.remove('selected');
     $('#amount').classList.remove('discounted');
-  }
-
-  #addControlQuantity() {
-    $('#shopping-cart-box').addEventListener('mousedown', (e) => {
-      if (e.target.classList.length) {
-        const productNumber = Number(formatter.formatDataSetToText(e.target.closest('.cart-row').dataset.number));
-        const { classList } = e.target;
-        this.#shoppingCartData.handleQuantity(classList, productNumber);
-        this.#salesData.initPaymentInfo();
-        this.#renderShoppingCart();
-        this.#removeDiscountedClass();
-      }
-    });
   }
 
   #setPaymentMethod() {

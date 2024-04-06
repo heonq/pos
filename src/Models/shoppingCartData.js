@@ -47,28 +47,23 @@ class ShoppingCartData {
     return productToAdd;
   }
 
-  handleQuantity(classList, productNumber) {
-    this.#updateShoppingCart();
-    if (classList.contains('plus')) this.#plusQuantity(productNumber);
-    if (classList.contains('minus')) this.#minusQuantity(productNumber);
-    if (classList.contains('delete')) this.#deleteFromCart(productNumber);
+  plusQuantity(productNumber) {
+    const productToPlus = this.#shoppingCart.find((product) => product.number === productNumber);
+    productToPlus.quantity += 1;
     this.#setShoppingCart();
   }
 
-  #plusQuantity(productNumber) {
-    const productToPlus = this.#shoppingCart.find((product) => product.number === productNumber);
-    productToPlus.quantity += 1;
-  }
-
-  #minusQuantity(productNumber) {
+  minusQuantity(productNumber) {
     const productToMinus = this.#shoppingCart.find((product) => product.number === productNumber);
     if (productToMinus.quantity > 1) productToMinus.quantity -= 1;
-    else this.#deleteFromCart(productNumber);
+    else this.deleteFromCart(productNumber);
+    this.#setShoppingCart();
   }
 
-  #deleteFromCart(productNumber) {
+  deleteFromCart(productNumber) {
     const productToDelete = this.#shoppingCart.find((product) => product.number === productNumber);
     productToDelete.quantity = 0;
+    this.#setShoppingCart();
   }
 
   initShoppingCart() {
