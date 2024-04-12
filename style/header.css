@@ -1,0 +1,120 @@
+header {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#payment-number-container {
+  line-height: 20px;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  position: relative;
+  border-style: none;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 3px #96beee26;
+}
+
+#view-container {
+  position: relative;
+}
+
+#view-mode-button {
+  line-height: 40px;
+  width: 150px;
+  text-align: center;
+  margin: 0 3px 0 3px;
+  cursor: pointer;
+  position: absolute;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 3px #96beee26;
+}
+
+#hidden-view-list {
+  opacity: 0;
+  background-color: white;
+  position: absolute;
+  line-height: 40px;
+  width: 150px;
+  text-align: center;
+  z-index: -100;
+  top: 40px;
+  left: 3px;
+  border-style: none;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 3px #96beee26;
+}
+
+#hidden-view-list div {
+  width: 150px;
+  height: 40px;
+}
+
+#hidden-view-list .selected {
+  background-color: blue;
+  color: white;
+}
+
+.expanded #hidden-view-list {
+  opacity: 1;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.header-button {
+  line-height: 40px;
+  width: 150px;
+  height: 40px;
+  text-align: center;
+  margin: 0 3px 0 3px;
+  cursor: pointer;
+  border-style: none;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 5px #96beee26;
+}
+
+#button-container {
+  position: relative;
+  display: flex;
+}
+
+#product-management-button-container {
+  position: relative;
+}
+
+#product-management-button {
+  line-height: 40px;
+  width: 150px;
+  text-align: center;
+  margin: 0 3px 0 3px;
+  cursor: pointer;
+  position: relative;
+}
+
+#hidden-product-management-list {
+  opacity: 0;
+  background-color: white;
+  box-shadow: 0 0 0 0.5px #000 inset;
+  position: absolute;
+  line-height: 40px;
+  width: 150px;
+  text-align: center;
+  z-index: -100;
+  top: 40px;
+  left: 3px;
+  border-style: none;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 3px #96beee26;
+}
+
+.expanded #hidden-product-management-list {
+  opacity: 1;
+  cursor: pointer;
+  z-index: 999;
+}

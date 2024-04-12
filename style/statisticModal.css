@@ -1,0 +1,63 @@
+#statistic-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 800px;
+  margin-top: 20px;
+}
+
+#statistic-modal-header {
+  width: 650px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#statistic-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-collapse: collapse;
+  border-spacing: 0;
+  min-width: 770px;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+#plus-statistic-row-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+#plus-statistic-row-button {
+  margin-bottom: 20px;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  border-style: none;
+}
+
+#plus-statistic-row-button.hide {
+  display: none;
+}
+
+.statistic-date-select {
+  text-align: center;
+  width: 80px;
+}
+
+#statistic-table th,
+#statistic-table td {
+  width: 110px;
+  text-align: center;
+  padding: 10px;
+}
+
+#statistic-header {
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+  outline: 1px solid transparent;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}

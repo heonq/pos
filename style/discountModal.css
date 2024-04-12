@@ -1,0 +1,88 @@
+#discount-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: 500px;
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 50px;
+}
+
+#select-discount-type-section {
+  display: flex;
+}
+
+#discount-info-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#discount-info-section input {
+  height: 30px;
+  width: 150px;
+  border-width: 0.1px;
+  font-size: 20px;
+  text-align: right;
+}
+
+#discount-input-section {
+  position: relative;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+
+#discount-text {
+  position: absolute;
+  right: 0px;
+  height: 35px;
+  font-size: 20px;
+  line-height: 35px;
+}
+
+#discount-amount-section {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#discount-reason-section {
+  margin-top: 50px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#split-payment-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: 500px;
+  width: 280px;
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 50px;
+}
+
+#split-payment-container input,
+#split-payment-container select {
+  height: 40px;
+  border-style: none;
+  background-color: rgb(246, 246, 246);
+  margin-top: 15px;
+  font-size: 16px;
+  text-align: right;
+}
+
+#split-payment-container input {
+  width: 180px;
+}

@@ -1,0 +1,35 @@
+#cash-check-history-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+#cash-check-row,
+#cash-check-header {
+  display: flex;
+  justify-content: center;
+}
+
+#cash-check-row span,
+#cash-check-header span {
+  text-align: center;
+  width: 100px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+#cash-check-row input {
+  width: 70px;
+}
+
+.cash-check-history-row td,
+#cash-check-history-header th {
+  width: 100px;
+  padding: 10px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+#cash-check-history-header {
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}

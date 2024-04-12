@@ -1,0 +1,46 @@
+#wrapper {
+  position: relative;
+  width: 70vw;
+  min-width: 1280px;
+  max-width: 1280px;
+  min-height: 700px;
+  max-height: 700px;
+}
+
+#main-section {
+  margin-top: 30px;
+  height: 700px;
+  min-height: inherit;
+  display: flex;
+  justify-content: space-between;
+}
+
+#product-container {
+  width: 75%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow-y: scroll;
+  min-height: inherit;
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 20px 3px #96beee26;
+  margin-right: 20px;
+}
+
+#payment-box {
+  width: 25%;
+  height: 100%;
+}
+
+#alert-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

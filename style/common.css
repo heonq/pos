@@ -1,0 +1,80 @@
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f9fafc;
+}
+
+button {
+  border-style: none;
+}
+
+button:hover {
+  filter: brightness(0.9);
+  cursor: pointer;
+}
+
+button:active {
+  filter: brightness(0.7);
+}
+
+#modal-container input,
+#modal-container select {
+  border-radius: 5px;
+  border-width: 0.1px;
+}
+
+tbody tr {
+  border-top: solid 0.5px;
+  border-color: rgb(200, 200, 200);
+}
+
+tbody tr:hover {
+  background-color: white;
+  filter: brightness(0.9);
+}
+
+.submit-button {
+  background-color: blue;
+  color: white;
+}
+
+#submit-buttons {
+  position: absolute;
+  bottom: 30px;
+  width: 280px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#submit-buttons button {
+  font-size: 18px;
+  width: 130px;
+  height: 50px;
+  border-width: 0px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#submit-buttons button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.submitable {
+  opacity: 1;
+}
+
+select {
+  height: 25px;
+  border-style: none;
+  background-color: rgb(240, 240, 240);
+  text-align: center;
+}
