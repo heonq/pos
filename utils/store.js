@@ -1,9 +1,6 @@
 const store = {
   getStorage(key) {
-    if (localStorage.getItem(key)) {
-      return JSON.parse(localStorage.getItem(key));
-    }
-    return null;
+    return JSON.parse(localStorage.getItem(key)) || null;
   },
 
   setStorage(key, item) {
