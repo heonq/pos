@@ -1,40 +1,24 @@
 module.exports = {
   env: {
+    esnext: true,
     node: true,
-    es2021: true,
     jest: true,
   },
-  extends: ['airbnb', 'prettier'],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
-
-    {
-      files: ['__tests__/**/*.js'],
-      rules: {
-        'max-lines-per-function': 'off',
-        'no-new': 'off',
-      },
-    },
-  ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  plugins: ['@typescript-eslint'],
+  extends: [
+    'eslint:recommended',
+    'airbnb-base/legacy',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
+  ],
   rules: {
-    'import/extensions': 'off',
     'class-methods-use-this': 'off',
-    'no-process-exit': 'error',
-    'max-depth': ['error', 2],
-    'max-lines-per-function': ['error', 15],
-    'no-unused-vars': 'off',
-    'no-undef': 'off',
+    'no-use-before-define': 'off',
   },
 };
