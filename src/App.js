@@ -1,5 +1,5 @@
 import HeaderController from './Controllers/HeaderController.js';
-import ProductsController from './Controllers/ProductsController.js';
+import ProductsController from './Controllers/ProductsController.ts';
 import ShoppingCartController from './Controllers/ShoppingCartController.js';
 import DiscountController from './Controllers/DiscountController.js';
 import SplitPaymentController from './Controllers/SplitPaymentController.js';
@@ -9,7 +9,7 @@ import ProductRegistrationController from './Controllers/ProductRegistrationCont
 import CategoryManagementController from './Controllers/CategoryManagementController.js';
 import CategoryRegistrationController from './Controllers/CategoryRegistrationController.js';
 import StatisticController from './Controllers/StatisticController.js';
-import ProductData from './Models/ProductData.js';
+import ProductData from './Models/ProductData.ts';
 import SalesData from './Models/SalesData.js';
 import ShoppingCartData from './Models/ShoppingCartData.js';
 import CashCheckController from './Controllers/CashCheckController.js';

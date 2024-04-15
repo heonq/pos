@@ -1,7 +1,6 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-alert */
+import { Validator } from '../src/interfaces/utilInterfaces';
 
-const validator = {
+const validator: Validator = {
   validateDiscount(type, discountValue, totalAmount) {
     if (type === 'percentage') return this.validatePercentage(discountValue);
     return this.validateAmount(discountValue, totalAmount);
@@ -32,15 +31,18 @@ const validator = {
 
   validateSplitPayment(amounts, totalAmount) {
     const totalSplitAmount = amounts.reduce((acc, curr) => acc + Number(curr), 0);
-    if (totalSplitAmount !== totalAmount || !amounts.every((amount) => this.validateInteger(amount))) {
+    if (
+      totalSplitAmount !== totalAmount ||
+      !amounts.every((amount) => this.validateInteger(amount))
+    ) {
       alert('결제 금액을 올바르게 입력해주세요.');
       return false;
     }
     return true;
   },
 
-  validatePaymentMethod(paymentInfo) {
-    if (paymentInfo.method === '') {
+  validatePaymentMethod(method) {
+    if (method === '') {
       alert('결제 수단을 선택해주세요.');
       return false;
     }
@@ -88,7 +90,11 @@ const validator = {
   },
 
   validateProductRegistration(products) {
-    if (!this.validateProductsNames(products) || !this.validateBarcodes(products) || !this.validatePrice(products))
+    if (
+      !this.validateProductsNames(products) ||
+      !this.validateBarcodes(products) ||
+      !this.validatePrice(products)
+    )
       return false;
     return true;
   },
@@ -118,7 +124,9 @@ const validator = {
   },
 
   validateDuplicatedNames(names) {
-    const duplicatedNames = [...new Set(names.filter((name) => names.lastIndexOf(name) !== names.indexOf(name)))];
+    const duplicatedNames = [
+      ...new Set(names.filter((name) => names.lastIndexOf(name) !== names.indexOf(name))),
+    ];
     if (duplicatedNames.length) {
       alert(`중복된 이름이 존재합니다. : ${duplicatedNames.join(',')}`);
       return false;
