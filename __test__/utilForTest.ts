@@ -1,38 +1,42 @@
-type Product = {
-  name: string;
-  category: number;
-  display: boolean;
-};
+import { Products, Categories } from '../src/interfaces/DataInterfaces';
 
-type Products = {
-  [key: number]: Product;
-};
+type MakeProducts = (
+  names: string[],
+  categories: number[],
+  display: boolean[],
+  startNumber?: number,
+) => Products;
 
-type Category = {
-  name: string;
-  number: number;
-  display: boolean;
-};
+type MakeCategories = (
+  names: string[],
+  numbers: number[],
+  display: boolean[],
+  startNumber?: number,
+) => Categories;
 
-type Categories = {
-  [key: number]: Category;
-};
-
-type MakeProducts = (names: string[], categories: number[], display: boolean[]) => Products;
-type MakeCategories = (names: string[], numbers: number[], display: boolean[]) => Categories;
-
-export const makeProducts: MakeProducts = (names, categories, display) => {
+export const makeProducts: MakeProducts = (names, categories, display, startNumber = 1) => {
   return Object.fromEntries(
     names.map((name, index) => {
-      return [index + 1, { name, category: categories[index], display: display[index] }];
+      return [
+        index + startNumber,
+        {
+          name,
+          price: 0,
+          barcode: '',
+          category: categories[index],
+          display: display[index],
+          number: index + startNumber,
+          salesQuantity: 0,
+        },
+      ];
     }),
   );
 };
 
-export const makeCategories: MakeCategories = (names, numbers, display) => {
+export const makeCategories: MakeCategories = (names, numbers, display, startNumber = 1) => {
   return Object.fromEntries(
     names.map((name, index) => {
-      return [index + 1, { name, number: numbers[index], display: display[index] }];
+      return [index + startNumber, { name, number: numbers[index], display: display[index] }];
     }),
   );
 };
