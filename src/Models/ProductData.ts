@@ -12,7 +12,9 @@ export default class ProductData implements ProductDataInterface {
     this.#categories = store.getStorage('categories') ?? {
       1: { name: '카테고리없음', display: true, number: 1 },
     };
-    // store.setStorage('categories', this.#categories);
+    if (!store.getStorage('categories')) {
+      store.setStorage('categories', this.#categories);
+    }
   }
 
   getProducts() {
