@@ -1,4 +1,4 @@
-import { Products, Categories } from '../interfaces/DataInterfaces';
+import { Products, Categories, Product, Category } from '../interfaces/DataInterfaces';
 import store from '../../utils/store';
 import { ProductDataInterface } from '../interfaces/ModelInterfaces';
 
@@ -9,10 +9,11 @@ export default class ProductData implements ProductDataInterface {
 
   constructor() {
     this.#products = store.getStorage('products') ?? {};
-    this.#categories = store.getStorage('categories') ?? {
-      1: { name: '카테고리없음', display: true, number: 1 },
-    };
-    if (!store.getStorage('categories')) {
+    this.#categories = store.getStorage('categories');
+    if (!this.#categories) {
+      this.#categories = {
+        1: { name: '카테고리없음', display: true, number: 1 },
+      };
       store.setStorage('categories', this.#categories);
     }
   }
@@ -79,6 +80,14 @@ export default class ProductData implements ProductDataInterface {
   registerCategory(dataToUpdate = {}) {
     this.#categories = { ...this.#categories, ...dataToUpdate };
     store.setStorage('categories', this.#categories);
+  }
+
+  updateProduct(productNumber: number, updateData: Product) {
+    this.#products[productNumber] = { ...this.#products[productNumber], ...updateData };
+  }
+
+  updateCategory(categoryNumber: number, updateData: Category) {
+    this.#categories[categoryNumber] = { ...this.#categories[categoryNumber], ...updateData };
   }
 
   getNewestNumber(type: string) {

@@ -11,6 +11,8 @@ export interface ProductDataInterface {
   deleteCategory(targetNumber: number): void;
   registerProduct(dataToUpdate: Products): void;
   registerCategory(dataToUpdate: Categories): void;
+  updateProduct(productNumber: number, updateData: Product): void;
+  updateCategory(categoryNumber: number, updateData: Category): void;
   getNewestNumber(type: string): number;
   updateNumberHistory(type: string, count: number): void;
 }
