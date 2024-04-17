@@ -8,7 +8,11 @@ const validator: Validator = {
 
   validatePercentage(discountValue) {
     if (discountValue > 100) {
-      alert('할인 금액은 총 결제 금액보다 적게 입력해주세요.');
+      alert('할인율은 총 결제 금액보다 적게 입력해주세요.');
+      return false;
+    }
+    if (!this.validateInteger(discountValue)) {
+      alert('할인율은 0 이상의 자연수를 입력해주세요.');
       return false;
     }
     return true;
@@ -16,6 +20,10 @@ const validator: Validator = {
   validateAmount(discountValue, totalAmount) {
     if (discountValue > totalAmount) {
       alert('할인 금액은 총 결제 금액보다 적게 입력해주세요.');
+      return false;
+    }
+    if (!this.validateInteger(discountValue)) {
+      alert('할인금액은 0 이상의 자연수를 입력해주세요.');
       return false;
     }
     return true;
@@ -53,7 +61,7 @@ const validator: Validator = {
     const productNames = products.map((product) => product.name);
     if (!this.validateDuplicatedNames(productNames)) return false;
     if (!this.validateBlankNames(productNames)) return false;
-    if (!this.validateLastStringBlank(productNames)) return false;
+    if (!this.validateStringTrim(productNames)) return false;
     return true;
   },
 
@@ -119,7 +127,7 @@ const validator: Validator = {
     const categoryNames = categories.map((category) => category.name);
     if (!this.validateDuplicatedNames(categoryNames)) return false;
     if (!this.validateBlankNames(categoryNames)) return false;
-    if (!this.validateLastStringBlank(categoryNames)) return false;
+    if (!this.validateStringTrim(categoryNames)) return false;
     return true;
   },
 
@@ -143,9 +151,8 @@ const validator: Validator = {
     return true;
   },
 
-  validateLastStringBlank(names) {
-    const regex = /^\s+|\s+$/;
-    if (names.some((name) => regex.test(name))) {
+  validateStringTrim(names) {
+    if (names.some((name) => name !== name.trim())) {
       alert('이름의 첫번째와 마지막 글자는 공백으로 설정할 수 없습니다.');
       return false;
     }
