@@ -11,7 +11,7 @@ import CategoryRegistrationController from './Controllers/CategoryRegistrationCo
 import StatisticController from './Controllers/StatisticController.js';
 import ProductData from './Models/ProductData.ts';
 import SalesData from './Models/SalesData.js';
-import ShoppingCartData from './Models/ShoppingCartData.js';
+import ShoppingCartData from './Models/ShoppingCartData.ts';
 import CashCheckController from './Controllers/CashCheckController.js';
 import CashCheckData from './Models/CashCheckData.js';
 import './resources.js';

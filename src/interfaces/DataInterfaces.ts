@@ -21,3 +21,10 @@ export interface Category {
   display: boolean;
   number: number;
 }
+
+export interface ShoppingCartProduct {
+  name: string;
+  number: number;
+  price: number;
+  quantity: number;
+}
