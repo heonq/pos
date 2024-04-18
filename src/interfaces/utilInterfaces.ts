@@ -26,7 +26,7 @@ export interface Validator {
   validateCategories(categories: Category[]): boolean;
   validateDuplicatedNames(names: string[]): boolean;
   validateBlankNames(names: string[]): boolean;
-  validateLastStringBlank(names: string[]): boolean;
+  validateStringTrim(names: string[]): boolean;
   validateCategoryDelete(categoryNumber: number, products: Product[]): boolean;
   validateCashCheckInputs(values: number[]): boolean;
   validateRefund(refundHistory: string): boolean;
