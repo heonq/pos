@@ -1,4 +1,4 @@
-import { Product, Category } from './DataInterfaces';
+import { Product, Category, ShoppingCartProduct } from './DataInterfaces';
 
 export interface ProductComponentsInterface {
   renderEachProduct(product: Product): string;
@@ -6,4 +6,11 @@ export interface ProductComponentsInterface {
   renderTotalCategoryComponent(categories: Category[], productsArrays: Product[][]): string;
   renderTotalModeComponent(productsArrays: Product[][]): string;
   renderAlertMessage(): string;
+}
+
+export interface ShoppingCartComponentsInterface {
+  renderShoppingCart(shoppingCartData: ShoppingCartProduct[]): string;
+  renderEachCartProduct(cartProduct: ShoppingCartProduct): string;
+  rerenderQuantityPrice(cartProduct: ShoppingCartProduct, index: number): void;
+  removeCartList(index: number): void;
 }

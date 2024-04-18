@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
-
-import formatter from '../../utils/formatter.js';
+import formatter from '../../utils/formatter';
 import $ from '../../utils/index.js';
+import { ShoppingCartComponentsInterface } from '../interfaces/ViewInterfaces';
 
-const shoppingCartComponents = {
+const shoppingCartComponents: ShoppingCartComponentsInterface = {
   renderShoppingCart(shoppingCartData) {
-    return shoppingCartData.map((cartProduct, index) => this.renderEachCartProduct(cartProduct, index)).join('');
+    return shoppingCartData.map((cartProduct) => this.renderEachCartProduct(cartProduct)).join('');
   },
 
   renderEachCartProduct(cartProduct) {
