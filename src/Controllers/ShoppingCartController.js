@@ -65,6 +65,7 @@ class ShoppingCartController {
       this.#controlQuantity(e.target.className, shoppingCart[index], index);
       this.#salesData.initPaymentInfo();
       this.#removeDiscountedClass();
+      this.#renderAmountToPay();
     });
   }
 
