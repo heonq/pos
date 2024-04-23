@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
-import formatter from '../../../utils/formatter.js';
+import formatter from '../../../utils/formatter';
 import commonModalComponents from './commonModalComponents.js';
 
 const cashCheckModalComponents = {
@@ -15,8 +15,8 @@ const cashCheckModalComponents = {
         <span id="check-time">${formatter.formatTime(new Date())}</span>
         <span><input type="number" id="petty-cash-input" min=0 value="${pettyCashAmount ?? 0}" /></span>
         <span data-cash-sales-amount="${cashSalesAmount}" id="sales-cash">${formatter.formatNumber(
-      cashSalesAmount,
-    )}</span>
+          cashSalesAmount,
+        )}</span>
         <span id="expected-cash">${formatter.formatNumber(cashSalesAmount + pettyCashAmount ?? 0)}</span>
         <span id="counted-cash">0</span>
         <span id="correct-boolean">X</span>

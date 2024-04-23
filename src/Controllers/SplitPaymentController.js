@@ -1,17 +1,17 @@
 import $ from '../../utils/index.js';
 import PaymentModalController from '../core/PaymentModalController.js';
-import validator from '../../utils/validator.js';
+import validator from '../../utils/validator';
 import splitPaymentModalComponents from '../Views/modalComponents/splitPaymentModalComponents.js';
 
 class SplitPaymentController extends PaymentModalController {
   #shoppingCartData;
 
-  #salesData;
+  #paymentData;
 
-  constructor(shoppingCartData, salesData) {
+  constructor(shoppingCartData, paymentData) {
     super();
     this.#shoppingCartData = shoppingCartData;
-    this.#salesData = salesData;
+    this.#paymentData = paymentData;
   }
 
   init() {
@@ -27,7 +27,7 @@ class SplitPaymentController extends PaymentModalController {
   #renderSplitPayment() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
     $('#modal-container').innerHTML = splitPaymentModalComponents.renderSplitPaymentComponent(
-      this.#salesData.getPaymentInfo(),
+      this.#paymentData.getPaymentInfo(),
     );
     this.#renderSplitInput();
     this.showModal('small');
@@ -42,8 +42,8 @@ class SplitPaymentController extends PaymentModalController {
   }
 
   #renderSplitInput() {
-    const paymentMethods = this.#salesData.getSplitPayment().methods;
-    const { amounts } = this.#salesData.getSplitPayment();
+    const paymentMethods = this.#paymentData.getSplitPayment().methods;
+    const { amounts } = this.#paymentData.getSplitPayment();
     const inputs = $('#split-payment-container').querySelectorAll('input');
     const selects = $('#split-payment-container').querySelectorAll('select');
     inputs.forEach((input, index) => (input.value = amounts[index]));
@@ -58,7 +58,7 @@ class SplitPaymentController extends PaymentModalController {
 
   #renderInput(e) {
     const inputs = ['first-split-input', 'second-split-input'];
-    const { chargeAmount } = this.#salesData.getPaymentInfo();
+    const { chargeAmount } = this.#paymentData.getPaymentInfo();
     const index = inputs.indexOf(e.target.id);
     $(`#${inputs[1 - index]}`).value = chargeAmount - $(`#${inputs[index]}`).value;
   }
@@ -66,12 +66,12 @@ class SplitPaymentController extends PaymentModalController {
   #handleSplitPayment() {
     const amounts = [$('#first-split-input').value, $('#second-split-input').value];
     const paymentMethods = [$('#first-method').value, $('#second-method').value];
-    if (!validator.validateSplitPayment(amounts, this.#salesData.getPaymentInfo().chargeAmount)) return;
-    this.#salesData.updatePaymentMethod('분할결제');
+    if (!validator.validateSplitPayment(amounts, this.#paymentData.getPaymentInfo().chargeAmount))
+      return;
+    this.#paymentData.updatePaymentMethod('분할결제');
     $('#split').classList.add('selected');
-    this.#salesData.saveSplitPayment(paymentMethods, amounts);
+    this.#paymentData.saveSplitPayment(paymentMethods, amounts);
     this.hideModal();
-    this.renderSelectedMethod(this.#salesData);
   }
 
   #addHandleDiscountSubmitEvent() {
@@ -82,9 +82,9 @@ class SplitPaymentController extends PaymentModalController {
     const inputComplete = Array.from($('#split-payment-container').querySelectorAll('input')).every(
       (input) => input.value !== '',
     );
-    const selectComplete = Array.from($('#split-payment-container').querySelectorAll('select')).every(
-      (select) => select.value !== '',
-    );
+    const selectComplete = Array.from(
+      $('#split-payment-container').querySelectorAll('select'),
+    ).every((select) => select.value !== '');
     if (inputComplete && selectComplete) return this.enableSubmitButton('split-payment-submit');
     return this.disableSubmitButton('split-payment-submit');
   }

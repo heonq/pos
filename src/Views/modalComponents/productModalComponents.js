@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import commonModalComponents from './commonModalComponents.js';
-import formatter from '../../../utils/formatter.js';
+import formatter from '../../../utils/formatter';
 
 const productModalComponents = {
   renderProductRegistration() {

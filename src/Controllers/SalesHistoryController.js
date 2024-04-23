@@ -1,7 +1,7 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
 import salesHistoryModalComponents from '../Views/modalComponents/salesHistoryModalComponents.js';
-import validator from '../../utils/validator.js';
+import validator from '../../utils/validator';
 
 class SalesHistoryController extends ModalController {
   #productData;
@@ -104,12 +104,15 @@ class SalesHistoryController extends ModalController {
   #addEditButtonEvent() {
     $('#sales-history-table').addEventListener('click', (e) => {
       if (!this.#editing && e.target.classList.contains('edit-button')) this.#handleEditButton(e);
-      else if (this.#editing && e.target.classList.contains('submit-edit-button')) this.#handleSubmitButton(e);
+      else if (this.#editing && e.target.classList.contains('submit-edit-button'))
+        this.#handleSubmitButton(e);
     });
   }
 
   #handleEditButton(e) {
-    salesHistoryModalComponents.replaceNoteSpanWithInput(e.target.closest('tr').querySelector('.note-span'));
+    salesHistoryModalComponents.replaceNoteSpanWithInput(
+      e.target.closest('tr').querySelector('.note-span'),
+    );
     this.#editing = true;
     salesHistoryModalComponents.replaceEditButtonToSubmit(e);
   }
@@ -117,7 +120,9 @@ class SalesHistoryController extends ModalController {
   #handleSubmitButton(e) {
     this.#editNote(e);
     salesHistoryModalComponents.replaceSubmitButtonToEdit(e);
-    salesHistoryModalComponents.replaceNoteInputWithSpan(e.target.closest('tr').querySelector('.note-input'));
+    salesHistoryModalComponents.replaceNoteInputWithSpan(
+      e.target.closest('tr').querySelector('.note-input'),
+    );
     this.#editing = false;
   }
 

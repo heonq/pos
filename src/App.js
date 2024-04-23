@@ -14,6 +14,7 @@ import SalesData from './Models/SalesData.js';
 import ShoppingCartData from './Models/ShoppingCartData.ts';
 import CashCheckController from './Controllers/CashCheckController.js';
 import CashCheckData from './Models/CashCheckData.js';
+import PaymentData from './Models/PaymentData.js';
 import './resources.js';
 
 class App {
@@ -25,19 +26,27 @@ class App {
 
   #cashCheckData;
 
+  #paymentData;
+
   constructor() {
     this.#productData = new ProductData();
     this.#shoppingCartData = new ShoppingCartData();
     this.#salesData = new SalesData();
     this.#cashCheckData = new CashCheckData();
+    this.#paymentData = new PaymentData();
   }
 
   play() {
     new HeaderController().init();
     new ProductsController(this.#productData).init();
-    new ShoppingCartController(this.#productData, this.#shoppingCartData, this.#salesData).init();
-    new DiscountController(this.#shoppingCartData, this.#salesData).init();
-    new SplitPaymentController(this.#shoppingCartData, this.#salesData).init();
+    new ShoppingCartController(
+      this.#productData,
+      this.#shoppingCartData,
+      this.#salesData,
+      this.#paymentData,
+    ).init();
+    new DiscountController(this.#shoppingCartData, this.#salesData, this.#paymentData).init();
+    new SplitPaymentController(this.#shoppingCartData, this.#paymentData).init();
     new SalesHistoryController(this.#productData, this.#salesData).init();
     new ProductManagementController(this.#productData).init();
     new ProductRegistrationController(this.#productData).init();

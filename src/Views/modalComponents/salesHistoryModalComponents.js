@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
-import formatter from '../../../utils/formatter.js';
+import formatter from '../../../utils/formatter';
 
 const salesHistoryModalComponents = {
   renderSalesHistoryContainer() {
@@ -35,7 +35,9 @@ const salesHistoryModalComponents = {
   },
 
   renderProductsTh(products) {
-    return products.map((product) => `<th data-product-number="${product.number}">${product.name}</th>`).join('');
+    return products
+      .map((product) => `<th data-product-number="${product.number}">${product.name}</th>`)
+      .join('');
   },
 
   renderSalesTd(productsSold, productsData) {

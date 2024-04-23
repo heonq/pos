@@ -1,7 +1,7 @@
 import $ from '../../utils/index.js';
 import ModalController from '../core/modalController.js';
 import statisticModalComponents from '../Views/modalComponents/statisticModalComponents.js';
-import formatter from '../../utils/formatter.js';
+import formatter from '../../utils/formatter';
 import VALUES from '../../constants/values.js';
 
 class StatisticController extends ModalController {
@@ -48,7 +48,10 @@ class StatisticController extends ModalController {
   }
 
   #renderStatisticRow(dates, statistics, i) {
-    $('#statistic-body').insertAdjacentHTML('beforeend', statisticModalComponents.renderStatisticRow());
+    $('#statistic-body').insertAdjacentHTML(
+      'beforeend',
+      statisticModalComponents.renderStatisticRow(),
+    );
     const rows = $('#statistic-body').querySelectorAll('tr');
     this.#addSelectDateEvent(rows[rows.length - 1]);
     this.#renderDateSelect(rows[rows.length - 1], dates, i);

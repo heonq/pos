@@ -1,7 +1,7 @@
 import ModalController from '../core/modalController.js';
 import categoryModalComponents from '../Views/modalComponents/categoryModalComponents.js';
 import $ from '../../utils/index.js';
-import validator from '../../utils/validator.js';
+import validator from '../../utils/validator';
 
 class CategoryRegistrationController extends ModalController {
   #productData;
@@ -26,23 +26,35 @@ class CategoryRegistrationController extends ModalController {
     this.showModal('small');
     this.#addPlusCategoryInputRowEvent();
     this.#addDeleteCategoryInputRow();
-    this.addSubmitButtonEvent('category-registration-submit', this.#setNewCategoriesToStorage.bind(this));
+    this.addSubmitButtonEvent(
+      'category-registration-submit',
+      this.#setNewCategoriesToStorage.bind(this),
+    );
     this.addCancelButtonEvent();
     this.#addUpdateSubmitButtonEvent();
   }
 
   #addUpdateSubmitButtonEvent() {
-    $('#category-registration-list-table').addEventListener('input', this.#updateSubmitButton.bind(this));
+    $('#category-registration-list-table').addEventListener(
+      'input',
+      this.#updateSubmitButton.bind(this),
+    );
   }
 
   #updateSubmitButton() {
-    const rows = Array.from($('#category-registration-list-container').querySelectorAll('.category-registration-row'));
-    if (rows.every((row) => row.querySelector('.category-name-input').value !== '')) return this.enableSubmitButton();
+    const rows = Array.from(
+      $('#category-registration-list-container').querySelectorAll('.category-registration-row'),
+    );
+    if (rows.every((row) => row.querySelector('.category-name-input').value !== ''))
+      return this.enableSubmitButton();
     return this.disableSubmitButton();
   }
 
   #addPlusCategoryInputRowEvent() {
-    $('#plus-category-input-button').addEventListener('click', this.#plusCategoryInputRow.bind(this));
+    $('#plus-category-input-button').addEventListener(
+      'click',
+      this.#plusCategoryInputRow.bind(this),
+    );
   }
 
   #plusCategoryInputRow() {
@@ -74,7 +86,9 @@ class CategoryRegistrationController extends ModalController {
   }
 
   #getNewCategoriesFromInput() {
-    const rows = $('#category-registration-list-table').querySelectorAll('.category-registration-row');
+    const rows = $('#category-registration-list-table').querySelectorAll(
+      '.category-registration-row',
+    );
     const categories = {};
     const newestCategoryNumber = this.#productData.getNewestNumber('Category');
     rows.forEach((row, index) => {

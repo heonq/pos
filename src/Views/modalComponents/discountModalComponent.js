@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import commonModalComponents from './commonModalComponents.js';
-import formatter from '../../../utils/formatter.js';
+import formatter from '../../../utils/formatter';
 
 const discountModalComponents = {
   renderDiscountComponent(paymentInfo) {
@@ -23,10 +23,12 @@ const discountModalComponents = {
         <div id="discount-info-section">
         <div id="discount-input-section">
         <input type="number" value="${
-          paymentInfo.discountType === 'percentage' ? paymentInfo.discountValue : paymentInfo.discountAmount
+          paymentInfo.discountType === 'percentage'
+            ? paymentInfo.discountValue
+            : paymentInfo.discountAmount
         }" min="0" ${paymentInfo.discountType === 'percentage' ? 'max="100"' : ''} class=${
-      paymentInfo.type
-    } id="discount-input" /><span id="discount-text">${paymentInfo.discountType === 'percentage' ? '%' : '원'}</span>
+          paymentInfo.type
+        } id="discount-input" /><span id="discount-text">${paymentInfo.discountType === 'percentage' ? '%' : '원'}</span>
         </div>
         <div id="discount-amount-section">
         ${this.renderDiscountAmount(paymentInfo)}

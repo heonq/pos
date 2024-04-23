@@ -1,8 +1,8 @@
 /* eslint-disable no-alert */
-import shoppingCartComponents from '../Views/shoppingCartComponents.js';
+import shoppingCartComponents from '../Views/shoppingCartComponents';
 import $ from '../../utils/index.js';
-import formatter from '../../utils/formatter.js';
-import validator from '../../utils/validator.js';
+import formatter from '../../utils/formatter';
+import validator from '../../utils/validator';
 
 class ShoppingCartController {
   #shoppingCartData;
@@ -11,10 +11,13 @@ class ShoppingCartController {
 
   #salesData;
 
-  constructor(productData, shoppingCartData, salesData) {
+  #paymentData;
+
+  constructor(productData, shoppingCartData, salesData, paymentData) {
     this.#shoppingCartData = shoppingCartData;
     this.#productData = productData;
     this.#salesData = salesData;
+    this.#paymentData = paymentData;
   }
 
   init() {
@@ -51,7 +54,10 @@ class ShoppingCartController {
   }
 
   #addProductToShoppingCart(productToAdd) {
-    $('#shopping-cart-box').insertAdjacentHTML('beforeend', shoppingCartComponents.renderEachCartProduct(productToAdd));
+    $('#shopping-cart-box').insertAdjacentHTML(
+      'beforeend',
+      shoppingCartComponents.renderEachCartProduct(productToAdd),
+    );
     const cartListNodes = $('#shopping-cart-box').querySelectorAll('.cart-row');
     const targetNode = cartListNodes[cartListNodes.length - 1];
     this.#addControlQuantityEvent(targetNode);
@@ -63,8 +69,10 @@ class ShoppingCartController {
       const shoppingCart = this.#shoppingCartData.getShoppingCartData();
       const index = shoppingCart.findIndex((product) => Number(product.number) === number);
       this.#controlQuantity(e.target.className, shoppingCart[index], index);
-      this.#salesData.initPaymentInfo();
+      this.#paymentData.initPaymentInfo();
       this.#removeDiscountedClass();
+      this.#renderAmountToPay();
+      this.#renderSelectedMethod();
     });
   }
 
@@ -112,14 +120,17 @@ class ShoppingCartController {
       const products = this.#productData.getProductsInOrder().flat();
       const productToAdd = products.find((product) => product.number === number);
       this.#shoppingCartData.addToShoppingCart(productToAdd);
-      this.#salesData.initPaymentInfo();
+      this.#paymentData.initPaymentInfo();
       this.#handleProductClick(number);
       this.#renderAmountToPay();
+      this.#renderSelectedMethod();
     });
   }
 
   #renderAmountToPay() {
-    $('#amount').innerText = formatter.formatNumber(this.#salesData.getPaymentInfo().chargeAmount);
+    $('#amount').innerText = formatter.formatNumber(
+      this.#paymentData.getPaymentInfo().chargeAmount,
+    );
   }
 
   #removeDiscountedClass() {
@@ -130,7 +141,7 @@ class ShoppingCartController {
   #setPaymentMethod() {
     $('#first-row').addEventListener('click', (e) => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-      this.#salesData.updatePaymentMethod(e.target.innerText);
+      this.#paymentData.updatePaymentMethod(e.target.innerText);
       this.#renderSelectedMethod();
     });
   }
@@ -143,7 +154,7 @@ class ShoppingCartController {
 
   #renderSelectedMethod() {
     const buttons = $('#payment-method-box').querySelectorAll('button');
-    const { method } = this.#salesData.getPaymentInfo();
+    const { method } = this.#paymentData.getPaymentInfo();
     buttons.forEach((button) => {
       if (button.id === 'discount') return;
       button.classList.remove('selected');
@@ -156,15 +167,19 @@ class ShoppingCartController {
     $('#etcetera').addEventListener('click', () => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       const reason = prompt('기타 사유를 입력해주세요.');
-      this.#salesData.setETCReason(reason);
+      this.#paymentData.setETCReason(reason);
       this.#renderShoppingCart();
     });
   }
 
   #addSaveSalesHistoryEvent() {
     $('#payment-complete-button').addEventListener('click', () => {
-      if (!validator.validatePaymentMethod(this.#salesData.getPaymentInfo())) return;
-      this.#salesData.setSalesHistoryToStorage();
+      if (!validator.validatePaymentMethod(this.#paymentData.getPaymentInfo())) return;
+      this.#salesData.setSalesHistoryToStorage(
+        this.#paymentData.getPaymentInfo(),
+        this.#paymentData.getSplitPayment(),
+      );
+      this.#paymentData.initPaymentInfo();
       this.#handleProductSalesHistory();
       this.#initShoppingCartAndPayment();
     });
@@ -181,8 +196,8 @@ class ShoppingCartController {
 
   #initShoppingCartAndPayment() {
     this.#shoppingCartData.initShoppingCart();
-    this.#salesData.initPaymentInfo();
-    this.#salesData.deactivateSplitPayment();
+    this.#paymentData.initPaymentInfo();
+    this.#paymentData.deactivateSplitPayment();
     this.#removeDiscountedClass();
     this.#renderShoppingCart();
     this.#renderSelectedMethod();
@@ -199,7 +214,7 @@ class ShoppingCartController {
   }
 
   #updateDiscountButtonClass() {
-    if (this.#salesData.checkDiscountAmount()) {
+    if (this.#paymentData.checkDiscountAmount()) {
       $('#discount').classList.add('selected');
       return $('#amount').classList.add('discounted');
     }

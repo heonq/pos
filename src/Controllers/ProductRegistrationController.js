@@ -1,7 +1,7 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
-import VALUES from '../../constants/values.js';
-import validator from '../../utils/validator.js';
+import VALUES from '../../constants/values';
+import validator from '../../utils/validator';
 import productModalComponents from '../Views/modalComponents/productModalComponents.js';
 
 class ProductRegistrationController extends ModalController {
@@ -18,20 +18,26 @@ class ProductRegistrationController extends ModalController {
 
   #addRenderProductRegistraitonModal() {
     $('#product-registration').addEventListener('click', () => {
-      this.#productData.updateTotalProductsFromStorage();
       this.#renderProductRegistraiton();
     });
   }
 
   #addUpdateSubmitButtonEvent() {
-    $('#product-registration-container').addEventListener('input', this.#updateSubmitButton.bind(this));
+    $('#product-registration-container').addEventListener(
+      'input',
+      this.#updateSubmitButton.bind(this),
+    );
   }
 
   #updateSubmitButton() {
-    const rows = Array.from($('#product-registration-container').querySelectorAll('.product-registration-row'));
+    const rows = Array.from(
+      $('#product-registration-container').querySelectorAll('.product-registration-row'),
+    );
     const inputs = rows
       .map((row) =>
-        Array.from(row.querySelectorAll('input')).filter((input) => input.className !== 'product-barcode-input'),
+        Array.from(row.querySelectorAll('input')).filter(
+          (input) => input.className !== 'product-barcode-input',
+        ),
       )
       .flat();
     if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton();
@@ -49,18 +55,25 @@ class ProductRegistrationController extends ModalController {
   #addEvents() {
     this.#addPlusButtonEvent();
     this.#addDeleteButtonEventForRegistration();
-    this.addSubmitButtonEvent('product-registration-submit', this.#setNewProductsToStorage.bind(this));
+    this.addSubmitButtonEvent(
+      'product-registration-submit',
+      this.#setNewProductsToStorage.bind(this),
+    );
     this.addCancelButtonEvent();
     this.#addUpdateSubmitButtonEvent();
   }
 
   #renderLastSelectCategoriesOption() {
-    const selects = Array.from($('.product-container').querySelectorAll('.product-categories-select'));
+    const selects = Array.from(
+      $('.product-container').querySelectorAll('.product-categories-select'),
+    );
     this.#renderCategoriesSelectOptions(selects[selects.length - 1]);
   }
 
   #renderCategoriesSelectOptions(select) {
-    const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
+    const categories = Object.values(this.#productData.getCategories()).map(
+      (category) => category.name,
+    );
     productModalComponents.renderOptions(select, categories);
   }
 
@@ -83,7 +96,10 @@ class ProductRegistrationController extends ModalController {
   }
 
   #addProductInput() {
-    $('#product-registration-table-body').insertAdjacentHTML('beforeend', productModalComponents.renderProductInputs());
+    $('#product-registration-table-body').insertAdjacentHTML(
+      'beforeend',
+      productModalComponents.renderProductInputs(),
+    );
     this.#renderLastSelectCategoriesOption();
   }
 

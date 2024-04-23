@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
-import formatter from '../../../utils/formatter.js';
+import formatter from '../../../utils/formatter';
 import commonModalComponents from './commonModalComponents.js';
 
 const splitPaymentModalComponents = {

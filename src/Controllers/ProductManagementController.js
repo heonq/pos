@@ -3,7 +3,7 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
 import VALUES from '../../constants/values.js';
-import validator from '../../utils/validator.js';
+import validator from '../../utils/validator';
 import productModalComponents from '../Views/modalComponents/productModalComponents.js';
 
 class ProductManagementController extends ModalController {
@@ -27,7 +27,9 @@ class ProductManagementController extends ModalController {
   }
 
   #renderCategoriesSelectOptions(select) {
-    const categories = Object.values(this.#productData.getCategories()).map((category) => category.name);
+    const categories = Object.values(this.#productData.getCategories()).map(
+      (category) => category.name,
+    );
     productModalComponents.renderOptions(select, categories);
   }
 
@@ -49,7 +51,9 @@ class ProductManagementController extends ModalController {
   #handleProductRow(row) {
     const { productNumber } = row.dataset;
     const data = {};
-    const inputs = Array.from(row.querySelectorAll('input')).filter((input) => input.type !== 'checkbox');
+    const inputs = Array.from(row.querySelectorAll('input')).filter(
+      (input) => input.type !== 'checkbox',
+    );
     const selects = row.querySelectorAll('select');
     inputs.forEach((input, index) => {
       data[VALUES.inputKeys[index]] = input.value;
@@ -79,13 +83,19 @@ class ProductManagementController extends ModalController {
 
   #addEvents() {
     this.#addHandleSelectedEvent();
-    this.addSubmitButtonEvent('product-management-submit', this.#setChangedProductsToStorage.bind(this));
+    this.addSubmitButtonEvent(
+      'product-management-submit',
+      this.#setChangedProductsToStorage.bind(this),
+    );
     this.addCancelButtonEvent();
     this.enableSubmitButton();
     this.addRerenderClassName();
     this.#addDeleteButtonEvent();
     this.#addSelectTotalEvent();
-    $('#management-search-button').addEventListener('click', this.#renderSearchedProducts.bind(this));
+    $('#management-search-button').addEventListener(
+      'click',
+      this.#renderSearchedProducts.bind(this),
+    );
   }
 
   #renderSearchedProducts() {
@@ -98,12 +108,17 @@ class ProductManagementController extends ModalController {
   }
 
   #getFilteredProducts() {
-    const [category, display] = [$('#search-by-category').value, VALUES.display[$('#search-by-display').value]];
-    this.#productData.updateTotalProductsFromStorage();
+    const [category, display] = [
+      $('#search-by-category').value,
+      VALUES.display[$('#search-by-display').value],
+    ];
     const products = Object.values(this.#productData.getProducts());
     const productFilteredByCategory =
       category !== 'default'
-        ? products.filter((product) => product.category === this.#productData.convertCategoryNameToNumber(category))
+        ? products.filter(
+            (product) =>
+              product.category === this.#productData.convertCategoryNameToNumber(category),
+          )
         : products;
     const productFilteredByAllConditions =
       display !== 'default'
@@ -117,14 +132,18 @@ class ProductManagementController extends ModalController {
       .querySelectorAll('.product-delete-button')
       .forEach((button) => {
         button.addEventListener('click', (e) => {
-          if (confirm('상품을 삭제하시겠습니까?')) this.#deleteProduct(e.target.closest('.product-management-row'));
+          if (confirm('상품을 삭제하시겠습니까?'))
+            this.#deleteProduct(e.target.closest('.product-management-row'));
         });
       });
   }
 
   #deleteProduct(inputRow) {
     const targetNumber = inputRow.dataset.productNumber;
-    if (!validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)) return;
+    if (
+      !validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)
+    )
+      return;
     const childNode = inputRow;
     $('#product-list-container').removeChild(childNode);
     this.#productData.deleteProduct(targetNumber);
@@ -160,9 +179,9 @@ class ProductManagementController extends ModalController {
   }
 
   #getSelectedRows() {
-    const rows = Array.from($('#product-list-container').querySelectorAll('.product-management-row')).filter(
-      (row) => row.querySelector('.select-product-button').checked === true,
-    );
+    const rows = Array.from(
+      $('#product-list-container').querySelectorAll('.product-management-row'),
+    ).filter((row) => row.querySelector('.select-product-button').checked === true);
     if (!validator.validateSelectedRows(rows.length)) return [];
     return rows;
   }

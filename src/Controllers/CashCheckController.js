@@ -1,8 +1,8 @@
 import ModalController from '../core/modalController.js';
 import $ from '../../utils/index.js';
 import cashCheckModalComponents from '../Views/modalComponents/cashCheckModalComponents.js';
-import formatter from '../../utils/formatter.js';
-import validator from '../../utils/validator.js';
+import formatter from '../../utils/formatter';
+import validator from '../../utils/validator';
 
 class CashCheckController extends ModalController {
   #salesData;
@@ -21,11 +21,18 @@ class CashCheckController extends ModalController {
 
   #renderCashCheckModal() {
     const cashCheckHistories = this.#cashCheckData.getCashCheckHistories();
-    const pettyCash = cashCheckHistories.length ? cashCheckHistories[cashCheckHistories.length - 1].pettyCash : 0;
-    const cashSalesAmount = this.#salesData.getStatistic(formatter.formatDate(new Date())).cashAmount;
+    const pettyCash = cashCheckHistories.length
+      ? cashCheckHistories[cashCheckHistories.length - 1].pettyCash
+      : 0;
+    const cashSalesAmount = this.#salesData.getStatistic(
+      formatter.formatDate(new Date()),
+    ).cashAmount;
     this.#cashCheckData.initCashCheck();
     this.#cashCheckData.setCashCheck('cashSalesAmount', cashSalesAmount);
-    $('#modal-container').innerHTML = cashCheckModalComponents.renderCashCheckModal(cashSalesAmount, pettyCash);
+    $('#modal-container').innerHTML = cashCheckModalComponents.renderCashCheckModal(
+      cashSalesAmount,
+      pettyCash,
+    );
     this.#calculateExpectedCash();
     this.showModal('wide');
     this.#addEvents();
@@ -86,13 +93,19 @@ class CashCheckController extends ModalController {
   }
 
   #checkAllInputFilled() {
-    if (Array.from($('#cash-check-row').querySelectorAll('input')).every((input) => input.value !== ''))
+    if (
+      Array.from($('#cash-check-row').querySelectorAll('input')).every(
+        (input) => input.value !== '',
+      )
+    )
       return this.enableSubmitButton();
     return this.disableSubmitButton();
   }
 
   #setCashCheckToStorage() {
-    const values = Array.from($('#cash-check-row').querySelectorAll('input')).map((input) => input.value);
+    const values = Array.from($('#cash-check-row').querySelectorAll('input')).map(
+      (input) => input.value,
+    );
     if (!validator.validateCashCheckInputs(values)) return;
     this.#cashCheckData.setCashCheckToStorage();
   }

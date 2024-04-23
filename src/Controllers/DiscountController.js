@@ -1,7 +1,7 @@
 import $ from '../../utils/index.js';
 import discountModalComponents from '../Views/modalComponents/discountModalComponent.js';
-import formatter from '../../utils/formatter.js';
-import validator from '../../utils/validator.js';
+import formatter from '../../utils/formatter';
+import validator from '../../utils/validator';
 import PaymentModalController from '../core/PaymentModalController.js';
 
 class DiscountController extends PaymentModalController {
@@ -9,10 +9,13 @@ class DiscountController extends PaymentModalController {
 
   #salesData;
 
-  constructor(shoppingCartData, salesData) {
+  #paymentData;
+
+  constructor(shoppingCartData, salesData, paymentData) {
     super();
     this.#shoppingCartData = shoppingCartData;
     this.#salesData = salesData;
+    this.#paymentData = paymentData;
   }
 
   init() {
@@ -28,7 +31,9 @@ class DiscountController extends PaymentModalController {
 
   #renderDiscountModal() {
     if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-    $('#modal-container').innerHTML = discountModalComponents.renderDiscountComponent(this.#salesData.getPaymentInfo());
+    $('#modal-container').innerHTML = discountModalComponents.renderDiscountComponent(
+      this.#paymentData.getPaymentInfo(),
+    );
     this.#calculateDiscount();
     this.showModal('small');
     this.#addRadioEvent();
@@ -48,7 +53,7 @@ class DiscountController extends PaymentModalController {
   }
 
   #handleDiscountType(e) {
-    this.#salesData.updateDiscountType(e.currentTarget.value);
+    this.#paymentData.updateDiscountType(e.currentTarget.value);
     this.#renderDiscountModal();
   }
 
@@ -73,16 +78,18 @@ class DiscountController extends PaymentModalController {
     const totalAmount = this.#shoppingCartData.getTotalAmount();
     const type = $('#percentage-type-checkbox').checked ? 'percentage' : 'amount';
     if (!validator.validateDiscount(type, discountValue, totalAmount)) return;
-    this.#salesData.updateDiscount(discountValue, discountReason);
-    $('#amount').innerText = formatter.formatNumber(this.#salesData.getPaymentInfo().chargeAmount);
-    this.#salesData.deactivateSplitPayment();
+    this.#paymentData.updateDiscount(discountValue, discountReason);
+    $('#amount').innerText = formatter.formatNumber(
+      this.#paymentData.getPaymentInfo().chargeAmount,
+    );
+    this.#paymentData.deactivateSplitPayment();
     this.#updateDiscountButtonClass();
-    this.renderSelectedMethod(this.#salesData);
+    // this.renderSelectedMethod(this.#salesData);
     this.hideModal();
   }
 
   #updateDiscountButtonClass() {
-    if (this.#salesData.checkDiscountAmount()) {
+    if (this.#paymentData.checkDiscountAmount()) {
       $('#discount').classList.add('selected');
       return $('#amount').classList.add('discounted');
     }
@@ -101,7 +108,11 @@ class DiscountController extends PaymentModalController {
   }
 
   #handleDiscountSubmit() {
-    if (Array.from($('#discount-info-section').querySelectorAll('input')).every((input) => input.value !== ''))
+    if (
+      Array.from($('#discount-info-section').querySelectorAll('input')).every(
+        (input) => input.value !== '',
+      )
+    )
       return this.enableSubmitButton('discount-submit');
     return this.disableSubmitButton('discount-submit');
   }

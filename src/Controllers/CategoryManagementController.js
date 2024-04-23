@@ -1,9 +1,7 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-alert */
 import $ from '../../utils/index.js';
 import categoryModalComponents from '../Views/modalComponents/categoryModalComponents.js';
 import ModalController from '../core/modalController.js';
-import validator from '../../utils/validator.js';
+import validator from '../../utils/validator';
 
 class CategoryManagementController extends ModalController {
   #productData;
@@ -18,11 +16,13 @@ class CategoryManagementController extends ModalController {
   }
 
   #addRenderModalEvent() {
-    $('#category-management').addEventListener('click', this.#renderCategoryManagementModal.bind(this));
+    $('#category-management').addEventListener(
+      'click',
+      this.#renderCategoryManagementModal.bind(this),
+    );
   }
 
   #renderCategoryManagementModal() {
-    this.#productData.updateTotalCategoriesFromStorage();
     const categories = Object.values(this.#productData.getCategories());
     $('#modal-container').innerHTML = categoryModalComponents.renderCategoryManagementModal();
     $('#category-management-list-container').innerHTML = categories
@@ -34,7 +34,10 @@ class CategoryManagementController extends ModalController {
 
   #addEvents() {
     this.#addDeleteCategoryEvent();
-    this.addSubmitButtonEvent('category-management-submit', this.#setChangedCategoriesToStorage.bind(this));
+    this.addSubmitButtonEvent(
+      'category-management-submit',
+      this.#setChangedCategoriesToStorage.bind(this),
+    );
     this.addCancelButtonEvent();
     this.enableSubmitButton('category-management-submit');
     this.#addHandleSelectedEvent();
@@ -56,13 +59,21 @@ class CategoryManagementController extends ModalController {
   #deleteCategory(inputRow) {
     const targetNumber = Number(inputRow.dataset.categoryNumber);
     const childNode = inputRow;
-    if (!validator.validateCategoryDelete(targetNumber, Object.values(this.#productData.getProducts()))) return;
+    if (
+      !validator.validateCategoryDelete(
+        targetNumber,
+        Object.values(this.#productData.getProducts()),
+      )
+    )
+      return;
     $('#category-management-list-container').removeChild(childNode);
     this.#productData.deleteCategory(targetNumber);
   }
 
   #getChangedCategoriesFromInputs() {
-    const rows = $('#category-management-list-container').querySelectorAll('.category-management-row');
+    const rows = $('#category-management-list-container').querySelectorAll(
+      '.category-management-row',
+    );
     rows.forEach((row) => {
       const { categoryNumber } = row.dataset;
       const data = {};
@@ -84,7 +95,10 @@ class CategoryManagementController extends ModalController {
   }
 
   #addToggleTotalSelectsEvent() {
-    $('#select-total-category-button').addEventListener('click', this.#toggleTotalSelects.bind(this));
+    $('#select-total-category-button').addEventListener(
+      'click',
+      this.#toggleTotalSelects.bind(this),
+    );
   }
 
   #getSelectedRows() {
@@ -127,7 +141,9 @@ class CategoryManagementController extends ModalController {
 
   #toggleTotalSelects() {
     const { checked } = $('#select-total-category-button');
-    const rows = $('#category-management-list-container').querySelectorAll('.category-management-row');
+    const rows = $('#category-management-list-container').querySelectorAll(
+      '.category-management-row',
+    );
     for (let i = 0; i < rows.length; i += 1) {
       rows[i].querySelector('.category-select-button').checked = checked;
     }

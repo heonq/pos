@@ -1,5 +1,5 @@
 import store from '../../utils/store.js';
-import formatter from '../../utils/formatter.js';
+import formatter from '../../utils/formatter';
 
 class CashCheckData {
   #cashCheck;
@@ -37,7 +37,8 @@ class CashCheckData {
       (acc, [currency, count]) => acc + currency * count,
       0,
     );
-    if (this.#cashCheck.countedAmount === this.#cashCheck.expectedAmount) this.#cashCheck.correctBoolean = true;
+    if (this.#cashCheck.countedAmount === this.#cashCheck.expectedAmount)
+      this.#cashCheck.correctBoolean = true;
     else this.#cashCheck.correctBoolean = false;
   }
 
