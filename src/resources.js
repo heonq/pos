@@ -12,3 +12,4 @@ import '../style/productRegistrationModal.css';
 import '../style/salesHistoryModal.css';
 import '../style/shoppingCartContainer.css';
 import '../style/statisticModal.css';
+import '../style/mobile.css';

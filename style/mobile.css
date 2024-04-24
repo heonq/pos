@@ -1,0 +1,68 @@
+@media (max-width: 1300px) {
+  #wrapper {
+    max-width: 80vw;
+    min-width: 80vw;
+    min-height: 60vh;
+    max-height: 60vh;
+  }
+
+  #view-mode-button,
+  #button-container div,
+  #hidden-view-list,
+  #hidden-view-list div {
+    width: 120px;
+  }
+
+  #product-management-button-container {
+    margin-right: 5px;
+  }
+
+  #main-section {
+    min-height: inherit;
+  }
+
+  #amount-container {
+    line-height: 400%;
+  }
+  #initiate-button,
+  #payment-complete-button {
+    line-height: 100%;
+  }
+
+  .product {
+    width: 148px;
+  }
+
+  .payment-method-button {
+    line-height: 100%;
+  }
+
+  #modal-container.wide {
+    max-width: 1000px;
+    min-width: 1000px;
+    min-height: 600px;
+    max-height: 600px;
+  }
+
+  #modal-container.big {
+    max-width: 900px;
+    min-width: 900px;
+    min-height: 650px;
+    max-height: 650px;
+  }
+
+  #modal-container.midium {
+    max-width: 700px;
+    min-width: 700px;
+    min-height: 650px;
+    max-height: 650px;
+  }
+
+  #modal-container.small {
+    top: 50px;
+    max-width: 500px;
+    min-width: 500px;
+    min-height: 500px;
+    max-height: 500px;
+  }
+}
