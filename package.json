@@ -37,6 +37,12 @@
     "watch": "webpack --watch",
     "start": "webpack serve",
     "build": "webpack --mode=production",
-    "unit-test": "jest"
+    "unit-test": "jest",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
+  },
+  "homepage": "https://heonq.github.io/pos/",
+  "dependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
