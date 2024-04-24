@@ -8,6 +8,7 @@ const productModalComponents = {
     return `
     <div id="product-registration-container" class="product-container">
     <div><h3>상품등록</h3></div>
+    <div id="product-registration-table-container">
     <table id="product-registration-table">
     <thead>
     <tr id="product-registration-header">
@@ -23,6 +24,7 @@ const productModalComponents = {
     </table>
     <div id="plus-product-input-button-container">
     <button id="plus-product-input-button">+</button>
+    </div>
     </div>
     </div>
     ${commonModalComponents.renderSubmitAndCancelButtons('product-registration')}
@@ -86,6 +88,7 @@ const productModalComponents = {
         </select>
         <button id="management-search-button">검색</button>
       </div>
+      <div id="product-management-table-container">
       <table id="product-management-table">
       <thead id="product-list-header">
         <tr>
@@ -101,6 +104,7 @@ const productModalComponents = {
       </thead>
       <tbody id="product-list-container"></tbody>
       </table>
+      </div>
     </div>${commonModalComponents.renderSubmitAndCancelButtons('product-management')}`;
   },
 

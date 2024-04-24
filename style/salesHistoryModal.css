@@ -1,12 +1,12 @@
 #sales-history-container {
   overflow: scroll;
-  width: 1200px;
+  width: 75vw;
   margin-bottom: 50px;
 }
 
 #sales-history-header {
   display: flex;
-  width: 1200px;
+  width: 75vw;
   height: 50px;
   margin-top: 20px;
   justify-content: space-between;
@@ -19,7 +19,7 @@
 
 #date-select-section {
   display: flex;
-  width: 1200px;
+  width: 75vw;
   justify-content: end;
   margin-top: 20px;
 }

@@ -23,7 +23,7 @@
 .payment-method-button {
   width: 33.33%;
   height: 100%;
-  line-height: 61px;
+  line-height: 100%;
   background-color: white;
   text-align: center;
   cursor: pointer;
@@ -53,7 +53,7 @@
   width: 66.66%;
   height: 100%;
   text-align: center;
-  line-height: 123.25px;
+  line-height: 122.5px;
   font-size: 20px;
 }
 

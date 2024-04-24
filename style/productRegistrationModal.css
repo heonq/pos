@@ -1,6 +1,10 @@
 #product-registration-container {
-  overflow: auto;
   height: 700px;
+}
+
+#product-registration-table-container {
+  height: 80%;
+  overflow: auto;
 }
 
 #product-registration-table {
@@ -29,6 +33,9 @@
 }
 
 #product-registration-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
   outline: 1px solid transparent;
 }
@@ -131,9 +138,14 @@
 
 #product-management-container {
   max-width: 1000px;
-  height: 700px;
+  height: 80%;
   margin-top: 0px;
-  overflow: auto;
+  overflow: hidden;
+}
+
+#product-management-table-container {
+  height: 80%;
+  overflow: scroll;
 }
 
 #product-management-table {
@@ -161,6 +173,9 @@
 
 #product-list-header th {
   height: 30px;
+  position: sticky;
+  top: 0;
+  background-color: white;
 }
 
 #product-list-header th:nth-child(2),
