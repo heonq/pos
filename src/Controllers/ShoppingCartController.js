@@ -174,7 +174,7 @@ class ShoppingCartController {
 
   #addSaveSalesHistoryEvent() {
     $('#payment-complete-button').addEventListener('click', () => {
-      if (!validator.validatePaymentMethod(this.#paymentData.getPaymentInfo())) return;
+      if (!validator.validatePaymentMethod(this.#paymentData.getPaymentInfo().method)) return;
       this.#salesData.setSalesHistoryToStorage(
         this.#paymentData.getPaymentInfo(),
         this.#paymentData.getSplitPayment(),
