@@ -1,4 +1,14 @@
-import { Products, Product, Categories, Category, ShoppingCartProduct } from './DataInterfaces';
+import {
+  Products,
+  Product,
+  Categories,
+  Category,
+  ShoppingCartProduct,
+  PaymentInfo,
+  SplitPayment,
+  CashCheck,
+} from './DataInterfaces';
+import { DiscountType, PaymentMethod, SalesHistory } from '../Types/Types';
 
 export interface ProductDataInterface {
   getProducts(): Products;
@@ -25,4 +35,53 @@ export interface ShoppingCartDataInterface {
   minusQuantity(productNumber: number): void;
   deleteFromCart(productNumber: number): void;
   initShoppingCart(): void;
+}
+
+export interface SalesDataInterface {
+  initSaleshistory(dateText: string): void;
+  setSalesInfo(paymentInfo: PaymentInfo): void;
+  initSalesInfo({ chargeAmount, method }: { chargeAmount: number; method: PaymentMethod }): void;
+  handleETCInfo(paymentInfo: PaymentInfo): void;
+  handleDiscountInfo(paymentInfo: PaymentInfo): void;
+  setSalesHistoryToStorage(paymentInfo: PaymentInfo, splitPayment: SplitPayment): void;
+  refund(date: string, salesNumber: number): void;
+  editNote(date: string, salesNumber: number, editedNote: string): void;
+  handleSplitPayment(splitPayment: SplitPayment): void;
+  getSalesNumber(): void;
+  getSaleshistory(dateText: string): void;
+  getDateWithSales(): void;
+  getStatistic(dateText: string): {
+    totalAmount: number;
+    cardAmount: number;
+    cashAmount: number;
+    wireAmount: number;
+  };
+  getTotalChargeAmount(filteredHistory: SalesHistory): number;
+  getFilteredHistory(method: PaymentMethod): SalesHistory;
+}
+
+export interface PaymentDataInterface {
+  initPaymentInfo(): void;
+  getPaymentInfo(): PaymentInfo;
+  updatePaymentMethod(method: PaymentMethod): void;
+  updateDiscount(discountValue: number, discountReason: string): void;
+  updateDiscountType(type: DiscountType): void;
+  updateDiscountValue(discountValue: number): void;
+  checkDiscountAmount(): boolean;
+  checkDiscountType(): boolean;
+  saveSplitPayment(paymentMethod: string[], amount: number[]): void;
+  setDefaultSplitPayment(): void;
+  deactivateSplitPayment(): void;
+  initSplitPayment(): void;
+  getSplitPayment(): SplitPayment;
+  setETCReason(reason: string): void;
+}
+
+export interface CashCheckDataInterface {
+  setCashCheck(key: string, value: number | boolean): void;
+  setCurrency(currencyUnit: number, value: number): void;
+  setCashCheckToStorage(): void;
+  getCashCheckHistories(): CashCheck[];
+  getCountedAmount(): number;
+  getCorrectBoolean(): boolean;
 }

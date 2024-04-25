@@ -10,11 +10,11 @@ import CategoryManagementController from './Controllers/CategoryManagementContro
 import CategoryRegistrationController from './Controllers/CategoryRegistrationController.js';
 import StatisticController from './Controllers/StatisticController.js';
 import ProductData from './Models/ProductData.ts';
-import SalesData from './Models/SalesData.js';
+import SalesData from './Models/SalesData';
 import ShoppingCartData from './Models/ShoppingCartData.ts';
 import CashCheckController from './Controllers/CashCheckController.js';
-import CashCheckData from './Models/CashCheckData.js';
-import PaymentData from './Models/PaymentData.js';
+import CashCheckData from './Models/CashCheckData';
+import PaymentData from './Models/PaymentData';
 import './resources.js';
 
 class App {

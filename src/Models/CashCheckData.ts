@@ -1,10 +1,24 @@
 import store from '../../utils/store.js';
 import formatter from '../../utils/formatter';
+import { CashCheck } from '../interfaces/DataInterfaces';
+import { CashCheckDataInterface } from '../interfaces/ModelInterfaces';
 
-class CashCheckData {
-  #cashCheck;
+class CashCheckData implements CashCheckDataInterface {
+  #cashCheck: CashCheck = {
+    time: '',
+    pettyCash: 0,
+    cashSalesAmount: 0,
+    currency: {
+      1000: 0,
+      5000: 0,
+      10000: 0,
+      50000: 0,
+    },
+    countedAmount: 0,
+    expectedAmount: 0,
+    correctBoolean: false,
+  };
 
-  // eslint-disable-next-line max-lines-per-function
   initCashCheck() {
     this.#cashCheck = {
       time: formatter.formatTime(new Date()),
@@ -22,19 +36,19 @@ class CashCheckData {
     };
   }
 
-  setCashCheck(key, value) {
+  setCashCheck(key: string, value: number) {
     this.#cashCheck[key] = value;
     this.#updateCountedAmount();
   }
 
-  setCurrency(currencyUnit, value) {
+  setCurrency(currencyUnit: number, value: number) {
     this.#cashCheck.currency[currencyUnit] = value;
     this.#updateCountedAmount();
   }
 
   #updateCountedAmount() {
     this.#cashCheck.countedAmount = Object.entries(this.#cashCheck.currency).reduce(
-      (acc, [currency, count]) => acc + currency * count,
+      (acc, [currency, count]) => acc + Number(currency) * count,
       0,
     );
     if (this.#cashCheck.countedAmount === this.#cashCheck.expectedAmount)
@@ -50,17 +64,17 @@ class CashCheckData {
     store.setStorage('cashCheckHistories', cashCheckHistories);
   }
 
-  getCashCheckHistories() {
+  getCashCheckHistories(): CashCheck[] {
     const date = formatter.formatDate(new Date());
     const cashCheckHistories = store.getStorage('cashCheckHistories') ?? { [date]: [] };
     return cashCheckHistories[date] ?? [];
   }
 
-  getCountedAmount() {
+  getCountedAmount(): number {
     return this.#cashCheck.countedAmount;
   }
 
-  getCorrectBoolean() {
+  getCorrectBoolean(): boolean {
     return this.#cashCheck.correctBoolean;
   }
 }
