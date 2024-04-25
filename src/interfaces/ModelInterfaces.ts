@@ -78,6 +78,7 @@ export interface PaymentDataInterface {
 }
 
 export interface CashCheckDataInterface {
+  initCashCheck(): void;
   setCashCheck(key: string, value: number | boolean): void;
   setCurrency(currencyUnit: number, value: number): void;
   setCashCheckToStorage(): void;

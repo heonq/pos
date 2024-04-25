@@ -1,7 +1,8 @@
 import $ from '../../utils/index.js';
+import { ModalControllerInterface } from '../interfaces/ControllerInterfaces';
 
-class ModalController {
-  addSubmitButtonEvent(submitId, callback) {
+class ModalController implements ModalControllerInterface {
+  addSubmitButtonEvent(submitId: string, callback: Function) {
     $(`#${submitId}`).addEventListener('click', () => {
       callback();
     });
@@ -15,7 +16,7 @@ class ModalController {
     $('#close-button').addEventListener('click', this.hideModal.bind(this));
   }
 
-  showModal(modalSize) {
+  showModal(modalSize: string) {
     $('#modal-container').classList.add('show', modalSize);
     $('#background').classList.add('show');
   }

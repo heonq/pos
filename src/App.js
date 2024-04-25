@@ -12,7 +12,7 @@ import StatisticController from './Controllers/StatisticController.js';
 import ProductData from './Models/ProductData.ts';
 import SalesData from './Models/SalesData';
 import ShoppingCartData from './Models/ShoppingCartData.ts';
-import CashCheckController from './Controllers/CashCheckController.js';
+import CashCheckController from './Controllers/CashCheckController';
 import CashCheckData from './Models/CashCheckData';
 import PaymentData from './Models/PaymentData';
 import './resources.js';
