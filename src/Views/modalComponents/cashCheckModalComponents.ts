@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
 import formatter from '../../../utils/formatter';
+import { CashCheck } from '../../interfaces/DataInterfaces';
 import commonModalComponents from './commonModalComponents.js';
+import { CashCheckModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
-const cashCheckModalComponents = {
-  renderCashCheckModal(cashSalesAmount, pettyCashAmount) {
+const cashCheckModalComponents: CashCheckModalComponentsInterface = {
+  renderCashCheckModal(cashSalesAmount: number, pettyCashAmount: number) {
     return `<div id="cash-check-modal">
     <div id="cash-check-container">
     <div><h3>현금 점검 실시</h3></div>
@@ -41,7 +41,7 @@ const cashCheckModalComponents = {
     </table></div></div>${commonModalComponents.renderSubmitAndCancelButtons('cash-check')}`;
   },
 
-  renderCashCheckHeader() {
+  renderCashCheckHeader(): string {
     return `<span>점검시간</span>
         <span>준비금</span>
         <span>현금 판매 금액</span>
@@ -54,7 +54,7 @@ const cashCheckModalComponents = {
         <span>50,000</span>`;
   },
 
-  renderCashCheckHistoryHeader() {
+  renderCashCheckHistoryHeader(): string {
     return `
     <thead id="cash-check-history-header">
     <tr>
@@ -74,7 +74,7 @@ const cashCheckModalComponents = {
     `;
   },
 
-  renderCashCheckHistoryRow(history) {
+  renderCashCheckHistoryRow(history: CashCheck) {
     return `<tr class="cash-check-history-row">
     <td>${history.time}</td>
     <td>${formatter.formatNumber(history.pettyCash)}</td>
