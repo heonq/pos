@@ -1,6 +1,6 @@
 import ModalController from '../core/modalController';
 import $ from '../../utils/index.js';
-import cashCheckModalComponents from '../Views/modalComponents/cashCheckModalComponents.js';
+import cashCheckModalComponents from '../Views/modalComponents/cashCheckModalComponents';
 import formatter from '../../utils/formatter';
 import validator from '../../utils/validator';
 import { CashCheckDataInterface, SalesDataInterface } from '../interfaces/ModelInterfaces';

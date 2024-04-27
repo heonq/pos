@@ -1,14 +1,14 @@
 import $ from '../../utils/index.js';
-import PaymentModalController from '../core/PaymentModalController.js';
+import PaymentModalController from '../core/PaymentModalController';
 import validator from '../../utils/validator';
-import splitPaymentModalComponents from '../Views/modalComponents/splitPaymentModalComponents.js';
+import splitPaymentModalComponents from '../Views/modalComponents/splitPaymentModalComponents';
+import { PaymentDataInterface, ShoppingCartDataInterface } from '../interfaces/ModelInterfaces';
 
 class SplitPaymentController extends PaymentModalController {
   #shoppingCartData;
-
   #paymentData;
 
-  constructor(shoppingCartData, paymentData) {
+  constructor(shoppingCartData: ShoppingCartDataInterface, paymentData: PaymentDataInterface) {
     super();
     this.#shoppingCartData = shoppingCartData;
     this.#paymentData = paymentData;
@@ -44,22 +44,26 @@ class SplitPaymentController extends PaymentModalController {
   #renderSplitInput() {
     const paymentMethods = this.#paymentData.getSplitPayment().methods;
     const { amounts } = this.#paymentData.getSplitPayment();
-    const inputs = $('#split-payment-container').querySelectorAll('input');
-    const selects = $('#split-payment-container').querySelectorAll('select');
-    inputs.forEach((input, index) => (input.value = amounts[index]));
+    const inputs = $('#split-payment-container').querySelectorAll(
+      'input',
+    ) as NodeListOf<HTMLInputElement>;
+    const selects = $('#split-payment-container').querySelectorAll(
+      'select',
+    ) as NodeListOf<HTMLSelectElement>;
+    inputs.forEach((input, index) => (input.value = String(amounts[index])));
     selects.forEach((select, index) => (select.value = paymentMethods[index]));
   }
 
   #addSplitInputEvent() {
-    $('#modal-container').addEventListener('change', (e) => {
-      if (e.target.classList.contains('split-payment-input')) this.#renderInput(e);
+    $('#modal-container').addEventListener('change', (e: Event) => {
+      if ((e.target as HTMLElement).classList.contains('split-payment-input')) this.#renderInput(e);
     });
   }
 
-  #renderInput(e) {
+  #renderInput(e: Event) {
     const inputs = ['first-split-input', 'second-split-input'];
     const { chargeAmount } = this.#paymentData.getPaymentInfo();
-    const index = inputs.indexOf(e.target.id);
+    const index = inputs.indexOf((e.target as HTMLElement).id);
     $(`#${inputs[1 - index]}`).value = chargeAmount - $(`#${inputs[index]}`).value;
   }
 
@@ -79,14 +83,17 @@ class SplitPaymentController extends PaymentModalController {
   }
 
   #handleSplitSubmit() {
-    const inputComplete = Array.from($('#split-payment-container').querySelectorAll('input')).every(
-      (input) => input.value !== '',
-    );
-    const selectComplete = Array.from(
+    const inputArray = Array.from(
+      $('#split-payment-container').querySelectorAll('input'),
+    ) as HTMLInputElement[];
+    const inputComplete = inputArray.every((input) => input.value !== '');
+
+    const selectArray = Array.from(
       $('#split-payment-container').querySelectorAll('select'),
-    ).every((select) => select.value !== '');
-    if (inputComplete && selectComplete) return this.enableSubmitButton('split-payment-submit');
-    return this.disableSubmitButton('split-payment-submit');
+    ) as HTMLSelectElement[];
+    const selectComplete = selectArray.every((select) => select.value !== '');
+    if (inputComplete && selectComplete) return this.enableSubmitButton();
+    return this.disableSubmitButton();
   }
 }
 

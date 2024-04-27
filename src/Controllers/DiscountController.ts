@@ -1,20 +1,17 @@
 import $ from '../../utils/index.js';
-import discountModalComponents from '../Views/modalComponents/discountModalComponent.js';
+import discountModalComponents from '../Views/modalComponents/discountModalComponent';
 import formatter from '../../utils/formatter';
 import validator from '../../utils/validator';
-import PaymentModalController from '../core/PaymentModalController.js';
+import PaymentModalController from '../core/PaymentModalController';
+import { PaymentDataInterface, ShoppingCartDataInterface } from '../interfaces/ModelInterfaces';
 
 class DiscountController extends PaymentModalController {
   #shoppingCartData;
-
-  #salesData;
-
   #paymentData;
 
-  constructor(shoppingCartData, salesData, paymentData) {
+  constructor(shoppingCartData: ShoppingCartDataInterface, paymentData: PaymentDataInterface) {
     super();
     this.#shoppingCartData = shoppingCartData;
-    this.#salesData = salesData;
     this.#paymentData = paymentData;
   }
 
@@ -44,17 +41,22 @@ class DiscountController extends PaymentModalController {
   }
 
   #addRadioEvent() {
-    const radios = $('#select-discount-type-section').querySelectorAll('input');
+    const radios = $('#select-discount-type-section').querySelectorAll(
+      'input',
+    ) as HTMLInputElement[];
     radios.forEach((radio) =>
       radio.addEventListener('change', (e) => {
-        if (e.currentTarget.checked) this.#handleDiscountType(e);
+        if ((e.target as HTMLInputElement).checked) this.#handleDiscountType(e);
       }),
     );
   }
 
-  #handleDiscountType(e) {
-    this.#paymentData.updateDiscountType(e.currentTarget.value);
-    this.#renderDiscountModal();
+  #handleDiscountType(e: Event) {
+    const value = (e.currentTarget as HTMLSelectElement).value;
+    if (value === 'percentage' || value === 'amount') {
+      this.#paymentData.updateDiscountType(value);
+      this.#renderDiscountModal();
+    }
   }
 
   #addInputEvent() {
@@ -84,7 +86,6 @@ class DiscountController extends PaymentModalController {
     );
     this.#paymentData.deactivateSplitPayment();
     this.#updateDiscountButtonClass();
-    // this.renderSelectedMethod(this.#salesData);
     this.hideModal();
   }
 
@@ -98,23 +99,20 @@ class DiscountController extends PaymentModalController {
   }
 
   #addHandleDiscountSubmitEvent() {
-    $('#discount-info-section')
-      .querySelectorAll('input')
-      .forEach((input) => {
-        input.addEventListener('input', () => {
-          this.#handleDiscountSubmit();
-        });
+    const inputArray = $('#discount-info-section').querySelectorAll('input') as HTMLInputElement[];
+    inputArray.forEach((input) => {
+      input.addEventListener('input', () => {
+        this.#handleDiscountSubmit();
       });
+    });
   }
 
   #handleDiscountSubmit() {
-    if (
-      Array.from($('#discount-info-section').querySelectorAll('input')).every(
-        (input) => input.value !== '',
-      )
-    )
-      return this.enableSubmitButton('discount-submit');
-    return this.disableSubmitButton('discount-submit');
+    const inputArray = Array.from(
+      $('#discount-info-section').querySelectorAll('input'),
+    ) as HTMLInputElement[];
+    if (inputArray.every((input) => input.value !== '')) return this.enableSubmitButton();
+    return this.disableSubmitButton();
   }
 }
 

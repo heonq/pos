@@ -1,21 +1,29 @@
-/* eslint-disable no-alert */
 import shoppingCartComponents from '../Views/shoppingCartComponents';
 import $ from '../../utils/index.js';
 import formatter from '../../utils/formatter';
 import validator from '../../utils/validator';
+import {
+  PaymentDataInterface,
+  ProductDataInterface,
+  SalesDataInterface,
+  ShoppingCartDataInterface,
+} from '../interfaces/ModelInterfaces';
+import { ShoppingCartProduct } from '../interfaces/DataInterfaces';
 
 class ShoppingCartController {
-  #shoppingCartData;
-
   #productData;
-
+  #shoppingCartData;
   #salesData;
-
   #paymentData;
 
-  constructor(productData, shoppingCartData, salesData, paymentData) {
-    this.#shoppingCartData = shoppingCartData;
+  constructor(
+    productData: ProductDataInterface,
+    shoppingCartData: ShoppingCartDataInterface,
+    salesData: SalesDataInterface,
+    paymentData: PaymentDataInterface,
+  ) {
     this.#productData = productData;
+    this.#shoppingCartData = shoppingCartData;
     this.#salesData = salesData;
     this.#paymentData = paymentData;
   }
@@ -39,13 +47,13 @@ class ShoppingCartController {
     );
     $('#shopping-cart-box')
       .querySelectorAll('.cart-row')
-      .forEach((cartList) => this.#addControlQuantityEvent(cartList));
+      .forEach((cartList: HTMLTableRowElement) => this.#addControlQuantityEvent(cartList));
     this.#renderAmountToPay();
     this.#renderSalesNumber();
     this.#renderSelectedMethod();
   }
 
-  #handleProductClick(number) {
+  #handleProductClick(number: number) {
     const shoppingCart = this.#shoppingCartData.getShoppingCartData();
     const productIndex = shoppingCart.findIndex((product) => product.number === number);
     const productToAdd = shoppingCart[productIndex];
@@ -53,7 +61,7 @@ class ShoppingCartController {
     else shoppingCartComponents.rerenderQuantityPrice(productToAdd, productIndex);
   }
 
-  #addProductToShoppingCart(productToAdd) {
+  #addProductToShoppingCart(productToAdd: ShoppingCartProduct) {
     $('#shopping-cart-box').insertAdjacentHTML(
       'beforeend',
       shoppingCartComponents.renderEachCartProduct(productToAdd),
@@ -63,12 +71,14 @@ class ShoppingCartController {
     this.#addControlQuantityEvent(targetNode);
   }
 
-  #addControlQuantityEvent(cartProductNode) {
+  #addControlQuantityEvent(cartProductNode: HTMLElement) {
     const number = Number(cartProductNode.dataset.number);
-    cartProductNode.querySelector('.quantity-box').addEventListener('click', (e) => {
+    const quantityBox = cartProductNode.querySelector('.quantity-box') as HTMLDivElement;
+    quantityBox.addEventListener('click', (e: MouseEvent) => {
       const shoppingCart = this.#shoppingCartData.getShoppingCartData();
       const index = shoppingCart.findIndex((product) => Number(product.number) === number);
-      this.#controlQuantity(e.target.className, shoppingCart[index], index);
+      const target = e.target as HTMLDivElement;
+      this.#controlQuantity(target.className, shoppingCart[index], index);
       this.#paymentData.initPaymentInfo();
       this.#removeDiscountedClass();
       this.#renderAmountToPay();
@@ -76,18 +86,19 @@ class ShoppingCartController {
     });
   }
 
-  #controlQuantity(className, product, index) {
+  #controlQuantity(className: string, product: ShoppingCartProduct, index: number) {
     if (className === 'plus') this.#handlePlus(product, index);
     if (className === 'minus') this.#handleMinus(product, index);
     if (className === 'delete') this.#handleDelete(product, index);
   }
 
-  #handlePlus(product, index) {
+  #handlePlus(product: ShoppingCartProduct, index: number) {
+    if (!product.number) return;
     this.#shoppingCartData.plusQuantity(product.number);
     shoppingCartComponents.rerenderQuantityPrice(product, index);
   }
 
-  #handleMinus(product, index) {
+  #handleMinus(product: ShoppingCartProduct, index: number) {
     if (product.quantity > 1) {
       this.#shoppingCartData.minusQuantity(product.number);
       return shoppingCartComponents.rerenderQuantityPrice(product, index);
@@ -95,30 +106,33 @@ class ShoppingCartController {
     return this.#handleDelete(product, index);
   }
 
-  #handleDelete(product, index) {
+  #handleDelete(product: ShoppingCartProduct, index: number) {
     shoppingCartComponents.removeCartList(index);
-    return this.#shoppingCartData.deleteFromCart(product.number);
+    this.#shoppingCartData.deleteFromCart(product.number);
   }
 
   #setButtonsWhenViewModeChange() {
     $('#hidden-view-list')
       .querySelectorAll('div')
-      .forEach((div) => div.addEventListener('click', this.#setTotalProductButtons.bind(this)));
+      .forEach((div: HTMLDivElement) =>
+        div.addEventListener('click', this.#setTotalProductButtons.bind(this)),
+      );
   }
 
   #setTotalProductButtons() {
     $('#product-container')
       .querySelectorAll('.product')
-      .forEach((productButton) => {
+      .forEach((productButton: HTMLButtonElement) => {
         this.#addProductClickEvent(productButton);
       });
   }
 
-  #addProductClickEvent(button) {
+  #addProductClickEvent(button: HTMLButtonElement) {
     const number = Number(button.dataset.number);
     button.addEventListener('click', () => {
       const products = this.#productData.getProductsInOrder().flat();
       const productToAdd = products.find((product) => product.number === number);
+      if (!productToAdd) return;
       this.#shoppingCartData.addToShoppingCart(productToAdd);
       this.#paymentData.initPaymentInfo();
       this.#handleProductClick(number);
@@ -139,9 +153,12 @@ class ShoppingCartController {
   }
 
   #setPaymentMethod() {
-    $('#first-row').addEventListener('click', (e) => {
+    $('#first-row').addEventListener('click', (e: MouseEvent) => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
-      this.#paymentData.updatePaymentMethod(e.target.innerText);
+      const targetText = (e.target as HTMLElement).innerText;
+      if (targetText !== '카드결제' && targetText !== '현금결제' && targetText !== '계좌이체')
+        return;
+      this.#paymentData.updatePaymentMethod(targetText);
       this.#renderSelectedMethod();
     });
   }
@@ -155,7 +172,7 @@ class ShoppingCartController {
   #renderSelectedMethod() {
     const buttons = $('#payment-method-box').querySelectorAll('button');
     const { method } = this.#paymentData.getPaymentInfo();
-    buttons.forEach((button) => {
+    buttons.forEach((button: HTMLButtonElement) => {
       if (button.id === 'discount') return;
       button.classList.remove('selected');
       if (button.innerText === method) button.classList.add('selected');
@@ -167,6 +184,7 @@ class ShoppingCartController {
     $('#etcetera').addEventListener('click', () => {
       if (!validator.validateTotalAmount(this.#shoppingCartData.getTotalAmount())) return;
       const reason = prompt('기타 사유를 입력해주세요.');
+      if (!reason) return;
       this.#paymentData.setETCReason(reason);
       this.#renderShoppingCart();
     });
@@ -189,9 +207,11 @@ class ShoppingCartController {
     const products = this.#productData.getProducts();
     const shoppingCart = this.#shoppingCartData.getShoppingCartData();
     shoppingCart.forEach((product) => {
-      products[product.number].salesQuantity += product.quantity;
+      const targetProduct = products[product.number];
+      if (targetProduct.salesQuantity !== undefined)
+        targetProduct.salesQuantity += product.quantity;
     });
-    this.#productData.registerProduct(products);
+    this.#productData.registerProduct();
   }
 
   #initShoppingCartAndPayment() {
@@ -205,8 +225,8 @@ class ShoppingCartController {
   }
 
   #addSubmitButtonRerenderEvent() {
-    $('#modal-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('rerender')) {
+    $('#modal-container').addEventListener('click', (e: MouseEvent) => {
+      if ((e.target as HTMLElement).classList.contains('rerender')) {
         this.#initShoppingCartAndPayment();
         this.#setTotalProductButtons();
       }
@@ -228,8 +248,8 @@ class ShoppingCartController {
   }
 
   #addCloseButtonRenderSalesNumberEvent() {
-    $('#modal-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('sales-history-close-button')) {
+    $('#modal-container').addEventListener('click', (e: MouseEvent) => {
+      if ((e.target as HTMLElement).classList.contains('sales-history-close-button')) {
         this.#renderSalesNumber();
       }
     });

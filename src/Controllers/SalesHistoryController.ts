@@ -1,16 +1,18 @@
-import ModalController from '../core/modalController.js';
+import ModalController from '../core/modalController';
 import $ from '../../utils/index.js';
-import salesHistoryModalComponents from '../Views/modalComponents/salesHistoryModalComponents.js';
+import salesHistoryModalComponents from '../Views/modalComponents/salesHistoryModalComponents';
 import validator from '../../utils/validator';
+import { ProductDataInterface, SalesDataInterface } from '../interfaces/ModelInterfaces';
+import { Product, ProductSoldStatistic } from '../interfaces/DataInterfaces';
+import { SalesHistory } from '../Types/Types';
+import flatpickr from 'flatpickr';
 
 class SalesHistoryController extends ModalController {
   #productData;
-
   #salesData;
-
   #editing;
 
-  constructor(productData, salesData) {
+  constructor(productData: ProductDataInterface, salesData: SalesDataInterface) {
     super();
     this.#productData = productData;
     this.#salesData = salesData;
@@ -59,7 +61,7 @@ class SalesHistoryController extends ModalController {
     this.#renderTfoot(salesHistory);
   }
 
-  #renderTbody(products, salesHistory) {
+  #renderTbody(products: Product[], salesHistory: SalesHistory) {
     const salesHistoryTable = $('#sales-history-table');
     salesHistoryTable.innerHTML = salesHistoryModalComponents.renderTable(products);
     salesHistoryTable.querySelector('tbody').innerHTML = salesHistory
@@ -67,11 +69,11 @@ class SalesHistoryController extends ModalController {
       .join('');
   }
 
-  #renderTfoot(salesHistory) {
+  #renderTfoot(salesHistory: SalesHistory) {
     const totalAmount = salesHistory.reduce((acc, sales) => acc + sales.chargeAmount, 0);
-    const productsNumber = Object.keys(this.#productData.getProducts());
+    const productsNumber = Object.keys(this.#productData.getProducts()).map(Number);
     const productSold = salesHistory.map((sales) => sales.products).flat();
-    const productSoldObj = productSold.reduce((acc, product) => {
+    const productSoldObj = productSold.reduce((acc: ProductSoldStatistic, product) => {
       acc[product.number] = (acc[product.number] || 0) + product.quantity;
       return acc;
     }, {});
@@ -83,52 +85,65 @@ class SalesHistoryController extends ModalController {
   }
 
   #addRefundEvent() {
-    $('#sales-history-table').addEventListener('click', (e) => {
-      if (e.target.classList.contains('refund-button')) this.#refund(e);
+    $('#sales-history-table').addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('refund-button')) this.#refund(e);
     });
   }
 
-  #refund(e) {
-    if (!validator.validateRefund(e.target.closest('tr').dataset.refund)) return;
+  #getTargetTr(e: MouseEvent): HTMLTableRowElement {
+    return (e.target as HTMLButtonElement).closest('tr') as HTMLTableRowElement;
+  }
+
+  #refund(e: MouseEvent) {
+    const targetTr = this.#getTargetTr(e);
+    if (targetTr.dataset.refund === undefined) return;
+    if (!validator.validateRefund(targetTr.dataset.refund)) return;
     const [date, salesNumber] = this.#getDateAndSalesNumber(e);
     this.#salesData.refund(date, salesNumber);
     this.#renderSalesHistoryTable();
   }
 
-  #getDateAndSalesNumber(e) {
-    const date = e.target.closest('tr').querySelector('.date').innerText;
-    const salesNumber = Number(e.target.closest('tr').querySelector('.sales-number').innerText);
+  #getDateAndSalesNumber(e: MouseEvent): [string, number] {
+    const targetTr = this.#getTargetTr(e);
+    const date = (targetTr.querySelector('.date') as HTMLElement).innerText;
+    const salesNumber = Number((targetTr.querySelector('.sales-number') as HTMLElement).innerText);
     return [date, salesNumber];
   }
 
   #addEditButtonEvent() {
-    $('#sales-history-table').addEventListener('click', (e) => {
-      if (!this.#editing && e.target.classList.contains('edit-button')) this.#handleEditButton(e);
-      else if (this.#editing && e.target.classList.contains('submit-edit-button'))
+    $('#sales-history-table').addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLButtonElement;
+      if (!this.#editing && target.classList.contains('edit-button')) this.#handleEditButton(e);
+      else if (this.#editing && target.classList.contains('submit-edit-button'))
         this.#handleSubmitButton(e);
     });
   }
 
-  #handleEditButton(e) {
+  #handleEditButton(e: MouseEvent) {
+    const targetTr = this.#getTargetTr(e);
     salesHistoryModalComponents.replaceNoteSpanWithInput(
-      e.target.closest('tr').querySelector('.note-span'),
+      targetTr.querySelector('.note-span') as HTMLSpanElement,
     );
     this.#editing = true;
     salesHistoryModalComponents.replaceEditButtonToSubmit(e);
   }
 
-  #handleSubmitButton(e) {
+  #handleSubmitButton(e: MouseEvent) {
+    const targetTr = this.#getTargetTr(e);
     this.#editNote(e);
     salesHistoryModalComponents.replaceSubmitButtonToEdit(e);
     salesHistoryModalComponents.replaceNoteInputWithSpan(
-      e.target.closest('tr').querySelector('.note-input'),
+      targetTr.querySelector('.note-input') as HTMLInputElement,
     );
     this.#editing = false;
   }
 
-  #editNote(e) {
+  #editNote(e: MouseEvent) {
+    const targetTr = this.#getTargetTr(e);
+    const targetInput = targetTr.querySelector('.note-input') as HTMLInputElement;
+    const editedNote = targetInput.value;
     const [date, salesNumber] = this.#getDateAndSalesNumber(e);
-    const editedNote = e.target.closest('tr').querySelector('.note-input').value;
     this.#salesData.editNote(date, salesNumber, editedNote);
   }
 }

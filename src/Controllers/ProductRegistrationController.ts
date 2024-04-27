@@ -1,13 +1,16 @@
-import ModalController from '../core/modalController.js';
+import ModalController from '../core/modalController';
 import $ from '../../utils/index.js';
 import VALUES from '../../constants/values';
 import validator from '../../utils/validator';
-import productModalComponents from '../Views/modalComponents/productModalComponents.js';
+import productModalComponents from '../Views/modalComponents/productModalComponents';
+import { ProductDataInterface } from '../interfaces/ModelInterfaces';
+import { Product, Products } from '../interfaces/DataInterfaces';
+import FormGenerator from '../../utils/FormGenerator';
 
 class ProductRegistrationController extends ModalController {
   #productData;
 
-  constructor(productData) {
+  constructor(productData: ProductDataInterface) {
     super();
     this.#productData = productData;
   }
@@ -32,7 +35,7 @@ class ProductRegistrationController extends ModalController {
   #updateSubmitButton() {
     const rows = Array.from(
       $('#product-registration-container').querySelectorAll('.product-registration-row'),
-    );
+    ) as HTMLTableRowElement[];
     const inputs = rows
       .map((row) =>
         Array.from(row.querySelectorAll('input')).filter(
@@ -40,8 +43,8 @@ class ProductRegistrationController extends ModalController {
         ),
       )
       .flat();
-    if (inputs.every((input) => input.value !== '')) return this.enableSubmitButton();
-    return this.disableSubmitButton();
+    if (inputs.every((input) => input.value !== '')) this.enableSubmitButton();
+    else this.disableSubmitButton();
   }
 
   #renderProductRegistraiton() {
@@ -66,11 +69,11 @@ class ProductRegistrationController extends ModalController {
   #renderLastSelectCategoriesOption() {
     const selects = Array.from(
       $('.product-container').querySelectorAll('.product-categories-select'),
-    );
+    ) as HTMLSelectElement[];
     this.#renderCategoriesSelectOptions(selects[selects.length - 1]);
   }
 
-  #renderCategoriesSelectOptions(select) {
+  #renderCategoriesSelectOptions(select: HTMLSelectElement) {
     const categories = Object.values(this.#productData.getCategories()).map(
       (category) => category.name,
     );
@@ -84,15 +87,18 @@ class ProductRegistrationController extends ModalController {
   }
 
   #addDeleteButtonEventForRegistration() {
-    $('#product-registration-container').addEventListener('click', (e) => {
-      if (e.target.classList.contains('product-delete-button')) this.#deleteInputs(e);
+    $('#product-registration-container').addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('product-delete-button')) this.#deleteInputs(e);
     });
   }
 
-  #deleteInputs(e) {
-    const targetNode = e.target.closest('.product-registration-row');
-    if (targetNode.parentNode.querySelectorAll('.product-registration-row').length === 1) return;
-    targetNode.parentNode.removeChild(targetNode);
+  #deleteInputs(e: Event) {
+    const target = e.target as HTMLButtonElement;
+    const targetNode = target.closest('.product-registration-row') as HTMLTableRowElement;
+    const parentNode = targetNode.parentNode as HTMLTableElement;
+    if (parentNode.querySelectorAll('.product-registration-row').length === 1) return;
+    parentNode.removeChild(targetNode);
   }
 
   #addProductInput() {
@@ -105,37 +111,45 @@ class ProductRegistrationController extends ModalController {
 
   #setNewProductsToStorage() {
     const newProducts = this.#getNewProductsFromInput();
-    const dataToValidate = { ...this.#productData.getProducts(), ...newProducts };
+    const dataToValidate: Products = { ...this.#productData.getProducts(), ...newProducts };
     if (!validator.validateProductRegistration(Object.values(dataToValidate))) return;
-    this.#productData.registerProduct(newProducts);
+    this.#productData.registerProduct();
     this.#productData.updateNumberHistory('Product', Object.values(newProducts).length);
     this.hideModal();
   }
 
-  #getNewProductsFromInput() {
-    const rows = $('#product-registration-container').querySelectorAll('.product-registration-row');
-    const products = {};
+  #getNewProductsFromInput(): Products {
+    const rows = ($('#product-registration-container') as HTMLTableElement).querySelectorAll(
+      '.product-registration-row',
+    ) as NodeListOf<HTMLTableRowElement>;
+    const products: Products = {};
     const newestProductNumber = this.#productData.getNewestNumber('Product');
     rows.forEach((row, index) => {
       const product = this.#getInfoFromRow(row, index, newestProductNumber);
-      products[product.number] = product;
+      products[newestProductNumber + index] = product;
     });
     return products;
   }
 
-  #getInfoFromRow(row, index, newestProductNumber) {
-    const product = {};
-    row.querySelectorAll('input').forEach((input, inputIndex) => {
+  #getInfoFromRow(row: HTMLTableRowElement, index: number, newestProductNumber: number): Product {
+    const product = FormGenerator.generateProduct();
+    this.#handleInputs(row, product);
+    this.#handleSelects(row, product);
+    product.number = newestProductNumber + index;
+    return product;
+  }
+
+  #handleInputs(row: HTMLTableRowElement, product: Product) {
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach((input, inputIndex) => {
       product[VALUES.inputKeys[inputIndex]] = input.value;
     });
-    row.querySelectorAll('select').forEach((select, inputIndex) => {
-      product[VALUES.selectKeys[inputIndex]] = select.value;
-    });
-    product.number = newestProductNumber + index;
-    product.display = product.display === 'true';
-    product.category = this.#productData.convertCategoryNameToNumber(product.category);
-    product.salesQuantity = 0;
-    return product;
+  }
+  #handleSelects(row: HTMLTableRowElement, product: Product) {
+    const selects = Array.from(row.querySelectorAll('select'));
+    const [category, display] = selects.map((select) => select.value);
+    product.display = display === 'true';
+    product.category = this.#productData.convertCategoryNameToNumber(category);
   }
 }
 

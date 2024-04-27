@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
-import commonModalComponents from './commonModalComponents.js';
+import commonModalComponents from './commonModalComponents';
+import { CategoryModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
-const categoryModalComponents = {
+const categoryModalComponents: CategoryModalComponentsInterface = {
   renderCategoryManagementModal() {
     return `<div id="category-management-container">
     <div><h3>카테고리 관리</h3></div>

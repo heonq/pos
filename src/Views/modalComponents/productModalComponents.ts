@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
-import commonModalComponents from './commonModalComponents.js';
+import commonModalComponents from './commonModalComponents';
 import formatter from '../../../utils/formatter';
+import { ProductModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
-const productModalComponents = {
+const productModalComponents: ProductModalComponentsInterface = {
   renderProductRegistration() {
     return `
     <div id="product-registration-container" class="product-container">
@@ -32,9 +31,9 @@ const productModalComponents = {
   },
 
   renderOptions(select, categories) {
-    const options = [];
+    const options: HTMLOptionElement[] = [];
     categories.forEach((category) => {
-      const option = document.createElement('option');
+      const option: HTMLOptionElement = document.createElement('option');
       option.value = category;
       option.text = category;
       options.push(option);
@@ -125,7 +124,7 @@ const productModalComponents = {
       </select>
       </td>
       <td>
-      ${formatter.formatNumber(product.salesQuantity)}
+      ${formatter.formatNumber(product.salesQuantity!)}
       </td>
       <td><button class="product-delete-button">삭제</button></td>
     </tr>`;

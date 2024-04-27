@@ -10,8 +10,9 @@ export interface Product {
   barcode: string | number;
   category: number;
   display: boolean;
-  number: number;
-  salesQuantity: number;
+  number?: number;
+  salesQuantity?: number;
+  [key: string]: string | number | boolean | undefined;
 }
 
 export interface Categories {
@@ -78,4 +79,16 @@ interface Currency {
   10000: number;
   50000: number;
   [key: number]: number;
+}
+
+export interface ProductSoldStatistic {
+  [productNumber: number]: number;
+}
+
+export interface Statistic {
+  totalAmount: number;
+  cardAmount: number;
+  cashAmount: number;
+  wireAmount: number;
+  [key: string]: number;
 }

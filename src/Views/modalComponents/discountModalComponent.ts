@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
-import commonModalComponents from './commonModalComponents.js';
+import commonModalComponents from './commonModalComponents';
 import formatter from '../../../utils/formatter';
+import { DiscountModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
-const discountModalComponents = {
+const discountModalComponents: DiscountModalComponentsInterface = {
   renderDiscountComponent(paymentInfo) {
     return `<div id="discount-container">
         <div id="select-discount-type-section">
@@ -26,9 +25,8 @@ const discountModalComponents = {
           paymentInfo.discountType === 'percentage'
             ? paymentInfo.discountValue
             : paymentInfo.discountAmount
-        }" min="0" ${paymentInfo.discountType === 'percentage' ? 'max="100"' : ''} class=${
-          paymentInfo.type
-        } id="discount-input" /><span id="discount-text">${paymentInfo.discountType === 'percentage' ? '%' : '원'}</span>
+        }" min="0" ${paymentInfo.discountType === 'percentage' ? 'max="100"' : ''}
+        id="discount-input" /><span id="discount-text">${paymentInfo.discountType === 'percentage' ? '%' : '원'}</span>
         </div>
         <div id="discount-amount-section">
         ${this.renderDiscountAmount(paymentInfo)}

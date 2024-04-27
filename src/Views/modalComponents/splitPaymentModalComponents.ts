@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import formatter from '../../../utils/formatter';
-import commonModalComponents from './commonModalComponents.js';
+import { splitPaymentModalComponentsInterface } from '../../interfaces/ViewInterfaces';
+import commonModalComponents from './commonModalComponents';
 
-const splitPaymentModalComponents = {
+const splitPaymentModalComponents: splitPaymentModalComponentsInterface = {
   renderSplitPaymentComponent(paymentInfo) {
     return `<div id="split-payment-container">
     <div id="total-amount">총 결제금액 : ${formatter.formatNumber(paymentInfo.chargeAmount)}원</div>

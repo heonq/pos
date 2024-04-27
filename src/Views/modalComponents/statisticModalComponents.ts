@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-lines-per-function */
+import { StatisticModalComponents } from '../../interfaces/ViewInterfaces';
 
-const statisticModalComponents = {
+const statisticModalComponents: StatisticModalComponents = {
   renderStatisticModalComponents() {
     return `<div id="statistic-modal">
     <div id="statistic-modal-header">
@@ -34,10 +33,6 @@ const statisticModalComponents = {
       <td class="statistic"></td>
       <td class="statistic"></td>
     </tr>`;
-  },
-
-  renderDateSelect(dates) {
-    return dates.map((date) => `<option value="${date}">${date}</option>`);
   },
 };
 

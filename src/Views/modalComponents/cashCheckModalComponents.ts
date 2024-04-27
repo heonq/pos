@@ -1,6 +1,6 @@
 import formatter from '../../../utils/formatter';
 import { CashCheck } from '../../interfaces/DataInterfaces';
-import commonModalComponents from './commonModalComponents.js';
+import commonModalComponents from './commonModalComponents';
 import { CashCheckModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
 const cashCheckModalComponents: CashCheckModalComponentsInterface = {

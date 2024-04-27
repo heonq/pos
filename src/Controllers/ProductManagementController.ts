@@ -1,15 +1,18 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-alert */
-import ModalController from '../core/modalController.js';
+import ModalController from '../core/modalController';
 import $ from '../../utils/index.js';
-import VALUES from '../../constants/values.js';
+import VALUES from '../../constants/values';
 import validator from '../../utils/validator';
-import productModalComponents from '../Views/modalComponents/productModalComponents.js';
+import productModalComponents from '../Views/modalComponents/productModalComponents';
+import { ProductDataInterface } from '../interfaces/ModelInterfaces';
+import { Product } from '../interfaces/DataInterfaces';
+import FormGenerator from '../../utils/FormGenerator';
 
 class ProductManagementController extends ModalController {
   #productData;
 
-  constructor(productData) {
+  constructor(productData: ProductDataInterface) {
     super();
     this.#productData = productData;
   }
@@ -26,7 +29,7 @@ class ProductManagementController extends ModalController {
     }
   }
 
-  #renderCategoriesSelectOptions(select) {
+  #renderCategoriesSelectOptions(select: HTMLSelectElement) {
     const categories = Object.values(this.#productData.getCategories()).map(
       (category) => category.name,
     );
@@ -42,28 +45,36 @@ class ProductManagementController extends ModalController {
   }
 
   #getChangedProductsFromInput() {
-    const rows = $('#product-management-container').querySelectorAll('.product-inputs-row');
+    const table = $('#product-management-container') as HTMLTableElement;
+    const rows = table.querySelectorAll('.product-inputs-row') as NodeListOf<HTMLTableRowElement>;
     rows.forEach((row) => {
       this.#handleProductRow(row);
     });
   }
 
-  #handleProductRow(row) {
-    const { productNumber } = row.dataset;
-    const data = {};
+  #handleProductRow(row: HTMLTableRowElement) {
+    const productNumber = Number(row.dataset.productNumber);
+    const data = FormGenerator.generateProduct();
+    this.#handleInputs(row, data);
+    this.#handleSelects(row, data);
+    this.#productData.updateProduct(productNumber, data);
+  }
+
+  #handleInputs(row: HTMLTableRowElement, data: Product) {
     const inputs = Array.from(row.querySelectorAll('input')).filter(
       (input) => input.type !== 'checkbox',
     );
-    const selects = row.querySelectorAll('select');
     inputs.forEach((input, index) => {
       data[VALUES.inputKeys[index]] = input.value;
     });
-    selects.forEach((select, index) => {
-      data[VALUES.selectKeys[index]] = select.value;
-    });
-    data.category = this.#productData.convertCategoryNameToNumber(data.category);
-    data.display = data.display === 'true';
-    this.#productData.updateProduct(productNumber, data);
+  }
+
+  #handleSelects(row: HTMLTableRowElement, data: Product) {
+    const [category, display] = Array.from(row.querySelectorAll('select')).map(
+      (select) => select.value,
+    );
+    data.category = this.#productData.convertCategoryNameToNumber(category);
+    data.display = display === 'true';
   }
 
   #addRenderProductManagementModal() {
@@ -128,22 +139,24 @@ class ProductManagementController extends ModalController {
   }
 
   #addDeleteButtonEvent() {
-    $('#product-management-container')
-      .querySelectorAll('.product-delete-button')
-      .forEach((button) => {
-        button.addEventListener('click', (e) => {
-          if (confirm('상품을 삭제하시겠습니까?'))
-            this.#deleteProduct(e.target.closest('.product-management-row'));
-        });
+    const buttons = $('#product-management-container').querySelectorAll(
+      '.product-delete-button',
+    ) as HTMLButtonElement[];
+    buttons.forEach((button) => {
+      button.addEventListener('click', (e: MouseEvent) => {
+        if (confirm('상품을 삭제하시겠습니까?')) {
+          const target = e.target as HTMLButtonElement;
+          this.#deleteProduct(target.closest('.product-management-row') as HTMLTableRowElement);
+        }
       });
+    });
   }
 
-  #deleteProduct(inputRow) {
-    const targetNumber = inputRow.dataset.productNumber;
-    if (
-      !validator.validateSalesQuantity(this.#productData.getProducts()[targetNumber].salesQuantity)
-    )
-      return;
+  #deleteProduct(inputRow: HTMLTableRowElement) {
+    const targetNumber = Number(inputRow.dataset.productNumber);
+    const targetProduct = this.#productData.getProducts()[targetNumber];
+    const salesQuantity = Number(targetProduct.salesQuantity);
+    if (!validator.validateSalesQuantity(salesQuantity)) return;
     const childNode = inputRow;
     $('#product-list-container').removeChild(childNode);
     this.#productData.deleteProduct(targetNumber);
@@ -169,21 +182,26 @@ class ProductManagementController extends ModalController {
   }
 
   #addHandleSelectedEvent() {
-    $('#product-management-buttons').addEventListener('change', (e) => {
-      if (e.target.value === 'delete-selected') this.#handleDeleteSelected();
-      if (e.target.value === 'display-selected') this.#controllSelectedDisplay(true);
-      if (e.target.value === 'hide-selected') this.#controllSelectedDisplay(false);
-      if (e.target.value === 'change-selected-category') this.#showSelectCategory();
-      e.target.value = 'default';
+    $('#product-management-buttons').addEventListener('change', (e: Event) => {
+      const target = e.target as HTMLSelectElement;
+      if (target.value === 'delete-selected') this.#handleDeleteSelected();
+      if (target.value === 'display-selected') this.#controllSelectedDisplay(true);
+      if (target.value === 'hide-selected') this.#controllSelectedDisplay(false);
+      if (target.value === 'change-selected-category') this.#showSelectCategory();
+      target.value = 'default';
     });
   }
 
-  #getSelectedRows() {
+  #getSelectedRows(): HTMLTableRowElement[] {
+    const table = $('#product-list-container') as HTMLTableElement;
     const rows = Array.from(
-      $('#product-list-container').querySelectorAll('.product-management-row'),
-    ).filter((row) => row.querySelector('.select-product-button').checked === true);
+      table.querySelectorAll('.product-management-row'),
+    ) as HTMLTableRowElement[];
+    const returnRows = rows.filter(
+      (row) => (row.querySelector('.select-product-button') as HTMLInputElement).checked === true,
+    );
     if (!validator.validateSelectedRows(rows.length)) return [];
-    return rows;
+    return returnRows;
   }
 
   #handleDeleteSelected() {
@@ -195,14 +213,14 @@ class ProductManagementController extends ModalController {
     }
   }
 
-  #controllSelectedDisplay(boolean) {
+  #controllSelectedDisplay(boolean: boolean) {
     const rows = this.#getSelectedRows();
     if (!rows.length) return;
     const boolText = boolean ? 'true' : 'false';
     if (confirm('선택한 상품의 전시상태를 수정하시겠습니까?')) {
-      for (let i = 0; i < rows.length; i += 1) {
-        rows[i].querySelector(`.product-display-${boolText}`).selected = true;
-      }
+      rows.forEach((row) => {
+        (row.querySelector(`.product-display-${boolText}`) as HTMLOptionElement).selected = true;
+      });
       this.#deselectTotal();
     }
   }
@@ -219,9 +237,9 @@ class ProductManagementController extends ModalController {
   #submitCategory() {
     const category = $('#category-select').value;
     const selectedRows = this.#getSelectedRows();
-    for (let i = 0; i < selectedRows.length; i += 1) {
-      selectedRows[i].querySelector('.product-categories-select').value = category;
-    }
+    selectedRows.forEach((row) => {
+      (row.querySelector('.product-categories-select') as HTMLOptionElement).value = category;
+    });
   }
 
   #showSelectCategory() {

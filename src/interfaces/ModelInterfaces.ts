@@ -7,6 +7,7 @@ import {
   PaymentInfo,
   SplitPayment,
   CashCheck,
+  Statistic,
 } from './DataInterfaces';
 import { DiscountType, PaymentMethod, SalesHistory } from '../Types/Types';
 
@@ -19,8 +20,8 @@ export interface ProductDataInterface {
   convertCategoryNameToNumber(categoryName: string): number;
   deleteProduct(targetNumber: number): void;
   deleteCategory(targetNumber: number): void;
-  registerProduct(dataToUpdate: Products): void;
-  registerCategory(dataToUpdate: Categories): void;
+  registerProduct(): void;
+  registerCategory(): void;
   updateProduct(productNumber: number, updateData: Product): void;
   updateCategory(categoryNumber: number, updateData: Category): void;
   getNewestNumber(type: string): number;
@@ -38,7 +39,7 @@ export interface ShoppingCartDataInterface {
 }
 
 export interface SalesDataInterface {
-  initSaleshistory(dateText: string): void;
+  initSalesHistory(dateText: string): void;
   setSalesInfo(paymentInfo: PaymentInfo): void;
   initSalesInfo({ chargeAmount, method }: { chargeAmount: number; method: PaymentMethod }): void;
   handleETCInfo(paymentInfo: PaymentInfo): void;
@@ -47,15 +48,10 @@ export interface SalesDataInterface {
   refund(date: string, salesNumber: number): void;
   editNote(date: string, salesNumber: number, editedNote: string): void;
   handleSplitPayment(splitPayment: SplitPayment): void;
-  getSalesNumber(): void;
-  getSaleshistory(dateText: string): void;
-  getDateWithSales(): void;
-  getStatistic(dateText: string): {
-    totalAmount: number;
-    cardAmount: number;
-    cashAmount: number;
-    wireAmount: number;
-  };
+  getSalesNumber(): number;
+  getSalesHistory(dateText: string): SalesHistory;
+  getDateWithSales(): string[];
+  getStatistic(dateText: string): Statistic;
   getTotalChargeAmount(filteredHistory: SalesHistory): number;
   getFilteredHistory(method: PaymentMethod): SalesHistory;
 }

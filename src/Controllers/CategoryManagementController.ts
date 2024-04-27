@@ -1,12 +1,14 @@
 import $ from '../../utils/index.js';
-import categoryModalComponents from '../Views/modalComponents/categoryModalComponents.js';
-import ModalController from '../core/modalController.js';
+import categoryModalComponents from '../Views/modalComponents/categoryModalComponents';
+import ModalController from '../core/modalController';
 import validator from '../../utils/validator';
+import { ProductDataInterface } from '../interfaces/ModelInterfaces';
+import FormGenerator from '../../utils/FormGenerator';
 
 class CategoryManagementController extends ModalController {
   #productData;
 
-  constructor(productData) {
+  constructor(productData: ProductDataInterface) {
     super();
     this.#productData = productData;
   }
@@ -39,7 +41,7 @@ class CategoryManagementController extends ModalController {
       this.#setChangedCategoriesToStorage.bind(this),
     );
     this.addCancelButtonEvent();
-    this.enableSubmitButton('category-management-submit');
+    this.enableSubmitButton();
     this.#addHandleSelectedEvent();
     this.#addToggleTotalSelectsEvent();
     this.addRerenderClassName();
@@ -48,15 +50,18 @@ class CategoryManagementController extends ModalController {
   #addDeleteCategoryEvent() {
     $('#category-management-list-container')
       .querySelectorAll('.delete-category-button')
-      .forEach((button) => {
+      .forEach((button: HTMLButtonElement) => {
         button.addEventListener('click', (e) => {
-          if (confirm('카테고리를 삭제하시겠습니까?'))
-            this.#deleteCategory(e.target.closest('.category-management-row'));
+          if (confirm('카테고리를 삭제하시겠습니까?')) {
+            const targetElement = e.target as HTMLElement;
+            const closestRow = targetElement.closest('.category-management-row') as HTMLElement;
+            if (closestRow) this.#deleteCategory(closestRow);
+          }
         });
       });
   }
 
-  #deleteCategory(inputRow) {
+  #deleteCategory(inputRow: HTMLElement) {
     const targetNumber = Number(inputRow.dataset.categoryNumber);
     const childNode = inputRow;
     if (
@@ -74,15 +79,17 @@ class CategoryManagementController extends ModalController {
     const rows = $('#category-management-list-container').querySelectorAll(
       '.category-management-row',
     );
-    rows.forEach((row) => {
-      const { categoryNumber } = row.dataset;
-      const data = {};
-      const categoryName = row.querySelector('.category-name-input').value;
-      const display = row.querySelector('select').value;
-      data.name = categoryName;
-      data.display = display === 'true';
-      data.number = categoryNumber;
-      this.#productData.updateCategory(categoryNumber, data);
+    rows.forEach((row: HTMLElement) => {
+      const categoryNumber = Number(row.dataset.categoryNumber);
+      const data = FormGenerator.generateCategory();
+      const categoryNameInput = row.querySelector('.category-name-input') as HTMLInputElement;
+      const displaySelect = row.querySelector('select') as HTMLSelectElement;
+      if (categoryNameInput && displaySelect) {
+        data.name = categoryNameInput.value;
+        data.display = displaySelect.value === 'true';
+        data.number = categoryNumber;
+        this.#productData.updateCategory(categoryNumber, data);
+      }
     });
   }
 
@@ -101,20 +108,25 @@ class CategoryManagementController extends ModalController {
     );
   }
 
-  #getSelectedRows() {
-    const rows = Array.from(
+  #getSelectedRows(): HTMLTableRowElement[] {
+    const totalRows = Array.from(
       $('#category-management-list-container').querySelectorAll('.category-management-row'),
-    ).filter((row) => row.querySelector('.category-select-button').checked === true);
+    ) as HTMLTableRowElement[];
+    const rows = totalRows.filter((row) => {
+      const selectButton = row.querySelector('.category-select-button') as HTMLInputElement;
+      if (selectButton) return selectButton.checked === true;
+    });
     if (!validator.validateSelectedRows(rows.length)) return [];
     return rows;
   }
 
   #addHandleSelectedEvent() {
-    $('#category-management-buttons').addEventListener('change', (e) => {
-      if (e.target.value === 'delete-selected-categories') this.#handleDeleteSelected();
-      if (e.target.value === 'display-selected-categories') this.#controllSelectedDisplay(true);
-      if (e.target.value === 'hide-selected-categories') this.#controllSelectedDisplay(false);
-      e.target.value = 'default';
+    $('#category-management-buttons').addEventListener('change', (e: Event) => {
+      const target = e.target as HTMLSelectElement;
+      if (target.value === 'delete-selected-categories') this.#handleDeleteSelected();
+      if (target.value === 'display-selected-categories') this.#controllSelectedDisplay(true);
+      if (target.value === 'hide-selected-categories') this.#controllSelectedDisplay(false);
+      target.value = 'default';
     });
   }
 
@@ -123,19 +135,20 @@ class CategoryManagementController extends ModalController {
     if (!rows.length) return;
     if (confirm('선택한 카테고리를 모두 삭제하시겠습니까?')) {
       rows.forEach((row) => this.#deleteCategory(row));
-      this.#deselectTotal();
+      this.deselectTotal();
     }
   }
 
-  #controllSelectedDisplay(boolean) {
+  #controllSelectedDisplay(boolean: boolean) {
     const rows = this.#getSelectedRows();
     if (!rows.length) return;
     const boolText = boolean ? 'true' : 'false';
     if (confirm('선택한 카테고리의 전시상태를 수정하시겠습니까?')) {
-      for (let i = 0; i < rows.length; i += 1) {
-        rows[i].querySelector(`.category-display-${boolText}`).selected = true;
-      }
-      this.#deselectTotal();
+      rows.forEach((row) => {
+        const select = row.querySelector(`.category-display-${boolText}`) as HTMLOptionElement;
+        select.selected = true;
+      });
+      this.deselectTotal();
     }
   }
 
@@ -149,7 +162,7 @@ class CategoryManagementController extends ModalController {
     }
   }
 
-  #deselectTotal() {
+  private deselectTotal() {
     $('#select-total-category-button').checked = false;
     this.#toggleTotalSelects();
   }

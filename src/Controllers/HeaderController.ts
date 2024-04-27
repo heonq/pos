@@ -1,6 +1,6 @@
 import $ from '../../utils/index.js';
 import store from '../../utils/store.js';
-import ModalController from '../core/modalController.js';
+import ModalController from '../core/modalController';
 
 class HeaderController extends ModalController {
   init() {
@@ -14,8 +14,8 @@ class HeaderController extends ModalController {
   }
 
   #hideComponentNotUsing() {
-    $('body').addEventListener('click', (e) => {
-      const targetId = e.target.id;
+    $('body').addEventListener('click', (e: MouseEvent) => {
+      const targetId = (e.target as HTMLElement).id;
       this.#foldViewModeList(targetId);
       this.#foldProductManagementList(targetId);
     });
@@ -28,9 +28,9 @@ class HeaderController extends ModalController {
   }
 
   #addToggleViewMode() {
-    $('#hidden-view-list').addEventListener('click', (e) => {
+    $('#hidden-view-list').addEventListener('click', (e: MouseEvent) => {
       this.#foldViewModeList();
-      if (e.target.id === 'category-mode') return this.#setButtonCategoryMode();
+      if ((e.target as HTMLElement).id === 'category-mode') return this.#setButtonCategoryMode();
       return this.#setButtonTotalMode();
     });
   }
@@ -48,7 +48,8 @@ class HeaderController extends ModalController {
   }
 
   #selectTotalButton() {
-    const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
+    const hiddenViewList = document.querySelector('#hidden-view-list') as HTMLDivElement;
+    const menus = hiddenViewList.querySelectorAll('div');
     menus.forEach((menu) => {
       if (menu.id === 'total-mode') return menu.classList.add('selected');
       return menu.classList.remove('selected');
@@ -56,7 +57,8 @@ class HeaderController extends ModalController {
   }
 
   #selectCategoryButton() {
-    const menus = document.querySelector('#hidden-view-list').querySelectorAll('div');
+    const hiddenViewList = document.querySelector('#hidden-view-list') as HTMLDivElement;
+    const menus = hiddenViewList.querySelectorAll('div');
     menus.forEach((menu) => {
       if (menu.id === 'category-mode') return menu.classList.add('selected');
       return menu.classList.remove('selected');
@@ -69,7 +71,7 @@ class HeaderController extends ModalController {
     return this.#setButtonTotalMode();
   }
 
-  #foldViewModeList(targetId) {
+  #foldViewModeList(targetId: string = '') {
     const IDS = ['view-mode-button', 'category-mode', 'total-mode'];
     if (!IDS.includes(targetId)) {
       $('#view-container').classList.remove('expanded');
@@ -82,7 +84,7 @@ class HeaderController extends ModalController {
     });
   }
 
-  #foldProductManagementList(targetId) {
+  #foldProductManagementList(targetId: string) {
     if (targetId !== 'product-management-button')
       $('#product-management-button-container').classList.remove('expanded');
   }
@@ -96,8 +98,8 @@ class HeaderController extends ModalController {
   }
 
   #preventModalEnterKey() {
-    $('#modal-container').addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) e.preventDefault();
+    $('#modal-container').addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter') e.preventDefault();
     });
   }
 }

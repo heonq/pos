@@ -1,13 +1,16 @@
 import $ from '../../utils/index.js';
-import ModalController from '../core/modalController.js';
-import statisticModalComponents from '../Views/modalComponents/statisticModalComponents.js';
+import ModalController from '../core/modalController';
+import statisticModalComponents from '../Views/modalComponents/statisticModalComponents';
 import formatter from '../../utils/formatter';
-import VALUES from '../../constants/values.js';
+import VALUES from '../../constants/values';
+import { SalesDataInterface } from '../interfaces/ModelInterfaces';
+import flatpickr from 'flatpickr';
+import { Statistic } from '../interfaces/DataInterfaces';
 
 class StatisticController extends ModalController {
   #salesData;
 
-  constructor(salesData) {
+  constructor(salesData: SalesDataInterface) {
     super();
     this.#salesData = salesData;
   }
@@ -47,7 +50,7 @@ class StatisticController extends ModalController {
       $('#plus-statistic-row-button').classList.add('hide');
   }
 
-  #renderStatisticRow(dates, statistics, i) {
+  #renderStatisticRow(dates: string[], statistics: Statistic[], i: number) {
     $('#statistic-body').insertAdjacentHTML(
       'beforeend',
       statisticModalComponents.renderStatisticRow(),
@@ -58,31 +61,33 @@ class StatisticController extends ModalController {
     this.#renderStatisticContent(rows[rows.length - 1], statistics[i]);
   }
 
-  #renderDateSelect(row, dates, index) {
-    flatpickr(row.querySelector('.statistic-date-select'), {
+  #renderDateSelect(row: HTMLTableRowElement, dates: string[], index: number) {
+    const dateInput = row.querySelector('.statistic-date-select') as HTMLInputElement;
+    flatpickr(dateInput, {
       defaultDate: dates[index],
       enable: dates,
       locale: 'ko',
     });
   }
 
-  #renderStatisticContent(row, statistic) {
-    const tds = row.querySelectorAll('.statistic');
-    for (let i = 0; i < VALUES.statisticKeys.length; i += 1) {
-      tds[i].innerText = formatter.formatNumber(statistic[VALUES.statisticKeys[i]]);
-    }
+  #renderStatisticContent(row: HTMLTableRowElement, statistic: Statistic) {
+    const tds = row.querySelectorAll('.statistic') as NodeListOf<HTMLTableCellElement>;
+    tds.forEach((td, index) => {
+      td.innerText = formatter.formatNumber(statistic[VALUES.statisticKeys[index]]);
+    });
   }
 
-  #addSelectDateEvent(row) {
+  #addSelectDateEvent(row: HTMLTableRowElement) {
     row.addEventListener('change', (e) => {
-      if (e.target.classList.contains('statistic-date-select')) {
-        this.#renderStatisticBySelectedDate(e.target);
+      const target = e.target as HTMLInputElement;
+      if (target.classList.contains('statistic-date-select')) {
+        this.#renderStatisticBySelectedDate(target);
       }
     });
   }
 
-  #renderStatisticBySelectedDate(target) {
-    const row = target.closest('.statistic-row');
+  #renderStatisticBySelectedDate(target: HTMLInputElement) {
+    const row = target.closest('.statistic-row') as HTMLTableRowElement;
     const dateText = target.value;
     const statistic = this.#salesData.getStatistic(dateText);
     this.#renderStatisticContent(row, statistic);

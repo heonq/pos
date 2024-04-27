@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable max-lines-per-function */
 import formatter from '../../../utils/formatter';
+import { SalesHistoryModalComponentsInterface } from '../../interfaces/ViewInterfaces';
 
-const salesHistoryModalComponents = {
+const salesHistoryModalComponents: SalesHistoryModalComponentsInterface = {
   renderSalesHistoryContainer() {
     return `
     <div id="sales-history-header"><h3 id="sales-history-title">판매내역</h3><button class="sales-history-close-button" id="close-button">X</button></div>
@@ -79,13 +80,13 @@ const salesHistoryModalComponents = {
   },
 
   replaceEditButtonToSubmit(e) {
-    e.target.className = 'submit-edit-button';
-    e.target.innerText = '확인';
+    (e.target as HTMLElement).className = 'submit-edit-button';
+    (e.target as HTMLElement).innerText = '확인';
   },
 
   replaceSubmitButtonToEdit(e) {
-    e.target.className = 'edit-button';
-    e.target.innerText = '수정';
+    (e.target as HTMLElement).className = 'edit-button';
+    (e.target as HTMLElement).innerText = '수정';
   },
 
   replaceNoteSpanWithInput(span) {
@@ -93,14 +94,14 @@ const salesHistoryModalComponents = {
     noteInput.className = 'note-input';
     noteInput.type = 'text';
     noteInput.value = span.innerText;
-    span.parentNode.replaceChild(noteInput, span);
+    span.parentNode!.replaceChild(noteInput, span);
   },
 
   replaceNoteInputWithSpan(input) {
     const noteSpan = document.createElement('span');
     noteSpan.className = 'note-span';
     noteSpan.innerText = input.value;
-    input.parentNode.replaceChild(noteSpan, input);
+    input.parentNode!.replaceChild(noteSpan, input);
   },
 };
 
