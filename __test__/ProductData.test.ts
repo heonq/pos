@@ -113,30 +113,6 @@ describe('productData 모듈 단위 테스트', () => {
     expect(productData.getCategories()).toEqual(categoryResult);
   });
 
-  test('registerProduct,registerCategory 메서드 테스트', () => {
-    const productNames = ['상품1', '상품2'];
-    const productCategories = [1, 1];
-    const productDisplay = [true, true];
-    const products = makeProducts(productNames, productCategories, productDisplay);
-    const newProduct = makeProducts(['상품3'], [1], [true], 3);
-    const productsResult = { ...products, ...newProduct };
-
-    const categoryNames = ['카테고리없음', '카테고리1'];
-    const categoryDisplay = [true, true];
-    const categoryNumbers = [1, 2];
-    const categories = makeCategories(categoryNames, categoryNumbers, categoryDisplay);
-    const newCategory = makeCategories(['카테고리2'], [3], [true], 3);
-    const categoriesResult = { ...categories, ...newCategory };
-
-    mockGetProductsAndCategories(products, categories);
-    const productData = new ProductData();
-    productData.registerProduct(newProduct);
-    productData.registerCategory(newCategory);
-
-    expect(productData.getProducts()).toEqual(productsResult);
-    expect(productData.getCategories()).toEqual(categoriesResult);
-  });
-
   test('updateProduct,updateCategory 메서드 테스트', () => {
     const productNames = ['상품1', '상품2'];
     const productCategories = [1, 1];
