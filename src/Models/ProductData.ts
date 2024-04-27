@@ -72,13 +72,11 @@ export default class ProductData implements ProductDataInterface {
     delete this.#categories[targetNumber];
   }
 
-  registerProduct(dataToUpdate: Products) {
-    this.#products = { ...this.#products, ...dataToUpdate };
+  registerProduct() {
     store.setStorage('products', this.#products);
   }
 
-  registerCategory(dataToUpdate: Categories) {
-    this.#categories = { ...this.#categories, ...dataToUpdate };
+  registerCategory() {
     store.setStorage('categories', this.#categories);
   }
 
