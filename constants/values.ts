@@ -1,15 +1,15 @@
 import { PaymentMethod } from '../src/Types/Types';
 
 interface VALUES {
-  discountType: { [key: string]: string };
-  paymentMethods: PaymentMethod[];
-  inputKeys: string[];
-  selectKeys: string[];
-  display: { [key: string]: boolean | string };
-  methods: PaymentMethod[];
-  currencyUnits: number[];
-  statisticKeys: string[];
-  statisticPlusCount: number;
+  readonly discountType: { [key: string]: string };
+  readonly paymentMethods: string[];
+  readonly inputKeys: string[];
+  readonly selectKeys: string[];
+  readonly display: { [key: string]: boolean | string };
+  readonly methods: PaymentMethod[];
+  readonly currencyUnits: number[];
+  readonly statisticKeys: string[];
+  readonly statisticPlusCount: number;
 }
 
 const VALUES: VALUES = {
