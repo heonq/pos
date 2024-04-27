@@ -3,41 +3,41 @@ import { ShoppingCartDataInterface } from '../interfaces/ModelInterfaces';
 import { ShoppingCartProduct, Product } from '../interfaces/DataInterfaces';
 
 export default class ShoppingCartData implements ShoppingCartDataInterface {
-  private shoppingCart: ShoppingCartProduct[];
+  #shoppingCart: ShoppingCartProduct[];
 
   constructor() {
-    this.shoppingCart = store.getStorage('shoppingCart') ?? [];
+    this.#shoppingCart = store.getStorage('shoppingCart') ?? [];
   }
 
   getShoppingCartData(): ShoppingCartProduct[] {
-    return this.shoppingCart;
+    return this.#shoppingCart;
   }
 
   getTotalAmount(): number {
-    return this.shoppingCart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+    return this.#shoppingCart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
   }
 
-  private setShoppingCart() {
+  #setShoppingCart() {
     store.setStorage(
       'shoppingCart',
-      this.shoppingCart.filter((product) => product.quantity > 0),
+      this.#shoppingCart.filter((product) => product.quantity > 0),
     );
   }
 
   addToShoppingCart(product: Product) {
-    const productToAdd = this.createProductData(product);
-    const existProduct = this.shoppingCart.find(
+    const productToAdd = this.#createProductData(product);
+    const existProduct = this.#shoppingCart.find(
       (cartProduct) => cartProduct.number === productToAdd.number,
     );
     if (existProduct) existProduct.quantity += 1;
-    else this.shoppingCart.push(productToAdd);
-    this.setShoppingCart();
+    else this.#shoppingCart.push(productToAdd);
+    this.#setShoppingCart();
   }
 
-  private createProductData(product: Product): ShoppingCartProduct {
+  #createProductData(product: Product): ShoppingCartProduct {
     const productToAdd = {
       name: product.name,
-      number: product.number,
+      number: Number(product.number),
       price: product.price,
       quantity: 1,
     };
@@ -45,33 +45,33 @@ export default class ShoppingCartData implements ShoppingCartDataInterface {
   }
 
   plusQuantity(productNumber: number) {
-    const productToPlus = this.shoppingCart.find((product) => product.number === productNumber);
+    const productToPlus = this.#shoppingCart.find((product) => product.number === productNumber);
     if (productToPlus) {
       productToPlus.quantity += 1;
-      this.setShoppingCart();
+      this.#setShoppingCart();
     }
   }
 
   minusQuantity(productNumber: number) {
-    const productToMinus = this.shoppingCart.find((product) => product.number === productNumber);
+    const productToMinus = this.#shoppingCart.find((product) => product.number === productNumber);
     if (productToMinus) {
       if (productToMinus.quantity > 1) productToMinus.quantity -= 1;
       else this.deleteFromCart(productNumber);
-      this.setShoppingCart();
+      this.#setShoppingCart();
     }
   }
 
   deleteFromCart(productNumber: number) {
-    const productToDelete = this.shoppingCart.find((product) => product.number === productNumber);
+    const productToDelete = this.#shoppingCart.find((product) => product.number === productNumber);
     if (productToDelete) {
       productToDelete.quantity = 0;
-      this.shoppingCart = this.shoppingCart.filter((product) => product.quantity > 0);
-      this.setShoppingCart();
+      this.#shoppingCart = this.#shoppingCart.filter((product) => product.quantity > 0);
+      this.#setShoppingCart();
     }
   }
 
   initShoppingCart() {
-    this.shoppingCart = [];
-    this.setShoppingCart();
+    this.#shoppingCart = [];
+    this.#setShoppingCart();
   }
 }

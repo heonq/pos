@@ -4,16 +4,20 @@ import productComponents from '../Views/productComponents';
 import { ProductDataInterface } from '../interfaces/ModelInterfaces';
 
 class ProductsController {
-  constructor(private productData: ProductDataInterface) {}
+  #productData;
 
-  init() {
-    this.renderViewMode();
-    this.addRenderEvent();
-    this.addSubmitButtonRerenderEvent();
+  constructor(productData: ProductDataInterface) {
+    this.#productData = productData;
   }
 
-  private addRenderEvent() {
-    const methods = [this.renderCategoryMode.bind(this), this.renderTotalMode.bind(this)];
+  init() {
+    this.#renderViewMode();
+    this.#addRenderEvent();
+    this.#addSubmitButtonRerenderEvent();
+  }
+
+  #addRenderEvent() {
+    const methods = [this.#renderCategoryMode.bind(this), this.#renderTotalMode.bind(this)];
     $('#hidden-view-list')
       .querySelectorAll('div')
       .forEach((button: HTMLElement, index: number) =>
@@ -21,17 +25,17 @@ class ProductsController {
       );
   }
 
-  private renderViewMode() {
+  #renderViewMode() {
     const viewMode: string = store.getStorage('view-mode');
-    return viewMode === 'categoryMode' ? this.renderCategoryMode() : this.renderTotalMode();
+    return viewMode === 'categoryMode' ? this.#renderCategoryMode() : this.#renderTotalMode();
   }
 
-  private renderCategoryMode() {
+  #renderCategoryMode() {
     const [categories, products] = [
-      this.productData.getCategoriesGotProduct(),
-      this.productData.getProductsInOrder(),
+      this.#productData.getCategoriesGotProduct(),
+      this.#productData.getProductsInOrder(),
     ];
-    if (!products.length) this.renderAlertMessage();
+    if (!products.length) this.#renderAlertMessage();
     else
       $('#product-container').innerHTML = productComponents.renderTotalCategoryComponent(
         categories,
@@ -39,23 +43,23 @@ class ProductsController {
       );
   }
 
-  private renderTotalMode(): void {
-    const products = this.productData.getProductsInOrder();
-    if (!products.length) this.renderAlertMessage();
+  #renderTotalMode(): void {
+    const products = this.#productData.getProductsInOrder();
+    if (!products.length) this.#renderAlertMessage();
     else $('#product-container').innerHTML = productComponents.renderTotalModeComponent(products);
   }
 
-  private renderAlertMessage(): void {
+  #renderAlertMessage(): void {
     $('#product-container').innerHTML = productComponents.renderAlertMessage();
   }
 
-  private addSubmitButtonRerenderEvent(): void {
+  #addSubmitButtonRerenderEvent(): void {
     $('#modal-container').addEventListener('click', (e: Event) => {
       const target = e.target;
       if (target instanceof HTMLElement) {
         const classList = target.classList;
         if (classList.contains('rerender')) {
-          this.renderViewMode();
+          this.#renderViewMode();
         }
       }
     });

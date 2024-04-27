@@ -9,30 +9,22 @@ import {
   ShoppingCartProduct,
   SplitPayment,
 } from '../interfaces/DataInterfaces.js';
+import { SalesDataInterface } from '../interfaces/ModelInterfaces';
+import FormGenerator from '../../utils/FormGenerator';
 
-class SalesData implements SalesData {
-  private salesInfo: SalesInfo = {
-    number: 0,
-    products: [],
-    chargeAmount: 0,
-    method: '',
-    date: '',
-    time: '',
-    discount: false,
-    discountValue: 0,
-    refund: false,
-    discountType: '',
-    note: '',
-  };
-  private salesHistory: SalesHistory = [];
+class SalesData implements SalesDataInterface {
+  #salesInfo: SalesInfo;
+  #salesHistory: SalesHistory;
 
   constructor() {
     this.initSalesHistory();
+    this.#salesInfo = FormGenerator.generateSalesInfo();
+    this.#salesHistory = [];
   }
 
-  initSalesHistory(dateText = formatter.formatDate(new Date())) {
+  initSalesHistory(dateText: string = formatter.formatDate(new Date())) {
     if (!store.getStorage('salesHistories')) store.setStorage('salesHistories', { [dateText]: [] });
-    this.salesHistory = store.getStorage('salesHistories')[dateText] ?? [];
+    this.#salesHistory = store.getStorage('salesHistories')[dateText] ?? [];
   }
 
   setSalesInfo(paymentInfo: PaymentInfo) {
@@ -59,7 +51,7 @@ class SalesData implements SalesData {
     };
   }
 
-  private getShoppingCartWithoutName(): ShoppingCartProduct[] {
+  #getShoppingCartWithoutName(): ShoppingCartProduct[] {
     const products =
       store.getStorage('shoppingCart') ??
       [].map((product) => {
@@ -71,20 +63,20 @@ class SalesData implements SalesData {
   }
 
   handleETCInfo(paymentInfo: PaymentInfo) {
-    if (this.salesInfo.method === '기타결제') {
-      this.salesInfo.chargeAmount = 0;
-      this.salesInfo.note = paymentInfo.ETCReason;
+    if (this.#salesInfo.method === '기타결제') {
+      this.#salesInfo.chargeAmount = 0;
+      this.#salesInfo.note = paymentInfo.ETCReason;
     }
   }
 
   handleDiscountInfo(paymentInfo: PaymentInfo) {
     const { discountType } = paymentInfo;
     const { discountValue } = paymentInfo;
-    this.salesInfo.discountValue = discountValue;
+    this.#salesInfo.discountValue = discountValue;
     if (paymentInfo.discountValue > 0 && discountType !== '') {
-      this.salesInfo.discountType = discountType;
-      this.salesInfo.discount = true;
-      this.salesInfo.note = `할인 사유 : ${paymentInfo.discountReason} 할인금액 : ${formatter.formatNumber(
+      this.#salesInfo.discountType = discountType;
+      this.#salesInfo.discount = true;
+      this.#salesInfo.note = `할인 사유 : ${paymentInfo.discountReason} 할인금액 : ${formatter.formatNumber(
         discountValue,
       )}${VALUES.discountType[discountType]}`;
     }
@@ -94,13 +86,13 @@ class SalesData implements SalesData {
     this.setSalesInfo(paymentInfo);
     if (paymentInfo.method === '분할결제') {
       this.handleSplitPayment(splitPayment);
-    } else this.salesHistory.push(this.salesInfo);
+    } else this.#salesHistory.push(this.#salesInfo);
     const salesHistories = store.getStorage('salesHistories');
-    salesHistories[formatter.formatDate(new Date())] = this.salesHistory;
+    salesHistories[formatter.formatDate(new Date())] = this.#salesHistory;
     store.setStorage('salesHistories', salesHistories);
   }
 
-  private getSalesHistoryForUpdate(
+  #getSalesHistoryForUpdate(
     date: string,
     salesNumber: number,
   ): [{ [key: string]: SalesHistory }, SalesInfo] {
@@ -110,9 +102,12 @@ class SalesData implements SalesData {
   }
 
   refund(date: string, salesNumber: number) {
-    const [totalSalesHistories, originalHistory] = this.getSalesHistoryForUpdate(date, salesNumber);
+    const [totalSalesHistories, originalHistory] = this.#getSalesHistoryForUpdate(
+      date,
+      salesNumber,
+    );
     originalHistory.refund = true;
-    const refundHistory = this.makeRefundHistory(originalHistory);
+    const refundHistory = this.#makeRefundHistory(originalHistory);
     const today = formatter.formatDate(new Date());
     if (!totalSalesHistories[today]) totalSalesHistories[today] = [];
     refundHistory.number = totalSalesHistories[today].length + 1;
@@ -121,7 +116,7 @@ class SalesData implements SalesData {
     store.setStorage('salesHistories', totalSalesHistories);
   }
 
-  private makeRefundHistory(originalHistory: SalesInfo): SalesInfo {
+  #makeRefundHistory(originalHistory: SalesInfo): SalesInfo {
     const refundHistory = deepCopy(originalHistory);
     for (let i = 0; i < refundHistory.products.length; i += 1)
       refundHistory.products[i].quantity *= -1;
@@ -132,30 +127,33 @@ class SalesData implements SalesData {
   }
 
   editNote(date: string, salesNumber: number, editedNote: string) {
-    const [totalSalesHistories, originalHistory] = this.getSalesHistoryForUpdate(date, salesNumber);
+    const [totalSalesHistories, originalHistory] = this.#getSalesHistoryForUpdate(
+      date,
+      salesNumber,
+    );
     originalHistory.note = editedNote;
     store.setStorage('salesHistories', totalSalesHistories);
   }
 
   handleSplitPayment(splitPayment: SplitPayment) {
-    this.salesInfo.note += `분할결제 : ${this.salesInfo.number},${this.salesInfo.number + 1}`;
+    this.#salesInfo.note += `분할결제 : ${this.#salesInfo.number},${this.#salesInfo.number + 1}`;
     splitPayment.amounts.forEach((amount, index) => {
-      this.salesInfo.chargeAmount = amount;
-      this.salesInfo.method = splitPayment.methods[index];
-      this.salesHistory.push({ ...this.salesInfo });
-      this.salesInfo.products = [];
-      this.salesInfo.number += 1;
+      this.#salesInfo.chargeAmount = amount;
+      this.#salesInfo.method = splitPayment.methods[index];
+      this.#salesHistory.push({ ...this.#salesInfo });
+      this.#salesInfo.products = [];
+      this.#salesInfo.number += 1;
     });
   }
 
   getSalesNumber(): number {
     this.initSalesHistory();
-    return this.salesHistory[this.salesHistory.length - 1]?.number ?? 0;
+    return this.#salesHistory[this.#salesHistory.length - 1]?.number ?? 0;
   }
 
   getSalesHistory(dateText: string): SalesHistory {
     this.initSalesHistory(dateText);
-    return this.salesHistory;
+    return this.#salesHistory;
   }
 
   getDateWithSales(): string[] {
@@ -164,7 +162,7 @@ class SalesData implements SalesData {
 
   getStatistic(dateText: string) {
     this.initSalesHistory(dateText);
-    const totalAmount = this.getTotalChargeAmount(this.salesHistory);
+    const totalAmount = this.getTotalChargeAmount(this.#salesHistory);
     const [cardAmount, cashAmount, wireAmount] = VALUES.methods.map((method) =>
       this.getTotalChargeAmount(this.getFilteredHistory(method)),
     );
@@ -181,7 +179,7 @@ class SalesData implements SalesData {
   }
 
   getFilteredHistory(method: PaymentMethod): SalesHistory {
-    return this.salesHistory.filter((sale) => sale.method === method);
+    return this.#salesHistory.filter((sale) => sale.method === method);
   }
 }
 
