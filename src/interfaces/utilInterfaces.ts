@@ -1,4 +1,11 @@
-import { Product, Category } from './DataInterfaces';
+import {
+  Product,
+  Category,
+  CashCheck,
+  PaymentInfo,
+  SalesInfo,
+  ShoppingCartProduct,
+} from './DataInterfaces';
 
 export interface Formatter {
   formatNumber(number: number): string;
@@ -30,4 +37,17 @@ export interface Validator {
   validateCategoryDelete(categoryNumber: number, products: Product[]): boolean;
   validateCashCheckInputs(values: number[]): boolean;
   validateRefund(refundHistory: string): boolean;
+}
+
+export interface FormGeneratorInterface {
+  generateProduct(): Product;
+  generateCategory(): Category;
+  generateCashCheck(): CashCheck;
+  generatePaymentInfo(chargeAmount?: number, totalAmount?: number): PaymentInfo;
+  generateSalesInfo(
+    date?: Date,
+    products?: ShoppingCartProduct[],
+    chargeAmount?: number,
+    method?: string,
+  ): SalesInfo;
 }

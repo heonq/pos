@@ -36,19 +36,8 @@ class SalesData implements SalesDataInterface {
 
   initSalesInfo({ chargeAmount, method }: { chargeAmount: number; method: PaymentMethod }) {
     const date = new Date();
-    this.salesInfo = {
-      number: this.salesHistory.length + 1,
-      products: this.getShoppingCartWithoutName(),
-      chargeAmount: chargeAmount,
-      method: method,
-      date: formatter.formatDate(date),
-      time: formatter.formatTime(date),
-      discount: false,
-      discountValue: 0,
-      refund: false,
-      discountType: '',
-      note: '',
-    };
+    const products = this.#getShoppingCartWithoutName();
+    this.#salesInfo = FormGenerator.generateSalesInfo(date, products, chargeAmount, method);
   }
 
   #getShoppingCartWithoutName(): ShoppingCartProduct[] {
