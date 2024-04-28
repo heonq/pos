@@ -2,38 +2,13 @@ import store from '../../utils/store.js';
 import formatter from '../../utils/formatter';
 import { CashCheck } from '../interfaces/DataInterfaces';
 import { CashCheckDataInterface } from '../interfaces/ModelInterfaces';
+import FormGenerator from '../../utils/FormGenerator';
 
 class CashCheckData implements CashCheckDataInterface {
-  #cashCheck: CashCheck = {
-    time: '',
-    pettyCash: 0,
-    cashSalesAmount: 0,
-    currency: {
-      1000: 0,
-      5000: 0,
-      10000: 0,
-      50000: 0,
-    },
-    countedAmount: 0,
-    expectedAmount: 0,
-    correctBoolean: false,
-  };
+  #cashCheck: CashCheck = FormGenerator.generateCashCheck();
 
   initCashCheck() {
-    this.#cashCheck = {
-      time: formatter.formatTime(new Date()),
-      pettyCash: 0,
-      cashSalesAmount: 0,
-      currency: {
-        1000: 0,
-        5000: 0,
-        10000: 0,
-        50000: 0,
-      },
-      countedAmount: 0,
-      expectedAmount: 0,
-      correctBoolean: false,
-    };
+    this.#cashCheck = FormGenerator.generateCashCheck();
   }
 
   setCashCheck(key: string, value: number) {

@@ -19,7 +19,7 @@ const FormGenerator: FormGeneratorInterface = {
 
   generateCashCheck() {
     return {
-      time: '',
+      time: formatter.formatTime(new Date()),
       pettyCash: 0,
       cashSalesAmount: 0,
       currency: {
