@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./Router";
+import { RecoilRoot } from "recoil";
+import { ThemeProvider } from "styled-components";
+import { defaultTheme } from "./theme";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -8,6 +12,10 @@ const root = ReactDOM.createRoot(
 
 root.render(
 	<React.StrictMode>
-		<App />
+		<RecoilRoot>
+			<ThemeProvider theme={defaultTheme}>
+				<RouterProvider router={router} />
+			</ThemeProvider>
+		</RecoilRoot>
 	</React.StrictMode>
 );
