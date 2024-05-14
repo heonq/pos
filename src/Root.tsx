@@ -1,7 +1,7 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
 	${reset}
@@ -13,21 +13,26 @@ const GlobalStyle = createGlobalStyle`
   text-decoration : none;
   color:inherit;
 }
+body {
+  overflow:hidden;
+}
 
 #root {
   display:flex;
   flex-direction:column;
   align-items:center;
+  background-color: #f9fafc;
+  min-height:900px;
 }
 `;
 
 function Root() {
-	return (
-		<>
-			<GlobalStyle />
-			<Outlet />
-		</>
-	);
+  return (
+    <>
+      <GlobalStyle />
+      <Outlet />
+    </>
+  );
 }
 
 export default Root;
