@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase';
 import {
   Button,
   ButtonsContainer,
@@ -13,6 +15,13 @@ interface ISalesNumberAndProfileProps {
 }
 
 export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu }: ISalesNumberAndProfileProps) {
+  const navigate = useNavigate();
+
+  const logOut=async()=> {
+    await auth.signOut();
+    navigate('/login');
+  }
+  
   return (
     <ButtonsContainer>
       <PaymentNumber>
@@ -31,8 +40,7 @@ export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu 
         </ProfileMenu>
         {showProfileMenu ? (
           <HiddenButtonContainer>
-            <Button>로그아웃</Button>
-            <Button>로그아웃</Button>
+            <Button onClick={logOut}>로그아웃</Button>
           </HiddenButtonContainer>
         ) : null}
       </ExpandButtonContainer>
