@@ -26,13 +26,13 @@ const Button = styled.button`
 export default function ProductButton({ product }: IProductButtonProps) {
   const setShoppingCart = useSetRecoilState<IShoppingCartProduct[]>(shoppingCartAtom);
 
-  const addToShoppingCart = ({ number, price }: IProduct) => {
+  const addToShoppingCart = ({ name, number, price }: IProduct) => {
     setShoppingCart((prevCart) => {
       const updatedCart = prevCart.map((product) => {
-        return product.number === number ? { number, quantity: product.quantity + 1, price } : product;
+        return product.number === number ? { ...product, quantity: product.quantity + 1 } : product;
       });
       if (!prevCart.find((product) => product.number === number)) {
-        return [...prevCart, { number, quantity: 1, price }];
+        return [...prevCart, { name, number, quantity: 1, price }];
       }
       return updatedCart;
     });

@@ -15,6 +15,7 @@ export interface ICategory {
 }
 
 export interface IShoppingCartProduct {
+  name: string;
   number: number;
   price: number;
   quantity: number;

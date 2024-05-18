@@ -1,5 +1,8 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+import { shoppingCartAtom } from '../atoms';
+import ShoppingCartRow from './ShoppingCartRow';
 
 const ShoppingCartComponent = styled.div`
   height: 65%;
@@ -12,5 +15,13 @@ const ShoppingCartComponent = styled.div`
 `;
 
 export default function ShoppingCart() {
-  return <ShoppingCartComponent></ShoppingCartComponent>;
+  const shoppingCart = useRecoilValue(shoppingCartAtom);
+
+  return (
+    <ShoppingCartComponent>
+      {shoppingCart.map((cartProduct, index) => (
+        <ShoppingCartRow key={index} {...cartProduct}></ShoppingCartRow>
+      ))}
+    </ShoppingCartComponent>
+  );
 }
