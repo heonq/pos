@@ -1,5 +1,13 @@
-import React from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+import { viewModeAtom } from '../atoms';
+import { fetchProducts, fetchCategories } from '../utils/fetchFunctions';
+import { auth } from '../firebase';
+import { useQuery } from 'react-query';
+import { ICategory, IProduct } from '../Interfaces/DataInterfaces';
+import CategoryMode from './product-components/category-mode';
+import { IProductProps } from '../Interfaces/PropsInterfaces';
+import TotalMode from './product-components/total-mode';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -18,5 +26,18 @@ const ProductsContainer = styled.div`
 `;
 
 export default function Products() {
-  return <ProductsContainer></ProductsContainer>;
+  const viewMode = useRecoilValue(viewModeAtom);
+  const uid = auth.currentUser?.uid || '';
+  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
+  const { data: categories, isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () =>
+    fetchCategories(uid),
+  );
+  const props: IProductProps = { products: products ?? [], categories: categories ?? [] };
+  const isLoading = productIsLoading || categoryIsLoading;
+
+  return (
+    <ProductsContainer>
+      {isLoading ? null : viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />}
+    </ProductsContainer>
+  );
 }
