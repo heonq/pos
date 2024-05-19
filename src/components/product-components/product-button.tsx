@@ -1,6 +1,6 @@
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { shoppingCartAtom } from '../../atoms';
+import { shoppingCartSelector } from '../../atoms';
 import { IProduct, IShoppingCartProduct } from '../../Interfaces/DataInterfaces';
 import formatter from '../../utils/formatter';
 import { IProductButtonProps } from '../../Interfaces/PropsInterfaces';
@@ -24,7 +24,7 @@ const Button = styled.button`
 `;
 
 export default function ProductButton({ product }: IProductButtonProps) {
-  const setShoppingCart = useSetRecoilState<IShoppingCartProduct[]>(shoppingCartAtom);
+  const setShoppingCart = useSetRecoilState<IShoppingCartProduct[]>(shoppingCartSelector);
 
   const addToShoppingCart = ({ name, number, price }: IProduct) => {
     setShoppingCart((prevCart) => {

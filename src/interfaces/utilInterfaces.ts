@@ -1,3 +1,5 @@
+import { IPaymentInfo, ISalesHistory } from './DataInterfaces';
+
 export interface IFormatter {
   formatNumber(number: number): string;
   formatDataSetToText(dataSet: string): string;
@@ -5,4 +7,9 @@ export interface IFormatter {
   formatDate(date: Date): string;
   formatTime(date: Date): string;
   formatZero(number: string): string;
+}
+
+export interface IFormGenerator {
+  generatePaymentInfo(): IPaymentInfo;
+  generateSalesHistory(): ISalesHistory;
 }

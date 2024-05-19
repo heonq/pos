@@ -1,3 +1,5 @@
+import { discountTypeEnum, paymentMethodsEnum } from './enums';
+
 export interface IProduct {
   name: string;
   number: number;
@@ -19,4 +21,30 @@ export interface IShoppingCartProduct {
   number: number;
   price: number;
   quantity: number;
+}
+
+export interface IPaymentInfo {
+  method: paymentMethodsEnum | '';
+  discountType: discountTypeEnum | '';
+  totalAmount: number;
+  discountAmount: number;
+  discountValue: number;
+  chargedAmount: number;
+  note: string;
+}
+
+export interface ISalesHistory {
+  number: number;
+  products: IShoppingCartProduct[];
+  method: paymentMethodsEnum | '';
+  discountType: discountTypeEnum | '';
+  totalAmount: number;
+  discount: boolean;
+  discountAmount: number;
+  discountValue: number;
+  chargedAmount: number;
+  note: string;
+  date: string;
+  time: string;
+  refund: boolean;
 }

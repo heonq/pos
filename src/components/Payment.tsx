@@ -1,5 +1,9 @@
 import React from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+import { paymentInfoSelector, shoppingCartAtom } from '../atoms';
+import formatter from '../utils/formatter';
+import { paymentMethodsEnum } from '../Interfaces/enums';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -40,6 +44,9 @@ const PaymentButtons = styled.button`
   border-style: none;
   cursor: pointer;
   background-color: ${(props) => props.theme.elementBgColor};
+  &:hover {
+    filter: brightness(0.9);
+  }
 `;
 
 const PaymentMethodButtonsContainer = styled.div`
@@ -72,26 +79,50 @@ const PaymentMethodButton = styled.button`
   border-radius: ${(props) => props.theme.borderRadius};
   background-color: ${(props) => props.theme.elementBgColor};
   cursor: pointer;
+  &:hover {
+    filter: brightness(0.9);
+  }
+  &.selected {
+    background-color: blue;
+    color: white;
+  }
 `;
 
 export default function Payment() {
+  const [paymentInfo, setPaymentInfo] = useRecoilState(paymentInfoSelector);
+  const shoppingCart = useRecoilValue(shoppingCartAtom);
+  const changePaymentMethod = (method: paymentMethodsEnum) => {
+    if (!shoppingCart.length) return alert('상품을 추가해야 합니다.');
+    setPaymentInfo((prevPayment) => {
+      return { ...prevPayment, method };
+    });
+  };
+
+  const paymentMethodsFirstRow = [paymentMethodsEnum.Card, paymentMethodsEnum.Cash, paymentMethodsEnum.Transfer];
+
   return (
     <>
       <PaymentMethodButtonsContainer>
         <div>
-          <PaymentMethodButton>카드결제</PaymentMethodButton>
-          <PaymentMethodButton>현금결제</PaymentMethodButton>
-          <PaymentMethodButton>계좌이체</PaymentMethodButton>
+          {paymentMethodsFirstRow.map((method) => (
+            <PaymentMethodButton
+              className={paymentInfo.method === method ? 'selected' : ''}
+              key={method}
+              onClick={() => changePaymentMethod(method)}
+            >
+              {method}
+            </PaymentMethodButton>
+          ))}
         </div>
         <div>
-          <PaymentMethodButton>기타결제</PaymentMethodButton>
-          <PaymentMethodButton>분할결제</PaymentMethodButton>
-          <PaymentMethodButton>할인적용</PaymentMethodButton>
+          <PaymentMethodButton>{paymentMethodsEnum.Other}</PaymentMethodButton>
+          <PaymentMethodButton>{paymentMethodsEnum.Split}</PaymentMethodButton>
+          <PaymentMethodButton>{paymentMethodsEnum.Discount}</PaymentMethodButton>
         </div>
       </PaymentMethodButtonsContainer>
       <PaymentBox>
         <Amount>
-          <span>0</span>
+          <span>{formatter.formatNumber(paymentInfo.chargedAmount)}</span>
         </Amount>
         <PaymentButtonsContainer>
           <PaymentButtons>결제완료</PaymentButtons>
