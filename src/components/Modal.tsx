@@ -1,8 +1,8 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { IButtonsProps } from '../Interfaces/PropsInterfaces';
 
 export const ModalComponent = styled.div`
-  width: 1000px;
-  height: 820px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,7 +12,21 @@ export const ModalComponent = styled.div`
   justify-content: start;
   box-shadow: 15px 15px 15px rgba(69, 69, 69, 0.5);
   border-radius: 10px;
-  top: 50px;
+  &.small {
+    width: 500px;
+    height: 500px;
+    top: 200px;
+  }
+  &.big {
+    width: 1000px;
+    height: 820px;
+    top: 38px;
+  }
+  &.wide {
+    width: 1300px;
+    height: 820px;
+    top: 38px;
+  }
 `;
 
 export const Background = styled.div`
@@ -24,3 +38,50 @@ export const Background = styled.div`
   height: 100vh;
   opacity: 0.5;
 `;
+
+export const CloseButton = styled.button`
+  height: 30px;
+  width: 30px;
+  background-color: transparent;
+  font-size: 20px;
+  border: none;
+`;
+
+export const SubmitButtonsContainer = styled.div`
+  position: absolute;
+  bottom: 30px;
+  width: 280px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    font-size: 18px;
+    width: 130px;
+    height: 50px;
+    border-width: 0px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+`;
+
+export const SubmitButton = styled.button`
+  background-color: blue;
+  color: white;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+export function SubmitButtons({ onSubmitClick, disable }: IButtonsProps) {
+  return (
+    <SubmitButtonsContainer>
+      <SubmitButton onClick={onSubmitClick} disabled={disable}>
+        확인
+      </SubmitButton>
+      <Link to="/">
+        <button>취소</button>
+      </Link>
+    </SubmitButtonsContainer>
+  );
+}

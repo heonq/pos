@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { IPaymentInfo, ISalesHistory, IShoppingCartProduct } from './Interfaces/DataInterfaces';
+import { IPaymentInfo, ISalesHistory, IShoppingCartProduct, ISplitPayment } from './Interfaces/DataInterfaces';
 import FormGenerator from './utils/formGenerator';
 
 export const viewModeAtom = atom({
@@ -20,6 +20,7 @@ export const shoppingCartSelector = selector<IShoppingCartProduct[]>({
   set: ({ set, reset }, newValue) => {
     set(shoppingCartAtom, newValue);
     reset(paymentInfoAtom);
+    reset(splitPaymentAtom);
   },
 });
 
@@ -40,17 +41,18 @@ export const paymentInfoSelector = selector<IPaymentInfo>({
       chargedAmount: totalAmount,
     };
   },
-  set: ({ set }, newValue) => {
+  set: ({ set, reset }, newValue) => {
     set(paymentInfoAtom, newValue);
+    reset(splitPaymentAtom);
   },
 });
 
-export const salesNumberState = atom({
+export const salesNumberAtom = atom({
   key: 'salesNumberState',
   default: 0,
 });
 
-export const salesHistoryState = atom<ISalesHistory>({
+export const salesHistoryAtom = atom<ISalesHistory>({
   key: 'salesHistory',
   default: FormGenerator.generateSalesHistory(),
 });
@@ -60,8 +62,8 @@ export const salesHistorySelector = selector<ISalesHistory>({
   get: ({ get }) => {
     const products = get(shoppingCartSelector);
     const paymentInfo = get(paymentInfoSelector);
-    const salesNumber = get(salesNumberState) + 1;
-    const salesHistory = get(salesHistoryState);
+    const salesNumber = get(salesNumberAtom) + 1;
+    const salesHistory = get(salesHistoryAtom);
     return {
       number: salesNumber,
       products,
@@ -73,6 +75,14 @@ export const salesHistorySelector = selector<ISalesHistory>({
     };
   },
   set: ({ set }, newValue) => {
-    set(salesHistoryState, newValue);
+    set(salesHistoryAtom, newValue);
+  },
+});
+
+export const splitPaymentAtom = atom<ISplitPayment>({
+  key: 'splitPayment',
+  default: {
+    price: [0, 0],
+    method: ['', ''],
   },
 });

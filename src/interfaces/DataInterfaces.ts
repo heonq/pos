@@ -48,3 +48,8 @@ export interface ISalesHistory {
   time: string;
   refund: boolean;
 }
+
+export interface ISplitPayment {
+  price: [number, number];
+  method: [string, string];
+}

@@ -11,6 +11,7 @@ import CreateAccount from './routes/create-account';
 import Login from './routes/login';
 import ResetPassword from './routes/reset-password';
 import ProtectedRoute from './components/protected-route';
+import SplitPaymentModal from './routes/modal-router/splitPayment';
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
           {
             path: '/sales-statistics',
             element: <SalesStatistics />,
+          },
+          {
+            path: '/split-payment',
+            element: <SplitPaymentModal />,
           },
         ],
       },

@@ -9,7 +9,7 @@ import {
   ProfileMenu,
 } from './base-components';
 import { useRecoilValue } from 'recoil';
-import { salesNumberState } from '../../atoms';
+import { salesNumberAtom } from '../../atoms';
 import { ISalesNumberAndProfileProps } from '../../Interfaces/PropsInterfaces';
 
 export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu }: ISalesNumberAndProfileProps) {
@@ -19,7 +19,7 @@ export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu 
     await auth.signOut();
     navigate('/login');
   };
-  const salesNumber = useRecoilValue(salesNumberState);
+  const salesNumber = useRecoilValue(salesNumberAtom);
 
   return (
     <ButtonsContainer>

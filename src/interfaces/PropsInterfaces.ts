@@ -13,3 +13,8 @@ export interface ISalesNumberAndProfileProps {
   onProfileClick(): void;
   showProfileMenu: boolean;
 }
+
+export interface IButtonsProps {
+  onSubmitClick(): void;
+  disable: boolean;
+}

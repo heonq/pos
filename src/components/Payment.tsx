@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import {
   paymentInfoSelector,
   salesHistorySelector,
-  salesNumberState,
+  salesNumberAtom,
   shoppingCartAtom,
   shoppingCartSelector,
+  splitPaymentAtom,
 } from '../atoms';
 import formatter from '../utils/formatter';
 import { paymentMethodsEnum } from '../Interfaces/enums';
@@ -15,6 +16,7 @@ import { auth, db } from '../firebase';
 import { useQuery } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
 import { fetchSalesHistory } from '../utils/fetchFunctions';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -107,10 +109,21 @@ export default function Payment() {
   const uid = auth.currentUser?.uid;
   const date = formatter.formatDate(new Date());
   const { data, refetch } = useQuery<ISalesHistory[]>('salesHistory', () => fetchSalesHistory(uid!));
-  const setSalesNumber = useSetRecoilState(salesNumberState);
+  const setSalesNumber = useSetRecoilState(salesNumberAtom);
+  const navigate = useNavigate();
+  const splitPayment = useRecoilValue(splitPaymentAtom);
+  const salesDataCollectionRef = collection(doc(collection(db, 'salesData'), uid), date);
+
+  const checkShoppingCartEmpty = () => {
+    if (!shoppingCart.length) {
+      alert('상품을 추가해야 합니다.');
+      return true;
+    }
+    return false;
+  };
 
   const changePaymentMethod = (method: paymentMethodsEnum) => {
-    if (!shoppingCart.length) return alert('상품을 추가해야 합니다.');
+    if (checkShoppingCartEmpty()) return;
     setPaymentInfo((prevPayment) => {
       return { ...prevPayment, method };
     });
@@ -132,17 +145,44 @@ export default function Payment() {
   const storeSalesHistory = useRecoilCallback(({ snapshot }) => async () => {
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
-      const newDoc = doc(
-        collection(doc(collection(db, 'salesData'), uid), date),
-        updatedSalesHistory.number.toString(),
-      );
-      await setDoc(newDoc, updatedSalesHistory);
+      if (paymentInfo.method === paymentMethodsEnum.Split) handleSplitPayment(updatedSalesHistory);
+      else handleNormalPayment(updatedSalesHistory);
       resetShoppingCart();
-      refetch();
     } catch (e) {
       console.log(e);
     }
   });
+
+  const handleNormalPayment = async (updatedSalesHistory: ISalesHistory) => {
+    const newDoc = doc(salesDataCollectionRef, updatedSalesHistory.number.toString());
+    await setDoc(newDoc, updatedSalesHistory);
+    refetch();
+  };
+
+  const handleSplitPayment = async (updatedSalesHistory: ISalesHistory) => {
+    const firstPaymentDoc = doc(salesDataCollectionRef, updatedSalesHistory.number.toString());
+    const firstPaymentHistory = {
+      ...updatedSalesHistory,
+      paymentMethod: splitPayment.method[0],
+      chargedAmount: splitPayment.price[0],
+    };
+    await setDoc(firstPaymentDoc, firstPaymentHistory);
+    const secondPaymentDoc = doc(salesDataCollectionRef, (updatedSalesHistory.number + 1).toString());
+    const secondPaymentHistory = {
+      ...updatedSalesHistory,
+      products: [],
+      number: updatedSalesHistory.number + 1,
+      paymentMethod: splitPayment.method[1],
+      chargedAmount: splitPayment.price[1],
+    };
+    await setDoc(secondPaymentDoc, secondPaymentHistory);
+    refetch();
+  };
+
+  const onPaymentModalButtonClick = (path: string) => {
+    if (checkShoppingCartEmpty()) return;
+    navigate(path);
+  };
 
   const paymentMethodsFirstRow = [paymentMethodsEnum.Card, paymentMethodsEnum.Cash, paymentMethodsEnum.Transfer];
 
@@ -162,7 +202,12 @@ export default function Payment() {
         </div>
         <div>
           <PaymentMethodButton>{paymentMethodsEnum.Other}</PaymentMethodButton>
-          <PaymentMethodButton>{paymentMethodsEnum.Split}</PaymentMethodButton>
+          <PaymentMethodButton
+            className={paymentInfo.method === paymentMethodsEnum.Split ? 'selected' : ''}
+            onClick={() => onPaymentModalButtonClick('/split-payment')}
+          >
+            {paymentMethodsEnum.Split}
+          </PaymentMethodButton>
           <PaymentMethodButton>{paymentMethodsEnum.Discount}</PaymentMethodButton>
         </div>
       </PaymentMethodButtonsContainer>
