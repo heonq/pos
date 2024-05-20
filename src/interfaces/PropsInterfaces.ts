@@ -8,3 +8,8 @@ export interface IProductProps {
 export interface IProductButtonProps {
   product: IProduct;
 }
+
+export interface ISalesNumberAndProfileProps {
+  onProfileClick(): void;
+  showProfileMenu: boolean;
+}

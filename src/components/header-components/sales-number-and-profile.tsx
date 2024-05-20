@@ -8,25 +8,25 @@ import {
   PaymentNumber,
   ProfileMenu,
 } from './base-components';
-
-interface ISalesNumberAndProfileProps {
-  onProfileClick(): void;
-  showProfileMenu: boolean;
-}
+import { useRecoilValue } from 'recoil';
+import { salesNumberState } from '../../atoms';
+import { ISalesNumberAndProfileProps } from '../../Interfaces/PropsInterfaces';
 
 export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu }: ISalesNumberAndProfileProps) {
   const navigate = useNavigate();
 
-  const logOut=async()=> {
+  const logOut = async () => {
     await auth.signOut();
     navigate('/login');
-  }
-  
+  };
+  const salesNumber = useRecoilValue(salesNumberState);
+
   return (
     <ButtonsContainer>
       <PaymentNumber>
         판매번호
-        <br />1
+        <br />
+        {salesNumber}
       </PaymentNumber>
       <ExpandButtonContainer>
         <ProfileMenu onClick={onProfileClick}>

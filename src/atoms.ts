@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { IPaymentInfo, IShoppingCartProduct } from './Interfaces/DataInterfaces';
+import { IPaymentInfo, ISalesHistory, IShoppingCartProduct } from './Interfaces/DataInterfaces';
 import FormGenerator from './utils/formGenerator';
 
 export const viewModeAtom = atom({
@@ -42,5 +42,37 @@ export const paymentInfoSelector = selector<IPaymentInfo>({
   },
   set: ({ set }, newValue) => {
     set(paymentInfoAtom, newValue);
+  },
+});
+
+export const salesNumberState = atom({
+  key: 'salesNumberState',
+  default: 0,
+});
+
+export const salesHistoryState = atom<ISalesHistory>({
+  key: 'salesHistory',
+  default: FormGenerator.generateSalesHistory(),
+});
+
+export const salesHistorySelector = selector<ISalesHistory>({
+  key: 'salesHistorySelector',
+  get: ({ get }) => {
+    const products = get(shoppingCartSelector);
+    const paymentInfo = get(paymentInfoSelector);
+    const salesNumber = get(salesNumberState) + 1;
+    const salesHistory = get(salesHistoryState);
+    return {
+      number: salesNumber,
+      products,
+      ...paymentInfo,
+      date: salesHistory.date,
+      time: salesHistory.time,
+      discount: paymentInfo.discountAmount > 0 ? true : false,
+      refund: false,
+    };
+  },
+  set: ({ set }, newValue) => {
+    set(salesHistoryState, newValue);
   },
 });
