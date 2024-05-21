@@ -22,11 +22,11 @@ body {
   flex-direction:column;
   align-items:center;
   background-color: #f9fafc;
-  min-height:900px;
+  min-height:100vh;
 }
 `;
 
-function Root() {
+export default function Root() {
   return (
     <>
       <GlobalStyle />
@@ -34,5 +34,3 @@ function Root() {
     </>
   );
 }
-
-export default Root;
