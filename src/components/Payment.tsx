@@ -38,6 +38,9 @@ const Amount = styled.div`
   text-align: center;
   line-height: 122.5px;
   font-size: 20px;
+  span.discount {
+    color: blue;
+  }
 `;
 
 const PaymentButtonsContainer = styled.div`
@@ -215,12 +218,19 @@ export default function Payment() {
           >
             {paymentMethodsEnum.Split}
           </PaymentMethodButton>
-          <PaymentMethodButton>{paymentMethodsEnum.Discount}</PaymentMethodButton>
+          <PaymentMethodButton
+            className={paymentInfo.discountAmount > 0 ? 'selected' : ''}
+            onClick={() => onPaymentModalButtonClick('/discount')}
+          >
+            {paymentMethodsEnum.Discount}
+          </PaymentMethodButton>
         </div>
       </PaymentMethodButtonsContainer>
       <PaymentBox>
         <Amount>
-          <span>{formatter.formatNumber(paymentInfo.chargedAmount)}</span>
+          <span className={paymentInfo.discountAmount > 0 ? 'discount' : ''}>
+            {formatter.formatNumber(paymentInfo.chargedAmount)}
+          </span>
         </Amount>
         <PaymentButtonsContainer>
           <PaymentButtons

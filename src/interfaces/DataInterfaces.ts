@@ -53,3 +53,9 @@ export interface ISplitPayment {
   price: [number, number];
   method: [string, string];
 }
+
+export interface IDiscountForm {
+  note: string;
+  discountType: discountTypeEnum;
+  discountValue: number;
+}

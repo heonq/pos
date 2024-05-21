@@ -1,4 +1,5 @@
 import { ICategory, IProduct } from './DataInterfaces';
+import { discountTypeEnum } from './enums';
 
 export interface IProductProps {
   categories: ICategory[];

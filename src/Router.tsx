@@ -12,6 +12,7 @@ import Login from './routes/login';
 import ResetPassword from './routes/reset-password';
 import ProtectedRoute from './components/protected-route';
 import SplitPaymentModal from './routes/modal-router/splitPayment';
+import DiscountModal from './routes/modal-router/discount';
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
           {
             path: '/split-payment',
             element: <SplitPaymentModal />,
+          },
+          {
+            path: '/discount',
+            element: <DiscountModal />,
           },
         ],
       },

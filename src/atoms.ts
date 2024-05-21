@@ -35,10 +35,11 @@ export const paymentInfoSelector = selector<IPaymentInfo>({
     const products = get(shoppingCartAtom);
     const paymentInfo = get(paymentInfoAtom);
     const totalAmount = products.reduce((total, product) => total + product.price * product.quantity, 0);
+    const { discountAmount } = paymentInfo;
     return {
       ...paymentInfo,
       totalAmount,
-      chargedAmount: totalAmount,
+      chargedAmount: totalAmount - discountAmount,
     };
   },
   set: ({ set, reset }, newValue) => {
