@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IButtonsProps } from '../Interfaces/PropsInterfaces';
 
-export const ModalComponent = styled.div`
+export const ModalComponent = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,12 +73,10 @@ export const SubmitButton = styled.button`
   }
 `;
 
-export function SubmitButtons({ onSubmitClick, disable }: IButtonsProps) {
+export function SubmitButtons({ disable }: IButtonsProps) {
   return (
     <SubmitButtonsContainer>
-      <SubmitButton onClick={onSubmitClick} disabled={disable}>
-        확인
-      </SubmitButton>
+      <SubmitButton disabled={disable}>확인</SubmitButton>
       <Link to="/">
         <button>취소</button>
       </Link>

@@ -15,6 +15,5 @@ export interface ISalesNumberAndProfileProps {
 }
 
 export interface IButtonsProps {
-  onSubmitClick(): void;
   disable: boolean;
 }

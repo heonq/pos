@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ModalComponent, Background, SubmitButtons } from '../../components/Modal';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { paymentInfoAtom, paymentInfoSelector, salesNumberAtom, splitPaymentAtom } from '../../atoms';
+import { paymentInfoAtom, paymentInfoSelector, splitPaymentAtom } from '../../atoms';
 import styled from 'styled-components';
 import formatter from '../../utils/formatter';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,6 @@ export default function SplitPaymentModal() {
   const { chargedAmount } = useRecoilValue(paymentInfoSelector);
   const [splitPayment, setSplitPayment] = useRecoilState(splitPaymentAtom);
   const [disable, setDisable] = useState(true);
-  const salesNumber = useRecoilValue(salesNumberAtom);
 
   useEffect(() => {
     if (chargedAmount === 0) navigate('/');
@@ -73,12 +72,12 @@ export default function SplitPaymentModal() {
     });
   };
 
-  const onSubmitClick = () => {
+  const onSubmitClick = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (disable) return;
     setPaymentInfo((prev) => {
       return {
         ...prev,
-        note: prev.note + `${salesNumber + 1},${salesNumber + 2} 분할결제`,
         method: paymentMethodsEnum.Split,
       };
     });
@@ -90,7 +89,7 @@ export default function SplitPaymentModal() {
   return (
     <>
       <Background />
-      <ModalComponent className="small">
+      <ModalComponent className="small" onSubmit={onSubmitClick}>
         <SplitPaymentContainer>
           <div>총 결제금액 : {formatter.formatNumber(chargedAmount)}원</div>
           {[0, 0].map((_, index) => {
@@ -108,7 +107,7 @@ export default function SplitPaymentModal() {
               </div>
             );
           })}
-          <SubmitButtons {...{ onSubmitClick, disable }} />
+          <SubmitButtons {...{ disable }} />
         </SplitPaymentContainer>
       </ModalComponent>
     </>

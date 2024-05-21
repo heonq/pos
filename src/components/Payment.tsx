@@ -143,6 +143,7 @@ export default function Payment() {
   }, [data]);
 
   const storeSalesHistory = useRecoilCallback(({ snapshot }) => async () => {
+    if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
       if (paymentInfo.method === paymentMethodsEnum.Split) handleSplitPayment(updatedSalesHistory);
@@ -163,8 +164,11 @@ export default function Payment() {
     const firstPaymentDoc = doc(salesDataCollectionRef, updatedSalesHistory.number.toString());
     const firstPaymentHistory = {
       ...updatedSalesHistory,
-      paymentMethod: splitPayment.method[0],
+      method: splitPayment.method[0],
       chargedAmount: splitPayment.price[0],
+      note: `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
+        updatedSalesHistory.number + 1
+      } 분할결제`.trim(),
     };
     await setDoc(firstPaymentDoc, firstPaymentHistory);
     const secondPaymentDoc = doc(salesDataCollectionRef, (updatedSalesHistory.number + 1).toString());
@@ -172,8 +176,11 @@ export default function Payment() {
       ...updatedSalesHistory,
       products: [],
       number: updatedSalesHistory.number + 1,
-      paymentMethod: splitPayment.method[1],
+      method: splitPayment.method[1],
       chargedAmount: splitPayment.price[1],
+      note: `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
+        updatedSalesHistory.number + 1
+      } 분할결제`.trim(),
     };
     await setDoc(secondPaymentDoc, secondPaymentHistory);
     refetch();
