@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilCallback, useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
@@ -116,6 +116,7 @@ export default function Payment() {
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
   const salesDataCollectionRef = collection(doc(collection(db, 'salesData'), uid), date);
+  const [etcReason, setEtcReason] = useState('');
 
   const checkShoppingCartEmpty = () => {
     if (!shoppingCart.length) {
@@ -158,8 +159,10 @@ export default function Payment() {
   });
 
   const handleNormalPayment = async (updatedSalesHistory: ISalesHistory) => {
-    const newDoc = doc(salesDataCollectionRef, updatedSalesHistory.number.toString());
-    await setDoc(newDoc, updatedSalesHistory);
+    const finalSalesHistory =
+      paymentInfo.method === paymentMethodsEnum.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
+    const newDoc = doc(salesDataCollectionRef, finalSalesHistory.number.toString());
+    await setDoc(newDoc, finalSalesHistory);
     refetch();
   };
 
@@ -194,6 +197,20 @@ export default function Payment() {
     navigate(path);
   };
 
+  const selectEtcMethod = () => {
+    if (checkShoppingCartEmpty()) return;
+    const reason = prompt('기타 사유를 입력해주세요.');
+    if (reason === null) return;
+    setEtcReason(reason);
+    setPaymentInfo((prev) => {
+      return { ...prev, method: paymentMethodsEnum.Other };
+    });
+  };
+
+  const handleEtcMethod = (updatedPaymentInfo: ISalesHistory) => {
+    return { ...updatedPaymentInfo, note: etcReason, chargedAmount: 0 };
+  };
+
   const paymentMethodsFirstRow = [paymentMethodsEnum.Card, paymentMethodsEnum.Cash, paymentMethodsEnum.Transfer];
 
   return (
@@ -211,7 +228,12 @@ export default function Payment() {
           ))}
         </div>
         <div>
-          <PaymentMethodButton>{paymentMethodsEnum.Other}</PaymentMethodButton>
+          <PaymentMethodButton
+            onClick={selectEtcMethod}
+            className={paymentInfo.method === paymentMethodsEnum.Other ? 'selected' : ''}
+          >
+            {paymentMethodsEnum.Other}
+          </PaymentMethodButton>
           <PaymentMethodButton
             className={paymentInfo.method === paymentMethodsEnum.Split ? 'selected' : ''}
             onClick={() => onPaymentModalButtonClick('/split-payment')}
