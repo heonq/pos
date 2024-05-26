@@ -1,18 +1,18 @@
-import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
 
 export const fetchProducts = async (uid: string): Promise<IProduct[]> => {
   const ref = collection(doc(db, 'userData', uid), 'products');
-  const q = query(ref, where('display', '==', true));
+  const q = query(query(ref, where('display', '==', true)), orderBy('number', 'asc'));
   const res = (await getDocs(q)).docs?.map((doc) => doc.data() as IProduct);
   return res ?? [];
 };
 
 export const fetchCategories = async (uid: string): Promise<ICategory[]> => {
   const ref = collection(doc(db, 'userData', uid), 'categories');
-  const q = query(ref, where('display', '==', true));
+  const q = query(query(ref, where('display', '==', true)), orderBy('number', 'asc'));
   const res = (await getDocs(q)).docs?.map((doc) => doc.data() as ICategory);
   return res ?? [];
 };

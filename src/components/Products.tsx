@@ -36,9 +36,7 @@ export default function Products() {
     products?.some((product) => category.number === product.category),
   );
 
-  const productsOrderedByNumber = products?.sort((a, b) => a.number - b.number);
-
-  const props: IProductProps = { products: productsOrderedByNumber ?? [], categories: categoriesContainsProduct ?? [] };
+  const props: IProductProps = { products: products ?? [], categories: categoriesContainsProduct ?? [] };
   const isLoading = productIsLoading || categoryIsLoading;
 
   return (
