@@ -87,3 +87,69 @@ export const splitPaymentAtom = atom<ISplitPayment>({
     method: ['', ''],
   },
 });
+
+export const productMenuDisplayAtom = atom({
+  key: 'productMenuDisplay',
+  default: false,
+});
+
+export const productMenuDisplaySelector = selector({
+  key: 'productMenuDisplaySelector',
+  get: ({ get }) => {
+    return get(productMenuDisplayAtom);
+  },
+  set: ({ set, reset }, newValue) => {
+    console.log('productMenu');
+    set(productMenuDisplayAtom, newValue);
+    reset(viewModeMenuDisplayAtom);
+    reset(profileMenuDisplayAtom);
+  },
+});
+
+export const viewModeMenuDisplayAtom = atom({
+  key: 'viewModeMenuDisplay',
+  default: false,
+});
+
+export const viewModeMenuDisplaySelector = selector({
+  key: 'viewModeMenuDisplaySelector',
+  get: ({ get }) => {
+    return get(viewModeMenuDisplayAtom);
+  },
+  set: ({ set, reset }, newValue) => {
+    console.log('viewModeMenu');
+    set(viewModeMenuDisplayAtom, newValue);
+    reset(productMenuDisplayAtom);
+    reset(profileMenuDisplayAtom);
+  },
+});
+
+export const profileMenuDisplayAtom = atom({
+  key: 'profileMenuDisplay',
+  default: false,
+});
+
+export const profileMenuDisplaySelector = selector({
+  key: 'profileMenuDisplaySelector',
+  get: ({ get }) => {
+    return get(profileMenuDisplayAtom);
+  },
+  set: ({ set, reset }, newValue) => {
+    console.log('profileMenu');
+    set(profileMenuDisplayAtom, newValue);
+    reset(productMenuDisplayAtom);
+    reset(viewModeMenuDisplayAtom);
+  },
+});
+
+export const headerMenusDisplaySelector = selector({
+  key: 'headerMenusDisplay',
+  get: ({ get }) => {
+    return get(profileMenuDisplayAtom) || get(viewModeMenuDisplayAtom) || get(productMenuDisplayAtom);
+  },
+  set: ({ reset }) => {
+    reset(profileMenuDisplayAtom);
+    reset(viewModeMenuDisplayAtom);
+    reset(productMenuDisplayAtom);
+  },
+});

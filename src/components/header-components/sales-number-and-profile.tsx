@@ -12,7 +12,7 @@ import { useRecoilValue } from 'recoil';
 import { salesNumberAtom } from '../../atoms';
 import { ISalesNumberAndProfileProps } from '../../Interfaces/PropsInterfaces';
 
-export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu }: ISalesNumberAndProfileProps) {
+export default function SalesNumberAndProfile({ onProfileClick, profileMenuVisible }: ISalesNumberAndProfileProps) {
   const navigate = useNavigate();
 
   const logOut = async () => {
@@ -38,7 +38,7 @@ export default function SalesNumberAndProfile({ onProfileClick, showProfileMenu 
             />
           </svg>
         </ProfileMenu>
-        {showProfileMenu ? (
+        {profileMenuVisible ? (
           <HiddenButtonContainer>
             <Button onClick={logOut}>로그아웃</Button>
           </HiddenButtonContainer>

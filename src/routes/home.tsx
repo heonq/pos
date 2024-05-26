@@ -5,6 +5,8 @@ import Products from '../components/Products';
 import ShoppingCart from '../components/ShoppingCart';
 import Payment from '../components/Payment';
 import { Outlet } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { headerMenusDisplaySelector } from '../atoms';
 
 const Wrapper = styled.div`
   top: 30px;
@@ -29,10 +31,15 @@ const ShoppingCartContainer = styled.div`
 `;
 
 export default function Home() {
+  const [headerMenusDisplay, setHeaderMenusDisplay] = useRecoilState(headerMenusDisplaySelector);
+  const onElseClick = () => {
+    headerMenusDisplay && setHeaderMenusDisplay(false);
+  };
+
   return (
     <>
       <Outlet />
-      <Wrapper>
+      <Wrapper onClick={onElseClick}>
         <Header></Header>
         <MainSection>
           <Products></Products>

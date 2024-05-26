@@ -11,10 +11,22 @@ export interface IProductButtonProps {
 }
 
 export interface ISalesNumberAndProfileProps {
-  onProfileClick(): void;
-  showProfileMenu: boolean;
+  onProfileClick(e: React.MouseEvent): void;
+  profileMenuVisible: boolean;
 }
 
 export interface IButtonsProps {
   disable: boolean;
+}
+
+export interface ViewModeManagementMenusProp {
+  onViewModeMenuClick(e: React.MouseEvent): void;
+  onViewModeSelect(mode: 'category' | 'total'): void;
+  viewMode: string;
+  viewModeMenuVisible: boolean;
+}
+
+export interface IModalMenuButtonsProps {
+  onProductMenuClick(e: React.MouseEvent): void;
+  productMenuVisible: boolean;
 }
