@@ -24,6 +24,25 @@ body {
   background-color: #f9fafc;
   min-height:100vh;
 }
+
+select {
+  height: 25px;
+    border-style: none;
+    background-color: rgb(240, 240, 240);
+    text-align: center;
+}
+
+button {
+  cursor:pointer;
+  border:none;
+  &:hover {
+    filter:brightness(0.9);
+  }
+  &:active {
+    filter:brightness(0.8);
+  }
+}
+
 `;
 
 export default function Root() {

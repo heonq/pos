@@ -19,13 +19,23 @@ export const ModalComponent = styled.form`
   }
   &.big {
     width: 1000px;
-    height: 820px;
+    height: 800px;
     top: 38px;
   }
   &.wide {
     width: 1300px;
-    height: 820px;
+    height: 800px;
     top: 38px;
+  }
+  h2 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 22px 0;
+  }
+  input,
+  select,
+  button {
+    border-width: 0.1px;
   }
 `;
 
@@ -61,6 +71,14 @@ export const SubmitButtonsContainer = styled.div`
     border-width: 0px;
     cursor: pointer;
     border-radius: 5px;
+  }
+  .submit {
+    background-color: blue;
+    color: white;
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
   }
 `;
 
