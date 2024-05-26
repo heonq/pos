@@ -1,6 +1,4 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { IButtonsProps } from '../Interfaces/PropsInterfaces';
 
 export const ModalComponent = styled.form`
   display: flex;
@@ -90,14 +88,3 @@ export const SubmitButton = styled.button`
     opacity: 0.5;
   }
 `;
-
-export function SubmitButtons({ disable }: IButtonsProps) {
-  return (
-    <SubmitButtonsContainer>
-      <SubmitButton disabled={disable}>확인</SubmitButton>
-      <Link to="/">
-        <button>취소</button>
-      </Link>
-    </SubmitButtonsContainer>
-  );
-}

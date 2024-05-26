@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ModalComponent, Background, SubmitButtons } from '../../components/Modal';
+import { ModalComponent, Background, SubmitButton } from '../../components/Modal';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { paymentInfoAtom, paymentInfoSelector, splitPaymentAtom } from '../../atoms';
 import styled from 'styled-components';
@@ -107,7 +107,7 @@ export default function SplitPaymentModal() {
               </div>
             );
           })}
-          <SubmitButtons {...{ disable }} />
+          <SubmitButton disabled={disable} />
         </SplitPaymentContainer>
       </ModalComponent>
     </>

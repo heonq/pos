@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ModalComponent, Background, SubmitButtons } from '../../components/Modal';
+import { ModalComponent, Background, SubmitButton } from '../../components/Modal';
 import styled from 'styled-components';
 import { discountTypeEnum } from '../../Interfaces/enums';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -177,7 +177,7 @@ export default function DiscountModal() {
               />
             </DiscountReasonSection>
           </DiscountInfoSection>
-          <SubmitButtons disable={watchNote === '' || watchDiscountValue === 0} />
+          <SubmitButton type="submit" disabled={watchNote === '' || watchDiscountValue === 0} />
         </DiscountContainer>
       </ModalComponent>
     </>
