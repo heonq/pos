@@ -1,20 +1,31 @@
-import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  DocumentData,
+  getDocs,
+  orderBy,
+  query,
+  QuerySnapshot,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 import { ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
 
+const fetchData = async <T>(uid: string, collectionName: string): Promise<T[]> => {
+  const ref = collection(doc(db, 'userData', uid), collectionName);
+  const querySortedByNumber = query(ref, orderBy('number', 'asc'));
+  const res: QuerySnapshot<DocumentData> = await getDocs(querySortedByNumber);
+  return res.docs.map((doc) => doc.data() as T) ?? [];
+};
+
 export const fetchProducts = async (uid: string): Promise<IProduct[]> => {
-  const ref = collection(doc(db, 'userData', uid), 'products');
-  const q = query(query(ref, where('display', '==', true)), orderBy('number', 'asc'));
-  const res = (await getDocs(q)).docs?.map((doc) => doc.data() as IProduct);
-  return res ?? [];
+  return await fetchData<IProduct>(uid, 'products');
 };
 
 export const fetchCategories = async (uid: string): Promise<ICategory[]> => {
-  const ref = collection(doc(db, 'userData', uid), 'categories');
-  const q = query(query(ref, where('display', '==', true)), orderBy('number', 'asc'));
-  const res = (await getDocs(q)).docs?.map((doc) => doc.data() as ICategory);
-  return res ?? [];
+  return await fetchData<ICategory>(uid, 'categories');
 };
 
 export const fetchSalesHistory = async (

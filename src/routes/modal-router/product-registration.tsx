@@ -75,7 +75,6 @@ export default function ProductRegistration() {
   const [removable, setRemovable] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
   const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
-
   const { data: categories } = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
 
   const methods = useForm<IProductRegistration>({
@@ -111,7 +110,7 @@ export default function ProductRegistration() {
     }
   };
 
-  const handleProductSubmit = async (data: IProductRegistration) => {
+  const handleProductSubmit = (data: IProductRegistration) => {
     const productNumber = (products && [...products].sort((a, b) => b.number - a.number)[0].number + 1) || 1;
     const newProducts = data.products.map((product, index) => {
       return {
