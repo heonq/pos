@@ -1,5 +1,4 @@
-import { ICategory, IProduct } from './DataInterfaces';
-import { discountTypeEnum } from './enums';
+import { ICategory, IProduct, IProductForm } from './DataInterfaces';
 
 export interface IProductProps {
   categories: ICategory[];
@@ -29,4 +28,12 @@ export interface ViewModeManagementMenusProp {
 export interface IModalMenuButtonsProps {
   onProductMenuClick(e: React.MouseEvent): void;
   productMenuVisible: boolean;
+}
+
+export interface ITableRowProps {
+  field: IProductForm;
+  index: number;
+  remove: (index: number) => void;
+  categories: ICategory[];
+  removable: boolean;
 }

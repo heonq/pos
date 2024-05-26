@@ -1,4 +1,4 @@
-import { IPaymentInfo, ISalesHistory, ISplitPayment } from './DataInterfaces';
+import { IPaymentInfo, IProduct, ISalesHistory, ISplitPayment } from './DataInterfaces';
 
 export interface IFormatter {
   formatNumber(number: number): string;
@@ -16,4 +16,10 @@ export interface IFormGenerator {
 
 export interface IValidator {
   validateSplitPayment({ price, method }: ISplitPayment, chargedAmount: number): boolean;
+  validateProductName(name: string): boolean;
+  validateDuplicatedNames(names: string[]): string[];
+  validateBlankName(names: string): boolean;
+  validateNameTrim(names: string): boolean;
+  validateBarcodes(barcodes: string[]): string[];
+  validateInteger(number: number): boolean;
 }

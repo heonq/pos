@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import { ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
@@ -24,4 +24,9 @@ export const fetchSalesHistory = async (
   const ref = collection(doc(db, 'salesData', uid), date);
   const res = (await getDocs(ref)).docs?.map((doc) => doc.data() as ISalesHistory);
   return res ?? [];
+};
+
+export const addProduct = async (uid: string, product: IProduct) => {
+  const ref = doc(doc(db, 'userData', uid), 'products', product.number.toString());
+  await setDoc(ref, product);
 };

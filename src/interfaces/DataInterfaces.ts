@@ -59,3 +59,15 @@ export interface IDiscountForm {
   discountType: discountTypeEnum;
   discountValue: number;
 }
+
+export interface IProductRegistration {
+  [key: string]: IProductForm[];
+}
+
+export interface IProductForm {
+  name: string;
+  price: number;
+  barcode: string;
+  category: string;
+  display: string;
+}
