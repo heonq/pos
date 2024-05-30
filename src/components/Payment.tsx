@@ -10,7 +10,7 @@ import {
   splitPaymentAtom,
 } from '../atoms';
 import formatter from '../utils/formatter';
-import { paymentMethodsEnum } from '../Interfaces/enums';
+import { PAYMENT_METHODS } from '../constants/enums';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { useQuery } from 'react-query';
@@ -126,7 +126,7 @@ export default function Payment() {
     return false;
   };
 
-  const changePaymentMethod = (method: paymentMethodsEnum) => {
+  const changePaymentMethod = (method: PAYMENT_METHODS) => {
     if (checkShoppingCartEmpty()) return;
     setPaymentInfo((prevPayment) => {
       return { ...prevPayment, method };
@@ -150,7 +150,7 @@ export default function Payment() {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
-      if (paymentInfo.method === paymentMethodsEnum.Split) handleSplitPayment(updatedSalesHistory);
+      if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
       else handleNormalPayment(updatedSalesHistory);
       resetShoppingCart();
     } catch (e) {
@@ -160,7 +160,7 @@ export default function Payment() {
 
   const handleNormalPayment = async (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
-      paymentInfo.method === paymentMethodsEnum.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
+      paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
     const newDoc = doc(salesDataCollectionRef, finalSalesHistory.number.toString());
     await setDoc(newDoc, finalSalesHistory);
     refetch();
@@ -203,7 +203,7 @@ export default function Payment() {
     if (reason === null) return;
     setEtcReason(reason);
     setPaymentInfo((prev) => {
-      return { ...prev, method: paymentMethodsEnum.Other };
+      return { ...prev, method: PAYMENT_METHODS.Other };
     });
   };
 
@@ -211,7 +211,7 @@ export default function Payment() {
     return { ...updatedPaymentInfo, note: etcReason, chargedAmount: 0 };
   };
 
-  const paymentMethodsFirstRow = [paymentMethodsEnum.Card, paymentMethodsEnum.Cash, paymentMethodsEnum.Transfer];
+  const paymentMethodsFirstRow = [PAYMENT_METHODS.Card, PAYMENT_METHODS.Cash, PAYMENT_METHODS.Transfer];
 
   return (
     <>
@@ -230,21 +230,21 @@ export default function Payment() {
         <div>
           <PaymentMethodButton
             onClick={selectEtcMethod}
-            className={paymentInfo.method === paymentMethodsEnum.Other ? 'selected' : ''}
+            className={paymentInfo.method === PAYMENT_METHODS.Other ? 'selected' : ''}
           >
-            {paymentMethodsEnum.Other}
+            {PAYMENT_METHODS.Other}
           </PaymentMethodButton>
           <PaymentMethodButton
-            className={paymentInfo.method === paymentMethodsEnum.Split ? 'selected' : ''}
+            className={paymentInfo.method === PAYMENT_METHODS.Split ? 'selected' : ''}
             onClick={() => onPaymentModalButtonClick('/split-payment')}
           >
-            {paymentMethodsEnum.Split}
+            {PAYMENT_METHODS.Split}
           </PaymentMethodButton>
           <PaymentMethodButton
             className={paymentInfo.discountAmount > 0 ? 'selected' : ''}
             onClick={() => onPaymentModalButtonClick('/discount')}
           >
-            {paymentMethodsEnum.Discount}
+            {PAYMENT_METHODS.Discount}
           </PaymentMethodButton>
         </div>
       </PaymentMethodButtonsContainer>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ModalComponent, Background, SubmitButton } from '../../components/Modal';
 import styled from 'styled-components';
-import { discountTypeEnum } from '../../Interfaces/enums';
+import { DISCOUNT_TYPE } from '../../constants/enums';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { paymentInfoSelector } from '../../atoms';
 import formatter from '../../utils/formatter';
@@ -82,7 +82,7 @@ export default function DiscountModal() {
   const { register, handleSubmit, watch, setValue, control } = useForm<IDiscountForm>();
   const watchDiscountValue = watch('discountValue', 0);
   const watchNote = watch('note', '');
-  const watchDiscountType = watch('discountType', discountTypeEnum.percentage);
+  const watchDiscountType = watch('discountType', DISCOUNT_TYPE.percentage);
   const [discountAmount, setDiscountAmount] = useState(0);
   const { totalAmount } = useRecoilValue(paymentInfoSelector);
   const [chargedAmount, setChargedAmount] = useState(totalAmount);
@@ -113,15 +113,15 @@ export default function DiscountModal() {
 
   const updateDiscountAmount = () => {
     const newDiscountAmount =
-      watchDiscountType === discountTypeEnum.percentage
+      watchDiscountType === DISCOUNT_TYPE.percentage
         ? Math.floor(watchDiscountValue * 0.01 * totalAmount)
         : watchDiscountValue;
     setDiscountAmount(newDiscountAmount);
   };
 
   const limitDiscountValue = () => {
-    if (watchDiscountType === discountTypeEnum.percentage && watchDiscountValue > 100) setValue('discountValue', 100);
-    if (watchDiscountType === discountTypeEnum.amount && watchDiscountValue > totalAmount)
+    if (watchDiscountType === DISCOUNT_TYPE.percentage && watchDiscountValue > 100) setValue('discountValue', 100);
+    if (watchDiscountType === DISCOUNT_TYPE.amount && watchDiscountValue > totalAmount)
       setValue('discountValue', totalAmount);
   };
 
@@ -136,13 +136,13 @@ export default function DiscountModal() {
                 {...register('discountType')}
                 type="radio"
                 id="percentage-type"
-                value={discountTypeEnum.percentage}
+                value={DISCOUNT_TYPE.percentage}
                 defaultChecked
               />
               <label htmlFor="percentage-type">할인율 적용</label>
             </div>
             <div>
-              <input {...register('discountType')} type="radio" id="amount-type" value={discountTypeEnum.amount} />
+              <input {...register('discountType')} type="radio" id="amount-type" value={DISCOUNT_TYPE.amount} />
               <label htmlFor="amount-type">금액 적용</label>
             </div>
           </SelectDiscountTypeSection>
@@ -151,16 +151,11 @@ export default function DiscountModal() {
               <Controller
                 name="discountValue"
                 control={control}
-                defaultValue={0}
                 render={({ field }) => (
-                  <DiscountValueInput
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => field.onChange(+e.currentTarget.value)}
-                  />
+                  <DiscountValueInput {...field} onChange={(e) => field.onChange(+e.currentTarget.value)} />
                 )}
               />
-              <span>{watchDiscountType === discountTypeEnum.percentage ? '%' : '원'}</span>
+              <span>{watchDiscountType === DISCOUNT_TYPE.percentage ? '%' : '원'}</span>
             </DiscountInputSection>
             <DiscountAmountSection>
               <span>할인 전 금액 : {formatter.formatNumber(totalAmount)}원</span>

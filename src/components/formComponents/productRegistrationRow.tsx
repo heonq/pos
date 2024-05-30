@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { IProductRegistration } from '../../Interfaces/DataInterfaces';
 import { ITableRowProps } from '../../Interfaces/PropsInterfaces';
-import { MESSAGES } from '../../Interfaces/enums';
+import { ERROR_MESSAGES } from '../../constants/enums';
 import validator from '../../utils/validator';
 import styled from 'styled-components';
 
@@ -26,10 +26,10 @@ export const ProductRegistrationTableRow = ({ field, index, remove, categories, 
         <input
           type="text"
           {...register(`products.${index}.name`, {
-            required: MESSAGES.blankName,
+            required: ERROR_MESSAGES.blankName,
             validate: (value: string) => {
-              if (!validator.validateBlankName(value)) return MESSAGES.blankName;
-              if (!validator.validateNameTrim(value)) return MESSAGES.trimName;
+              if (!validator.validateBlankName(value)) return ERROR_MESSAGES.blankName;
+              if (!validator.validateNameTrim(value)) return ERROR_MESSAGES.trimName;
             },
           })}
           defaultValue={field.name}
@@ -40,9 +40,9 @@ export const ProductRegistrationTableRow = ({ field, index, remove, categories, 
         <input
           type="number"
           {...register(`products.${index}.price`, {
-            required: MESSAGES.shouldBeInt,
+            required: ERROR_MESSAGES.shouldBeInt,
             validate: (value: number) => {
-              if (!validator.validateInteger(value)) return MESSAGES.shouldBeInt;
+              if (!validator.validateInteger(value)) return ERROR_MESSAGES.shouldBeInt;
             },
           })}
           defaultValue={field.price}

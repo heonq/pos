@@ -5,7 +5,7 @@ import { paymentInfoAtom, paymentInfoSelector, splitPaymentAtom } from '../../at
 import styled from 'styled-components';
 import formatter from '../../utils/formatter';
 import { useNavigate } from 'react-router-dom';
-import { paymentMethodsEnum } from '../../Interfaces/enums';
+import { PAYMENT_METHODS } from '../../constants/enums';
 import validator from '../../utils/validator';
 
 const SplitPaymentContainer = styled.div`
@@ -78,13 +78,13 @@ export default function SplitPaymentModal() {
     setPaymentInfo((prev) => {
       return {
         ...prev,
-        method: paymentMethodsEnum.Split,
+        method: PAYMENT_METHODS.Split,
       };
     });
     navigate('/');
   };
 
-  const paymentMethodArray = [paymentMethodsEnum.Card, paymentMethodsEnum.Cash, paymentMethodsEnum.Transfer];
+  const paymentMethodArray = [PAYMENT_METHODS.Card, PAYMENT_METHODS.Cash, PAYMENT_METHODS.Transfer];
 
   return (
     <>
