@@ -1,4 +1,4 @@
-import { ICategory, IProduct, IProductForm } from './DataInterfaces';
+import { ICategory, IProduct, IProductForm, IProductMGMTForm } from './DataInterfaces';
 
 export interface IProductProps {
   categories: ICategory[];

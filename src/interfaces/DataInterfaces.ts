@@ -8,6 +8,7 @@ export interface IProduct {
   display: boolean;
   barcode: string;
   salesQuantity: number;
+  [key: string]: string | number | boolean;
 }
 
 export interface ICategory {
@@ -68,6 +69,22 @@ export interface IProductForm {
   name: string;
   price: number;
   barcode: string;
-  category: string;
+  category: number;
   display: string;
+}
+
+export interface IProductManagement {
+  [key: string]: IProductMGMTForm[];
+}
+
+export interface IProductMGMTForm {
+  checked?: boolean;
+  number: number;
+  name: string;
+  price: number;
+  barcode: string;
+  category: number;
+  display: string;
+  salesQuantity: number;
+  [key: string]: boolean | number | string | undefined;
 }

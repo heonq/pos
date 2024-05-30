@@ -1,14 +1,4 @@
-import {
-  collection,
-  doc,
-  DocumentData,
-  getDocs,
-  orderBy,
-  query,
-  QuerySnapshot,
-  setDoc,
-  where,
-} from 'firebase/firestore';
+import { collection, doc, DocumentData, getDocs, orderBy, query, QuerySnapshot, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase';
 import { ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
@@ -37,7 +27,33 @@ export const fetchSalesHistory = async (
   return res ?? [];
 };
 
-export const addProduct = async (uid: string, product: IProduct) => {
-  const ref = doc(doc(db, 'userData', uid), 'products', product.number.toString());
-  await setDoc(ref, product);
+export const addProduct = async ({ uid, products }: { uid: string; products: IProduct[] }) => {
+  const batch = writeBatch(db);
+  const refArray = products.map((product) => doc(doc(db, 'userData', uid), 'products', product.number.toString()));
+  refArray.forEach((ref, index) => batch.set(ref, products[index]));
+  await batch.commit();
+};
+
+export const updateChangedProducts = async ({
+  uid,
+  numberArray,
+  changedData,
+}: {
+  uid: string;
+  numberArray: number[];
+  changedData: Partial<IProduct>[];
+}): Promise<void> => {
+  const batch = writeBatch(db);
+  const refArray = numberArray.map((number) => {
+    return doc(doc(db, 'userData', uid), 'products', number.toString());
+  });
+  refArray.forEach((ref, index) => batch.update(ref, changedData[index]));
+  await batch.commit();
+};
+
+export const deleteProducts = async ({ uid, numbers }: { uid: string; numbers: number[] }) => {
+  const refArray = numbers.map((number) => doc(doc(db, 'userData', uid), 'products', number.toString()));
+  const batch = writeBatch(db);
+  refArray.forEach((ref) => batch.delete(ref));
+  await batch.commit();
 };
