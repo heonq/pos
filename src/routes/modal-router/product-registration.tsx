@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
 import { addProduct, fetchCategories, fetchProducts } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
-import { useEffect, useState } from 'react';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,7 +20,6 @@ import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 
 export default function ProductRegistration() {
-  const [removable, setRemovable] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
   const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
   const { data: categories } = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
@@ -48,10 +46,6 @@ export default function ProductRegistration() {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fields.length > 1 ? setRemovable(true) : setRemovable(false);
-  }, [fields.length]);
-
   const onSubmit = (data: IProductRegistration) => {
     if (handleProductNames(data) && handleProductBarcodes(data)) {
       handleProductSubmit(data);
@@ -60,7 +54,6 @@ export default function ProductRegistration() {
 
   const handleProductSubmit = (data: IProductRegistration) => {
     const productNumber = (products?.length && [...products].sort((a, b) => b.number - a.number)[0].number + 1) ?? 1;
-    console.log(productNumber);
     const newProducts = data.products.map((product, index) => {
       return {
         ...product,
@@ -142,7 +135,7 @@ export default function ProductRegistration() {
                       index={index}
                       remove={remove}
                       categories={categories ?? []}
-                      removable={removable}
+                      removable={fields.length > 1}
                     />
                   ))}
                 </tbody>
