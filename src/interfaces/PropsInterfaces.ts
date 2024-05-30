@@ -30,10 +30,10 @@ export interface IModalMenuButtonsProps {
   productMenuVisible: boolean;
 }
 
-export interface ITableRowProps {
-  field: IProductForm;
+export interface ITableRowProps<T> {
+  field: T;
   index: number;
   remove: (index: number) => void;
   categories: ICategory[];
-  removable: boolean;
+  removable?: boolean;
 }

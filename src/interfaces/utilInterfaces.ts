@@ -1,4 +1,4 @@
-import { IPaymentInfo, IProduct, ISalesHistory, ISplitPayment } from './DataInterfaces';
+import { IPaymentInfo, ISalesHistory, ISplitPayment } from './DataInterfaces';
 
 export interface IFormatter {
   formatNumber(number: number): string;
