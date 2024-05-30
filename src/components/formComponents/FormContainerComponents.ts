@@ -58,3 +58,12 @@ export const PlusRowButtonContainer = styled.div`
     font-size: 20px;
   }
 `;
+
+export const ErrorMessage = styled.div`
+  margin-top: 5px;
+  font-size: 11px;
+  color: red;
+  &.big {
+    font-size: 18px;
+  }
+`;

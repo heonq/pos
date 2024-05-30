@@ -4,7 +4,7 @@ import { IProductManagement, IProductMGMTForm } from '../../Interfaces/DataInter
 import { ITableRowProps } from '../../Interfaces/PropsInterfaces';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import validator from '../../utils/validator';
-import { ErrorMessage } from './productRegistrationRow';
+import { ErrorMessage } from './FormContainerComponents';
 
 export const ProductManagementRow = ({ field, index, remove, categories }: ITableRowProps<IProductMGMTForm>) => {
   const {

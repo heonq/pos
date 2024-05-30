@@ -3,16 +3,7 @@ import { IProductForm, IProductRegistration } from '../../Interfaces/DataInterfa
 import { ITableRowProps } from '../../Interfaces/PropsInterfaces';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import validator from '../../utils/validator';
-import styled from 'styled-components';
-
-export const ErrorMessage = styled.div`
-  margin-top: 5px;
-  font-size: 11px;
-  color: red;
-  &.big {
-    font-size: 18px;
-  }
-`;
+import { ErrorMessage } from './FormContainerComponents';
 
 export const ProductRegistrationTableRow = ({
   field,
