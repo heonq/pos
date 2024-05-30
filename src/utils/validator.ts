@@ -34,7 +34,7 @@ const validator: IValidator = {
   },
 
   validateInteger(number) {
-    return number >= 0 && Number.isInteger(number);
+    return +number >= 0 && Number.isInteger(+number);
   },
 };
 
