@@ -2,7 +2,7 @@ import { ModalComponent, Background, SubmitButtonsContainer } from '../../compon
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { addProduct, fetchCategories, fetchProducts } from '../../utils/fetchFunctions';
+import { addData, fetchCategories, fetchProducts } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -65,7 +65,7 @@ export default function ProductRegistration() {
       };
     });
     try {
-      addProduct({ uid: uid, products: newProducts });
+      addData({ uid: uid, data: newProducts });
       productRefetch();
       navigate('/');
       resetShoppingCart();

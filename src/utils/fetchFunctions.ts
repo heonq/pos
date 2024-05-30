@@ -27,10 +27,13 @@ export const fetchSalesHistory = async (
   return res ?? [];
 };
 
-export const addProduct = async ({ uid, products }: { uid: string; products: IProduct[] }) => {
+export const addData = async ({ uid, data }: { uid: string; data: IProduct[] | ICategory[] }) => {
+  const dataType = 'price' in data[0] ? 'products' : 'categories';
+  const refArray = data.map((eachData) => {
+    return doc(doc(db, 'userData', uid), dataType, eachData.number.toString());
+  });
   const batch = writeBatch(db);
-  const refArray = products.map((product) => doc(doc(db, 'userData', uid), 'products', product.number.toString()));
-  refArray.forEach((ref, index) => batch.set(ref, products[index]));
+  refArray.forEach((ref, index) => batch.set(ref, data[index]));
   await batch.commit();
 };
 

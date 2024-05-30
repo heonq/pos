@@ -1,4 +1,4 @@
-import { ICategory, IProduct, IProductForm, IProductMGMTForm } from './DataInterfaces';
+import { ICategory, IProduct } from './DataInterfaces';
 
 export interface IProductProps {
   categories: ICategory[];
@@ -35,5 +35,13 @@ export interface IProductTableRowProps<T> {
   index: number;
   remove: (index: number) => void;
   categories: ICategory[];
+  removable?: boolean;
+}
+
+export interface ICategoryTableRowProps<T> {
+  field: T;
+  index: number;
+  remove: (index: number) => void;
+  products?: IProduct[];
   removable?: boolean;
 }

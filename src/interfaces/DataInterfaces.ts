@@ -88,3 +88,12 @@ export interface IProductMGMTForm {
   salesQuantity: number;
   [key: string]: boolean | number | string | undefined;
 }
+
+export interface ICategoryRegistration {
+  [key: string]: ICategoryForm[];
+}
+
+export interface ICategoryForm {
+  name: string;
+  display: string;
+}

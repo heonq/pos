@@ -5,6 +5,11 @@ export const BigModalContainer = styled.div`
   width: 85%;
 `;
 
+export const SmallModalContainer = styled.div`
+  height: 75%;
+  width: 70%;
+`;
+
 export const TableContainer = styled.div`
   height: 85%;
   width: 100%;
@@ -12,7 +17,7 @@ export const TableContainer = styled.div`
 `;
 
 export const Table = styled.table`
-  min-width: 850px;
+  min-width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
   input {
