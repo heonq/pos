@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import { IProductForm, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { ITableRowProps } from '../../Interfaces/PropsInterfaces';
+import { IProductTableRowProps } from '../../Interfaces/PropsInterfaces';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import validator from '../../utils/validator';
 import { ErrorMessage } from './FormContainerComponents';
@@ -11,7 +11,7 @@ export const ProductRegistrationTableRow = ({
   remove,
   categories,
   removable,
-}: ITableRowProps<IProductForm>) => {
+}: IProductTableRowProps<IProductForm>) => {
   const {
     register,
     formState: { errors },

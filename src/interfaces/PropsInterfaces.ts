@@ -30,7 +30,7 @@ export interface IModalMenuButtonsProps {
   productMenuVisible: boolean;
 }
 
-export interface ITableRowProps<T> {
+export interface IProductTableRowProps<T> {
   field: T;
   index: number;
   remove: (index: number) => void;
