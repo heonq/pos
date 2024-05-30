@@ -7,81 +7,29 @@ import { addProduct, fetchCategories, fetchProducts } from '../../utils/fetchFun
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import validator from '../../utils/validator';
-import { MESSAGES } from '../../Interfaces/enums';
+import { ERROR_MESSAGES } from '../../constants/enums';
 import { Link, useNavigate } from 'react-router-dom';
 import { ErrorMessage, ProductRegistrationTableRow } from '../../components/formComponents/productRegistrationRow';
-
-const ProductRegistrationContainer = styled.div`
-  height: 85%;
-  width: 85%;
-`;
-
-const ProductRegistrationTableContainer = styled.div`
-  height: 90%;
-  width: 100%;
-  overflow: auto;
-`;
-
-const ProductRegistrationTable = styled.table`
-  border-spacing: 0;
-  border-collapse: collapse;
-  input {
-    height: 25px;
-    border-radius: 5px;
-    padding: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  th,
-  td {
-    min-width: 100px;
-    padding: 10px;
-    border-top: solid;
-    border-color: rgb(200, 200, 200);
-    text-align: center;
-    border-bottom: none;
-  }
-`;
-
-const ProductRegstrationHeader = styled.thead`
-  position: sticky;
-  top: 0;
-  background-color: white;
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
-  outline: 1px solid transparent;
-  font-weight: 700;
-  th {
-    height: 30px;
-    border-style: none;
-    box-sizing: border-box;
-  }
-`;
-
-const PlusRowButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  button {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    width: 35px;
-    height: 35px;
-    border-radius: 35px;
-    border-style: none;
-    font-size: 20px;
-  }
-`;
+import {
+  BigModalContainer,
+  PlusRowButtonContainer,
+  Table,
+  TableContainer,
+  TableHeader,
+} from '../../components/formComponents/FormContainerComponents';
+import { useResetRecoilState } from 'recoil';
+import { shoppingCartSelector } from '../../atoms';
 
 export default function ProductRegistration() {
   const [removable, setRemovable] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
   const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
   const { data: categories } = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
+  const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const methods = useForm<IProductRegistration>({
     defaultValues: {
-      products: [
-        { name: '', price: 0, barcode: '', category: categories?.[0].number.toString() ?? '', display: '전시' },
-      ],
+      products: [{ name: '', price: 0, barcode: '', category: Number(categories?.[0].number), display: '전시' }],
     },
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
@@ -111,7 +59,8 @@ export default function ProductRegistration() {
   };
 
   const handleProductSubmit = (data: IProductRegistration) => {
-    const productNumber = (products && [...products].sort((a, b) => b.number - a.number)[0].number + 1) || 1;
+    const productNumber = (products?.length && [...products].sort((a, b) => b.number - a.number)[0].number + 1) ?? 1;
+    console.log(productNumber);
     const newProducts = data.products.map((product, index) => {
       return {
         ...product,
@@ -122,9 +71,16 @@ export default function ProductRegistration() {
         display: product.display === '전시',
       };
     });
-    newProducts.forEach((product) => addProduct(uid, product));
-    navigate('/');
-    productRefetch();
+    try {
+      addProduct({ uid: uid, products: newProducts });
+      productRefetch();
+      navigate('/');
+      resetShoppingCart();
+    } catch (e) {
+      if (e instanceof Error) {
+        setError('otherError', { type: 'manual', message: e.message });
+      }
+    }
   };
 
   const handleProductNames = (data: IProductRegistration) => {
@@ -132,7 +88,7 @@ export default function ProductRegistration() {
     const registeringNames = data?.products?.map((product) => product.name);
     const duplicatedNames = validator.validateDuplicatedNames([...productNames, ...registeringNames]);
     if (duplicatedNames.length) {
-      setError('namesError', { type: 'manual', message: MESSAGES.duplicatedName + duplicatedNames.join(',') });
+      setError('namesError', { type: 'manual', message: ERROR_MESSAGES.duplicatedName + duplicatedNames.join(',') });
       return false;
     }
     return true;
@@ -150,7 +106,7 @@ export default function ProductRegistration() {
     if (duplicatedBarcodes.length) {
       setError('barcodeError', {
         type: 'manual',
-        message: MESSAGES.duplicatedBarcode + [...new Set(duplicatedProducts)]?.join(','),
+        message: ERROR_MESSAGES.duplicatedBarcode + [...new Set(duplicatedProducts)]?.join(','),
       });
       return false;
     }
@@ -162,13 +118,13 @@ export default function ProductRegistration() {
       <Background />
       <FormProvider {...methods}>
         <ModalComponent className="big" onSubmit={handleSubmit(onSubmit)}>
-          <ProductRegistrationContainer>
+          <BigModalContainer>
             <div>
               <h2>상품등록</h2>
             </div>
-            <ProductRegistrationTableContainer>
-              <ProductRegistrationTable>
-                <ProductRegstrationHeader>
+            <TableContainer>
+              <Table>
+                <TableHeader>
                   <tr>
                     <th>상품명</th>
                     <th>가격</th>
@@ -177,7 +133,7 @@ export default function ProductRegistration() {
                     <th>전시여부</th>
                     <th>삭제</th>
                   </tr>
-                </ProductRegstrationHeader>
+                </TableHeader>
                 <tbody>
                   {fields.map((field, index) => (
                     <ProductRegistrationTableRow
@@ -190,7 +146,7 @@ export default function ProductRegistration() {
                     />
                   ))}
                 </tbody>
-              </ProductRegistrationTable>
+              </Table>
               <PlusRowButtonContainer>
                 <button
                   type="button"
@@ -199,7 +155,7 @@ export default function ProductRegistration() {
                       name: '',
                       price: 0,
                       barcode: '',
-                      category: categories?.[0].number.toString()!,
+                      category: categories?.[0].number ?? 1,
                       display: '전시',
                     })
                   }
@@ -207,10 +163,11 @@ export default function ProductRegistration() {
                   +
                 </button>
               </PlusRowButtonContainer>
-            </ProductRegistrationTableContainer>
-          </ProductRegistrationContainer>
+            </TableContainer>
+          </BigModalContainer>
           <ErrorMessage className="big">{errors?.namesError && errors?.namesError?.message}</ErrorMessage>
           <ErrorMessage className="big">{errors?.barcodeError && errors?.barcodeError?.message}</ErrorMessage>
+          <ErrorMessage className="big">{errors?.otherError && errors?.otherError.message}</ErrorMessage>
           <SubmitButtonsContainer>
             <button onClick={() => clearErrors(['barcodeError', 'namesError'])} type="submit" className="submit">
               확인
