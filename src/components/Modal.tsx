@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const ModalComponent = styled.form`
@@ -88,3 +89,13 @@ export const SubmitButton = styled.button`
     opacity: 0.5;
   }
 `;
+
+export const CancelButton = () => {
+  return (
+    <>
+      <Link to="/">
+        <button>취소</button>
+      </Link>
+    </>
+  );
+};
