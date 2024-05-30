@@ -5,7 +5,8 @@ import { MESSAGES } from '../../Interfaces/enums';
 import validator from '../../utils/validator';
 import styled from 'styled-components';
 
-export const ErrorMessage = styled.span`
+export const ErrorMessage = styled.div`
+  margin-top: 5px;
   font-size: 11px;
   color: red;
   &.big {

@@ -30,11 +30,13 @@ select {
     border-style: none;
     background-color: rgb(240, 240, 240);
     text-align: center;
+    border-radius:5px;
 }
 
 button {
   cursor:pointer;
   border:none;
+  border-radius:5px;
   &:hover {
     filter:brightness(0.9);
   }
