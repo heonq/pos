@@ -32,10 +32,11 @@ export default function Products() {
   const { data: categories, isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () =>
     fetchCategories(uid),
   );
-  const categoriesContainsProduct = categories?.filter((category) =>
-    products?.some((product) => category.number === product.category),
-  );
+
   const displayingProducts = products?.filter((product) => product.display);
+  const categoriesContainsProduct = categories?.filter((category) =>
+    displayingProducts?.some((product) => category.number === product.category),
+  );
 
   const props: IProductProps = { products: displayingProducts ?? [], categories: categoriesContainsProduct ?? [] };
   const isLoading = productIsLoading || categoryIsLoading;
