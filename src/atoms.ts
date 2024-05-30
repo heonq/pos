@@ -99,7 +99,6 @@ export const productMenuDisplaySelector = selector({
     return get(productMenuDisplayAtom);
   },
   set: ({ set, reset }, newValue) => {
-    console.log('productMenu');
     set(productMenuDisplayAtom, newValue);
     reset(viewModeMenuDisplayAtom);
     reset(profileMenuDisplayAtom);
@@ -117,7 +116,6 @@ export const viewModeMenuDisplaySelector = selector({
     return get(viewModeMenuDisplayAtom);
   },
   set: ({ set, reset }, newValue) => {
-    console.log('viewModeMenu');
     set(viewModeMenuDisplayAtom, newValue);
     reset(productMenuDisplayAtom);
     reset(profileMenuDisplayAtom);
@@ -135,7 +133,6 @@ export const profileMenuDisplaySelector = selector({
     return get(profileMenuDisplayAtom);
   },
   set: ({ set, reset }, newValue) => {
-    console.log('profileMenu');
     set(profileMenuDisplayAtom, newValue);
     reset(productMenuDisplayAtom);
     reset(viewModeMenuDisplayAtom);
