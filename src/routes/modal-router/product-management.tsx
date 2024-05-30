@@ -17,7 +17,7 @@ import { ProductManagementRow } from '../../components/formComponents/productMan
 import React, { useEffect, useState } from 'react';
 import validator from '../../utils/validator';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES, PRODUCT_MANAGEMENT_OPTIONS } from '../../constants/enums';
-import { ErrorMessage } from '../../components/formComponents/productRegistrationRow';
+import { ErrorMessage } from '../../components/formComponents/FormContainerComponents';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 

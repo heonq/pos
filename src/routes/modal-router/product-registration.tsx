@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { ModalComponent, Background, SubmitButtonsContainer } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -9,7 +8,8 @@ import { useEffect, useState } from 'react';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import { Link, useNavigate } from 'react-router-dom';
-import { ErrorMessage, ProductRegistrationTableRow } from '../../components/formComponents/productRegistrationRow';
+import { ProductRegistrationTableRow } from '../../components/formComponents/productRegistrationRow';
+import { ErrorMessage } from '../../components/formComponents/FormContainerComponents';
 import {
   BigModalContainer,
   PlusRowButtonContainer,
