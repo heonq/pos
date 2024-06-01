@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ModalComponent, Background, SubmitButton } from '../../components/Modal';
+import { ModalComponent, Background, SubmitButton, SubmitButtonsContainer, CancelButton } from '../../components/Modal';
 import styled from 'styled-components';
 import { DISCOUNT_TYPE } from '../../constants/enums';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -79,7 +79,13 @@ const DiscountReasonSection = styled.div`
 `;
 
 export default function DiscountModal() {
-  const { register, handleSubmit, watch, setValue, control } = useForm<IDiscountForm>();
+  const { register, handleSubmit, watch, setValue, control } = useForm<IDiscountForm>({
+    defaultValues: {
+      discountValue: 0,
+      note: '',
+      discountType: DISCOUNT_TYPE.percentage,
+    },
+  });
   const watchDiscountValue = watch('discountValue', 0);
   const watchNote = watch('note', '');
   const watchDiscountType = watch('discountType', DISCOUNT_TYPE.percentage);
@@ -164,15 +170,27 @@ export default function DiscountModal() {
             </DiscountAmountSection>
             <DiscountReasonSection>
               <div>할인 사유</div>
-              <input
+              <Controller
+                name="note"
+                control={control}
+                render={({ field }) => (
+                  <input {...field} onChangeCapture={(e) => field.onChange(+e.currentTarget.value)} />
+                )}
+              />
+              {/* <input
                 {...register('note')}
                 type="text"
                 onChange={(e: React.FormEvent<HTMLInputElement>) => setValue('note', e.currentTarget.value)}
                 value={watchNote}
-              />
+              /> */}
             </DiscountReasonSection>
           </DiscountInfoSection>
-          <SubmitButton type="submit" disabled={watchNote === '' || watchDiscountValue === 0} />
+          <SubmitButtonsContainer>
+            <SubmitButton type="submit" disabled={watchNote === '' || watchDiscountValue === 0}>
+              확인
+            </SubmitButton>
+            <CancelButton></CancelButton>
+          </SubmitButtonsContainer>
         </DiscountContainer>
       </ModalComponent>
     </>
