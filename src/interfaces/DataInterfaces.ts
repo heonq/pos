@@ -15,6 +15,7 @@ export interface ICategory {
   name: string;
   number: number;
   display: boolean;
+  [key: string]: string | number | boolean;
 }
 
 export interface IShoppingCartProduct {
@@ -96,4 +97,16 @@ export interface ICategoryRegistration {
 export interface ICategoryForm {
   name: string;
   display: string;
+}
+
+export interface ICategoryManagement {
+  [key: string]: ICategoryMGMTForm[];
+}
+
+export interface ICategoryMGMTForm {
+  checked?: boolean;
+  number: number;
+  name: string;
+  display: string;
+  [key: string]: boolean | number | string | undefined;
 }
