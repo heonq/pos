@@ -16,7 +16,7 @@ import {
 import { ProductManagementRow } from '../../components/formComponents/productManagementRow';
 import React, { useEffect, useState } from 'react';
 import validator from '../../utils/validator';
-import { CONFIRM_MESSAGES, ERROR_MESSAGES, PRODUCT_MANAGEMENT_OPTIONS } from '../../constants/enums';
+import { CONFIRM_MESSAGES, DISPLAY_OPTIONS, ERROR_MESSAGES, SELECTED_MANAGEMENT_OPTIONS } from '../../constants/enums';
 import { ErrorMessage } from '../../components/formComponents/FormContainerComponents';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
@@ -87,7 +87,7 @@ export default function ProductManagement() {
           price: product.price,
           barcode: product.barcode,
           category: product.category,
-          display: product.display ? '전시' : '숨김',
+          display: product.display ? DISPLAY_OPTIONS.show : DISPLAY_OPTIONS.hide,
           salesQuantity: product.salesQuantity,
         };
       }),
@@ -138,7 +138,9 @@ export default function ProductManagement() {
       filteredProducts = filteredProducts.filter((product) => product.category === categoryCriteria);
     }
     if (displayCriteria !== '전체') {
-      filteredProducts = filteredProducts.filter((product) => product.display === (displayCriteria === '전시'));
+      filteredProducts = filteredProducts.filter(
+        (product) => product.display === (displayCriteria === DISPLAY_OPTIONS.show),
+      );
     }
     setProductsToDisplay(filteredProducts);
   };
@@ -179,7 +181,7 @@ export default function ProductManagement() {
     return data.products.map((product) => {
       const newData = {
         ...product,
-        display: product.display === '전시',
+        display: product.display === DISPLAY_OPTIONS.show,
         price: +product.price,
         category: +product.category,
       };
@@ -220,7 +222,7 @@ export default function ProductManagement() {
     const ok = confirm(CONFIRM_MESSAGES.deleteSelectedProduct);
     if (!ok) return false;
     if (salesQuantities.some((salesQuantity) => salesQuantity > 0)) {
-      alert(ERROR_MESSAGES.cantDelete);
+      alert(ERROR_MESSAGES.cantDeleteProduct);
       return false;
     }
     return true;
@@ -267,24 +269,25 @@ export default function ProductManagement() {
     const option = e.currentTarget.value;
     const checked = watchedProduct.some((product) => product.checked);
     if (!checked) return alert(ERROR_MESSAGES.selectProduct);
-    if (option === PRODUCT_MANAGEMENT_OPTIONS.show || option === PRODUCT_MANAGEMENT_OPTIONS.hide) handleDisplay(option);
-    if (option === PRODUCT_MANAGEMENT_OPTIONS.changeCategory) showSelectCategory();
-    if (option === PRODUCT_MANAGEMENT_OPTIONS.delete) deleteCheckedProduct();
+    if (option === SELECTED_MANAGEMENT_OPTIONS.show || option === SELECTED_MANAGEMENT_OPTIONS.hide)
+      handleDisplay(option);
+    if (option === SELECTED_MANAGEMENT_OPTIONS.changeCategory) showSelectCategory();
+    if (option === SELECTED_MANAGEMENT_OPTIONS.delete) deleteCheckedProduct();
   };
 
   const handleDisplay = (option: string) => {
-    const ok = confirm(CONFIRM_MESSAGES.changeSelectedDisplay);
+    const ok = confirm(CONFIRM_MESSAGES.changeSelectedProductDisplay);
     ok &&
       fields.forEach((field, index) => {
         if (watchedProduct[index].checked) {
-          setValue(`products.${index}.display`, option === PRODUCT_MANAGEMENT_OPTIONS.show ? '전시' : '숨김');
+          setValue(`products.${index}.display`, option);
         }
       });
     uncheckEverything();
   };
 
   const showSelectCategory = () => {
-    const ok = confirm(CONFIRM_MESSAGES.changeSelectedCategory);
+    const ok = confirm(CONFIRM_MESSAGES.changeSelectedProductCategory);
     ok && setCategorySelectDisplay(true);
   };
 
@@ -350,10 +353,10 @@ export default function ProductManagement() {
                 <option value="default" hidden>
                   선택한 상품 수정하기
                 </option>
-                <option value={PRODUCT_MANAGEMENT_OPTIONS.delete}>선택한 상품 삭제</option>
-                <option value={PRODUCT_MANAGEMENT_OPTIONS.show}>선택한 상품 전시</option>
-                <option value={PRODUCT_MANAGEMENT_OPTIONS.hide}>선택한 상품 숨기기</option>
-                <option value={PRODUCT_MANAGEMENT_OPTIONS.changeCategory}>선택한 상품 카테고리 변경</option>
+                <option value={SELECTED_MANAGEMENT_OPTIONS.delete}>선택한 상품 삭제</option>
+                <option value={SELECTED_MANAGEMENT_OPTIONS.show}>선택한 상품 전시</option>
+                <option value={SELECTED_MANAGEMENT_OPTIONS.hide}>선택한 상품 숨기기</option>
+                <option value={SELECTED_MANAGEMENT_OPTIONS.changeCategory}>선택한 상품 카테고리 변경</option>
               </select>
               <select onChange={(e: React.FormEvent<HTMLSelectElement>) => setCategoryCriteria(+e.currentTarget.value)}>
                 <option value={0}>전체카테고리</option>
@@ -364,9 +367,9 @@ export default function ProductManagement() {
                 ))}
               </select>
               <select onChange={(e: React.FormEvent<HTMLSelectElement>) => setDisplayCriteira(e.currentTarget.value)}>
-                <option value="전체">전체 전시 상태</option>
-                <option value="전시">전시</option>
-                <option value="숨김">숨김</option>
+                <option value={DISPLAY_OPTIONS.all}>전체 전시 상태</option>
+                <option value={DISPLAY_OPTIONS.show}>전시</option>
+                <option value={DISPLAY_OPTIONS.hide}>숨김</option>
               </select>
               <button type="button" onClick={onSearchClick}>
                 검색
