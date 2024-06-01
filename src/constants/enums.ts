@@ -22,6 +22,7 @@ export enum ERROR_MESSAGES {
   selectProduct = '상품을 선택해주세요.',
   cantDeleteCategory = '상품이 존재하는 카테고리는 삭제할 수 없습니다.',
   SelectCategory = '카테고리를 선택해주세요.',
+  cantDeleteDefaultCategory = '기본 카테고리는 삭제할 수 없습니다.',
 }
 
 export enum CONFIRM_MESSAGES {
@@ -43,4 +44,8 @@ export enum SELECTED_MANAGEMENT_OPTIONS {
   hide = '숨김',
   changeCategory = 'changeCategory',
   delete = 'delete',
+}
+
+export enum CONDITION_VALUES {
+  defaultCategoryNumber = 1,
 }

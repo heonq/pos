@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import { ModalComponent, Background, SubmitButtonsContainer, SubmitButton, CancelButton } from '../../components/Modal';
 import {
+  ErrorMessage,
   SmallModalContainer,
   Table,
   TableContainer,
@@ -13,7 +14,13 @@ import { deleteData, fetchCategories, fetchProducts, updateChangedData } from '.
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { CategoryManagementRow } from '../../components/formComponents/categoryManagementRow';
-import { CONFIRM_MESSAGES, DISPLAY_OPTIONS, ERROR_MESSAGES, SELECTED_MANAGEMENT_OPTIONS } from '../../constants/enums';
+import {
+  CONDITION_VALUES,
+  CONFIRM_MESSAGES,
+  DISPLAY_OPTIONS,
+  ERROR_MESSAGES,
+  SELECTED_MANAGEMENT_OPTIONS,
+} from '../../constants/enums';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';
@@ -26,11 +33,10 @@ const SelectedManagingButtonContainer = styled.div`
 export default function CategoryManagement() {
   const [isAllChecked, setAllChecked] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
-  const productData = useQuery<IProduct[]>('products', () => fetchProducts(uid));
-  const products = productData.data ?? [];
-  const categoryData = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
-  const categories = categoryData.data ?? [];
-  const categoryRefetch = categoryData.refetch;
+  const { data: products } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
+  const { data: categories, refetch: categoryRefetch } = useQuery<ICategory[]>('categories', () =>
+    fetchCategories(uid),
+  );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useMutation(updateChangedData, {
@@ -41,7 +47,7 @@ export default function CategoryManagement() {
 
   const methods = useForm<ICategoryManagement>({
     defaultValues: {
-      categories: categories.map((category) => {
+      categories: categories?.map((category) => {
         return {
           checked: false,
           number: category.number,
@@ -70,14 +76,14 @@ export default function CategoryManagement() {
 
   useEffect(() => {
     methods.reset({
-      categories: categories.map((category) => ({
+      categories: categories?.map((category) => ({
         checked: false,
         number: category.number,
         name: category.name,
         display: category.display ? DISPLAY_OPTIONS.show : DISPLAY_OPTIONS.hide,
       })),
     });
-  }, [categories]);
+  }, [categories, methods]);
 
   const watchedCategories = watch('categories');
 
@@ -110,7 +116,7 @@ export default function CategoryManagement() {
   const handleData = (data: ICategoryManagement) => {
     const categoriesWithountChecked = getDataWithoutChecked(data);
     const changedArray = categoriesWithountChecked.map((category, index) => {
-      return category && findChanges(categories[index], categoriesWithountChecked[index]);
+      return category && categories && findChanges(categories?.[index], categoriesWithountChecked[index]);
     });
     const changedCategoryNumbers = changedArray
       .map((changed, index) => {
@@ -137,7 +143,7 @@ export default function CategoryManagement() {
       categoryRefetch();
       navigate('/');
     } catch (e) {
-      if (e instanceof Error) console.log(e.message);
+      if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
     }
   };
 
@@ -149,8 +155,8 @@ export default function CategoryManagement() {
         return -1;
       })
       .filter((number) => number !== -1);
-    if (selectedNumbers.length < 1) return alert(ERROR_MESSAGES.SelectCategory);
-    if (option === SELECTED_MANAGEMENT_OPTIONS.delete) deleteCheckedCategories(selectedNumbers);
+    if (!selectedNumbers.length) return alert(ERROR_MESSAGES.SelectCategory);
+    if (option === SELECTED_MANAGEMENT_OPTIONS.delete) deleteCategory(selectedNumbers);
     if (option === SELECTED_MANAGEMENT_OPTIONS.hide || option === SELECTED_MANAGEMENT_OPTIONS.show)
       handleCategoryDisplay(selectedIndexArray, option);
     setAllChecked(false);
@@ -159,7 +165,7 @@ export default function CategoryManagement() {
   const confirmDelete = (selectedNumbers: number[]) => {
     const ok = confirm(CONFIRM_MESSAGES.deleteSelectedCategory);
     if (!ok) return false;
-    const categoriesWithProduct = [...new Set(products.map((product) => product.category))];
+    const categoriesWithProduct = [...new Set(products?.map((product) => product.category))];
     if (selectedNumbers.some((category) => categoriesWithProduct.includes(category))) {
       alert(ERROR_MESSAGES.cantDeleteCategory);
       return false;
@@ -167,21 +173,15 @@ export default function CategoryManagement() {
     return true;
   };
 
-  const deleteCheckedCategories = (selectedNumbers: number[]) => {
-    if (!confirmDelete(selectedNumbers)) return;
+  const deleteCategory = (number: number | number[]) => {
+    const numberArray = Array.isArray(number) ? number : [number];
+    if (numberArray.includes(CONDITION_VALUES.defaultCategoryNumber))
+      return alert(ERROR_MESSAGES.cantDeleteDefaultCategory);
+    if (!confirmDelete(numberArray)) return;
     try {
-      deleteData({ uid, numbers: selectedNumbers, type: 'categories' });
+      deleteData({ uid, numbers: numberArray, type: 'categories' });
     } catch (e) {
-      if (e instanceof Error) console.log(e.message);
-    }
-  };
-
-  const deleteCategory = (number: number) => {
-    if (!confirmDelete([number])) return;
-    try {
-      deleteData({ uid, numbers: [number], type: 'categories' });
-    } catch (e) {
-      if (e instanceof Error) console.log(e.message);
+      if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
     }
   };
 
@@ -197,7 +197,7 @@ export default function CategoryManagement() {
 
   useEffect(() => {
     fields.forEach((_, index) => setValue(`categories.${index}.checked`, isAllChecked));
-  }, [isAllChecked]);
+  }, [isAllChecked, fields, setValue]);
 
   const handleCategoryName = (data: ICategoryManagement) => {
     const categoryNames = data?.categories?.map((category) => category.name);
@@ -258,8 +258,10 @@ export default function CategoryManagement() {
               </Table>
             </TableContainer>
           </SmallModalContainer>
+          <ErrorMessage className="big">{errors?.namesError && errors?.namesError?.message}</ErrorMessage>
+          <ErrorMessage className="big">{errors?.otherError && errors?.otherError?.message}</ErrorMessage>
           <SubmitButtonsContainer>
-            <SubmitButton>확인</SubmitButton>
+            <SubmitButton onClick={() => clearErrors(['namesError', 'otherError'])}>확인</SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
         </ModalComponent>
