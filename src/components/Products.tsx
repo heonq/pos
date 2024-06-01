@@ -34,9 +34,9 @@ export default function Products() {
   );
 
   const displayingProducts = products?.filter((product) => product.display);
-  const categoriesContainsProduct = categories?.filter((category) =>
-    displayingProducts?.some((product) => category.number === product.category),
-  );
+  const categoriesContainsProduct = categories
+    ?.filter((category) => displayingProducts?.some((product) => category.number === product.category))
+    .sort((a, b) => a.number - b.number);
 
   const props: IProductProps = { products: displayingProducts ?? [], categories: categoriesContainsProduct ?? [] };
   const isLoading = productIsLoading || categoryIsLoading;
