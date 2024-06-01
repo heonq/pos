@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Background, CancelButton, ModalComponent, SubmitButton, SubmitButtonsContainer } from '../../components/Modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteProducts, fetchCategories, fetchProducts, updateChangedProducts } from '../../utils/fetchFunctions';
+import { deleteData, fetchCategories, fetchProducts, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -71,7 +71,7 @@ export default function ProductManagement() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(updateChangedProducts, {
+  const mutation = useMutation(updateChangedData, {
     onSuccess: () => {
       queryClient.invalidateQueries('products');
     },
@@ -207,7 +207,12 @@ export default function ProductManagement() {
 
     try {
       if (changedArrayFiltered.length) {
-        mutation.mutate({ uid, numberArray: changedProductNumbers, changedData: changedArrayFiltered });
+        mutation.mutate({
+          uid,
+          numberArray: changedProductNumbers,
+          changedData: changedArrayFiltered,
+          type: 'products',
+        });
       }
       navigate('/');
       resetShoppingCart();
@@ -232,13 +237,13 @@ export default function ProductManagement() {
     const salesQuantities = watchedProduct.filter((product) => product.checked).map((product) => product.salesQuantity);
     if (!confirmDelete(salesQuantities)) return;
     const checkedNumbers = watchedProduct.filter((product) => product.checked).map((product) => product.number);
-    deleteProducts({ uid, numbers: checkedNumbers });
+    deleteData({ uid, numbers: checkedNumbers, type: 'products' });
   };
 
   const deleteProduct = (number: number) => {
     const targetProduct = watchedProduct?.find((product) => product.number === number);
     if (targetProduct && !confirmDelete([targetProduct.salesQuantity])) return;
-    targetProduct && deleteProducts({ uid, numbers: [number] });
+    targetProduct && deleteData({ uid, numbers: [number], type: 'products' });
   };
 
   const handleProductNames = (data: IProductManagement) => {

@@ -54,8 +54,35 @@ export const updateChangedProducts = async ({
   await batch.commit();
 };
 
-export const deleteProducts = async ({ uid, numbers }: { uid: string; numbers: number[] }) => {
-  const refArray = numbers.map((number) => doc(doc(db, 'userData', uid), 'products', number.toString()));
+export const updateChangedData = async ({
+  uid,
+  numberArray,
+  changedData,
+  type,
+}: {
+  uid: string;
+  numberArray: number[];
+  changedData: Partial<IProduct>[] | Partial<ICategory>[];
+  type: 'products' | 'categories';
+}): Promise<void> => {
+  const batch = writeBatch(db);
+  const refArray = numberArray.map((number) => {
+    return doc(doc(db, 'userData', uid), type, number.toString());
+  });
+  refArray.forEach((ref, index) => batch.update(ref, changedData[index]));
+  await batch.commit();
+};
+
+export const deleteData = async ({
+  uid,
+  numbers,
+  type,
+}: {
+  uid: string;
+  numbers: number[];
+  type: 'products' | 'categories';
+}) => {
+  const refArray = numbers.map((number) => doc(doc(db, 'userData', uid), type, number.toString()));
   const batch = writeBatch(db);
   refArray.forEach((ref) => batch.delete(ref));
   await batch.commit();
