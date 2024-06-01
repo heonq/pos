@@ -21,6 +21,7 @@ export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const categoryData = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
   const categories = categoryData.data ?? [];
+  const categoryRefetch = categoryData.refetch;
 
   const methods = useForm<ICategoryRegistration>({
     defaultValues: {
@@ -63,6 +64,7 @@ export default function CategoryRegistration() {
   const handleSetCategories = (data: ICategory[]) => {
     try {
       addData({ uid, data });
+      categoryRefetch();
       navigate('/');
     } catch (e) {
       if (e instanceof Error) {
