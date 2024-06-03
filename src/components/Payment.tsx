@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilCallback, useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
@@ -11,11 +11,10 @@ import {
 } from '../atoms';
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
-import { collection, doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import { auth } from '../firebase';
 import { useQuery } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
-import { fetchSalesHistory } from '../utils/fetchFunctions';
+import { fetchSalesHistory, storeSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentBox = styled.div`
@@ -109,13 +108,12 @@ export default function Payment() {
   const shoppingCart = useRecoilValue(shoppingCartAtom);
   const setSalesHistory = useSetRecoilState(salesHistorySelector);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
-  const uid = auth.currentUser?.uid;
+  const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
-  const { data, refetch } = useQuery<ISalesHistory[]>('salesHistory', () => fetchSalesHistory(uid!));
+  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => fetchSalesHistory(uid, date));
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
-  const salesDataCollectionRef = collection(doc(collection(db, 'salesData'), uid), date);
   const [etcReason, setEtcReason] = useState('');
 
   const checkShoppingCartEmpty = () => {
@@ -142,11 +140,11 @@ export default function Payment() {
 
   useEffect(() => {
     setSalesNumber(() => {
-      return data && data.length ? data.sort((a, b) => b.number - a.number)[0].number : 0;
+      return data?.length ? [...data].sort((a, b) => b.number - a.number)[0].number : 0;
     });
-  }, [data]);
+  }, [data, setSalesNumber]);
 
-  const storeSalesHistory = useRecoilCallback(({ snapshot }) => async () => {
+  const handleSalesHistory = useRecoilCallback(({ snapshot }) => async () => {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
@@ -158,37 +156,33 @@ export default function Payment() {
     }
   });
 
-  const handleNormalPayment = async (updatedSalesHistory: ISalesHistory) => {
+  const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
-    const newDoc = doc(salesDataCollectionRef, finalSalesHistory.number.toString());
-    await setDoc(newDoc, finalSalesHistory);
+    storeSalesHistory(uid, date, finalSalesHistory);
     refetch();
   };
 
-  const handleSplitPayment = async (updatedSalesHistory: ISalesHistory) => {
-    const firstPaymentDoc = doc(salesDataCollectionRef, updatedSalesHistory.number.toString());
+  const handleSplitPayment = (updatedSalesHistory: ISalesHistory) => {
+    const note = `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
+      updatedSalesHistory.number + 1
+    } 분할결제`.trim();
     const firstPaymentHistory = {
       ...updatedSalesHistory,
       method: splitPayment.method[0],
       chargedAmount: splitPayment.price[0],
-      note: `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
-        updatedSalesHistory.number + 1
-      } 분할결제`.trim(),
-    };
-    await setDoc(firstPaymentDoc, firstPaymentHistory);
-    const secondPaymentDoc = doc(salesDataCollectionRef, (updatedSalesHistory.number + 1).toString());
-    const secondPaymentHistory = {
+      note,
+    } as ISalesHistory;
+    storeSalesHistory(uid, date, firstPaymentHistory);
+    const secondSalesHistory = {
       ...updatedSalesHistory,
       products: [],
       number: updatedSalesHistory.number + 1,
       method: splitPayment.method[1],
       chargedAmount: splitPayment.price[1],
-      note: `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
-        updatedSalesHistory.number + 1
-      } 분할결제`.trim(),
-    };
-    await setDoc(secondPaymentDoc, secondPaymentHistory);
+      note,
+    } as ISalesHistory;
+    storeSalesHistory(uid, date, secondSalesHistory);
     refetch();
   };
 
@@ -258,7 +252,7 @@ export default function Payment() {
           <PaymentButtons
             onClick={() => {
               updateSalesHistory();
-              storeSalesHistory();
+              handleSalesHistory();
             }}
           >
             결제완료

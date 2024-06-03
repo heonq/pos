@@ -1,4 +1,16 @@
-import { collection, doc, DocumentData, getDocs, orderBy, query, QuerySnapshot, writeBatch } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  DocumentData,
+  getDocs,
+  getDoc,
+  orderBy,
+  query,
+  QuerySnapshot,
+  writeBatch,
+  updateDoc,
+  setDoc,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 import { ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
@@ -23,8 +35,19 @@ export const fetchSalesHistory = async (
   date: string = formatter.formatDate(new Date()),
 ): Promise<ISalesHistory[]> => {
   const ref = collection(doc(db, 'salesData', uid), date);
-  const res = (await getDocs(ref)).docs?.map((doc) => doc.data() as ISalesHistory);
+  const q = query(ref, orderBy('number', 'asc'));
+  const res = (await getDocs(q)).docs?.map((doc) => doc.data() as ISalesHistory);
+  console.log('res', res);
   return res ?? [];
+};
+
+export const storeSalesHistory = async (
+  uid: string,
+  date: string = formatter.formatDate(new Date()),
+  salesHistory: ISalesHistory,
+) => {
+  const ref = doc(doc(db, 'salesData', uid), date, salesHistory.number.toString());
+  await setDoc(ref, salesHistory);
 };
 
 export const addData = async ({ uid, data }: { uid: string; data: IProduct[] | ICategory[] }) => {
