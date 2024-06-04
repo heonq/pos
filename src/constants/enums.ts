@@ -23,6 +23,7 @@ export enum ERROR_MESSAGES {
   cantDeleteCategory = '상품이 존재하는 카테고리는 삭제할 수 없습니다.',
   SelectCategory = '카테고리를 선택해주세요.',
   cantDeleteDefaultCategory = '기본 카테고리는 삭제할 수 없습니다.',
+  refundExist = '이미 환불된 결제 내역입니다.',
 }
 
 export enum CONFIRM_MESSAGES {
@@ -31,6 +32,7 @@ export enum CONFIRM_MESSAGES {
   deleteSelectedProduct = '선택한 상품을 삭제하시겠습니까?',
   deleteSelectedCategory = '선택한 카테고리를 삭제하시겠습니까?',
   changeSelectedCategoryDisplay = '선택한 카테고리의 전시 상태를 변경하시겠습니까?',
+  refundSalesHistory = '결제 내역을 환불하시겠습니까?',
 }
 
 export enum DISPLAY_OPTIONS {

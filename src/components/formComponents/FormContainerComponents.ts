@@ -10,6 +10,11 @@ export const SmallModalContainer = styled.div`
   width: 70%;
 `;
 
+export const WideModalContainer = styled.div`
+  height: 85%;
+  width: 95%;
+`;
+
 export const TableContainer = styled.div`
   height: 85%;
   width: 100%;
@@ -34,6 +39,11 @@ export const Table = styled.table`
     text-align: center;
     border-bottom: none;
   }
+  th {
+    height: 30px;
+    border-style: none;
+    box-sizing: border-box;
+  }
 `;
 
 export const TableHeader = styled.thead`
@@ -43,10 +53,27 @@ export const TableHeader = styled.thead`
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
   outline: 1px solid transparent;
   font-weight: 700;
+`;
+
+export const WideTable = styled(Table)`
   th {
-    height: 30px;
-    border-style: none;
-    box-sizing: border-box;
+    min-width: 100px;
+    background-color: rgb(240, 240, 240);
+  }
+
+  th:nth-child(4) {
+    min-width: 250px;
+  }
+
+  th:nth-child(1),
+  th:nth-child(7),
+  th:nth-child(8) {
+    min-width: 50px;
+  }
+
+  th,
+  td {
+    border: 0.5px solid rgb(200, 200, 200);
   }
 `;
 
@@ -71,4 +98,12 @@ export const ErrorMessage = styled.div`
   &.big {
     font-size: 18px;
   }
+`;
+
+export const ModalHeader = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;

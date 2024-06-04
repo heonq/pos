@@ -1,4 +1,4 @@
-import { ICategory, IProduct } from './DataInterfaces';
+import { ICategory, IProduct, ISalesHistory } from './DataInterfaces';
 
 export interface IProductProps {
   categories: ICategory[];
@@ -44,4 +44,12 @@ export interface ICategoryTableRowProps<T> {
   remove: (index: number) => void;
   products?: IProduct[];
   removable?: boolean;
+}
+
+export interface ISalesHistoryRowProps {
+  index: number;
+  products: IProduct[];
+  salesHistory: ISalesHistory;
+  salesNumber: number;
+  refetch: () => void;
 }
