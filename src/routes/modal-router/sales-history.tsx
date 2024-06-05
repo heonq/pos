@@ -9,7 +9,7 @@ import { ModalComponent, Background, CloseButton } from '../../components/Modal'
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { IProduct, ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { fetchProducts, fetchSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
+import { fetchProducts, getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import MyDatePicker from '../../utils/datePicker';
@@ -25,7 +25,7 @@ export default function SalesHistory() {
   const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid));
   const { data: salesHistory, refetch: salesHistoryRefetch } = useQuery<ISalesHistory[]>(
     ['salesHistory', criteriaDate],
-    () => fetchSalesHistory(uid, criteriaDate),
+    () => getSalesHistory(uid, criteriaDate),
   );
   const salesNumber = useRecoilValue(salesNumberAtom);
 
