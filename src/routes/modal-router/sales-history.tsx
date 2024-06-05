@@ -3,7 +3,7 @@ import {
   ModalHeader,
   TableContainer,
   TableHeader,
-  WideTable,
+  SalesHistoryTable,
 } from '../../components/formComponents/FormContainerComponents';
 import { ModalComponent, Background, CloseButton } from '../../components/Modal';
 import { Link } from 'react-router-dom';
@@ -47,7 +47,7 @@ export default function SalesHistory() {
           </ModalHeader>
           <MyDatePicker setDate={setCriteriaDate} includedDatesArray={dates} />
           <TableContainer>
-            <WideTable>
+            <SalesHistoryTable>
               <TableHeader>
                 <tr>
                   <th>번호</th>
@@ -76,7 +76,7 @@ export default function SalesHistory() {
                     />
                   ))}
               </tbody>
-            </WideTable>
+            </SalesHistoryTable>
           </TableContainer>
         </WideModalContainer>
       </ModalComponent>

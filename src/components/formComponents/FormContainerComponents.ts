@@ -55,12 +55,18 @@ export const TableHeader = styled.thead`
   font-weight: 700;
 `;
 
-export const WideTable = styled(Table)`
+export const TableWithBorder = styled(Table)`
   th {
     min-width: 100px;
     background-color: rgb(240, 240, 240);
   }
+  th,
+  td {
+    border: 0.5px solid rgb(200, 200, 200);
+  }
+`;
 
+export const SalesHistoryTable = styled(TableWithBorder)`
   th:nth-child(4) {
     min-width: 250px;
   }
@@ -69,11 +75,6 @@ export const WideTable = styled(Table)`
   th:nth-child(7),
   th:nth-child(8) {
     min-width: 50px;
-  }
-
-  th,
-  td {
-    border: 0.5px solid rgb(200, 200, 200);
   }
 `;
 
@@ -101,7 +102,7 @@ export const ErrorMessage = styled.div`
 `;
 
 export const ModalHeader = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
