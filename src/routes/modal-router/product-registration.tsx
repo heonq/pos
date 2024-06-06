@@ -2,7 +2,7 @@ import { Background, SubmitButtonsContainer, BigModalComponent } from '../../com
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { addData, fetchCategories, fetchProducts } from '../../utils/fetchFunctions';
+import { setData, getCategories, getProducts } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -21,8 +21,8 @@ import { shoppingCartSelector } from '../../atoms';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
-  const { data: categories } = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
+  const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => getProducts(uid));
+  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const methods = useForm<IProductRegistration>({
@@ -65,7 +65,7 @@ export default function ProductRegistration() {
       };
     });
     try {
-      addData({ uid: uid, data: newProducts });
+      setData({ uid: uid, data: newProducts });
       productRefetch();
       navigate('/');
       resetShoppingCart();

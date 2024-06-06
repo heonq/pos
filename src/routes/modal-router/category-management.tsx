@@ -17,7 +17,7 @@ import {
 } from '../../components/formComponents/FormContainerComponents';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICategory, ICategoryManagement, IProduct } from '../../Interfaces/DataInterfaces';
-import { deleteData, fetchCategories, fetchProducts, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, getCategories, getProducts, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { CategoryManagementRow } from '../../components/formComponents/categoryManagementRow';
@@ -40,10 +40,8 @@ const SelectedManagingButtonContainer = styled.div`
 export default function CategoryManagement() {
   const [isAllChecked, setAllChecked] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
-  const { data: categories, refetch: categoryRefetch } = useQuery<ICategory[]>('categories', () =>
-    fetchCategories(uid),
-  );
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
+  const { data: categories, refetch: categoryRefetch } = useQuery<ICategory[]>('categories', () => getCategories(uid));
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useMutation(updateChangedData, {

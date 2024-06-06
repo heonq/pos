@@ -15,19 +15,19 @@ import { db } from '../firebase';
 import { ICashCheckForm, ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
 
-const fetchData = async <T>(uid: string, collectionName: string): Promise<T[]> => {
+const getData = async <T>(uid: string, collectionName: string): Promise<T[]> => {
   const ref = collection(doc(db, 'userData', uid), collectionName);
   const querySortedByNumber = query(ref, orderBy('number', 'asc'));
   const res: QuerySnapshot<DocumentData> = await getDocs(querySortedByNumber);
   return res.docs.map((doc) => doc.data() as T) ?? [];
 };
 
-export const fetchProducts = async (uid: string): Promise<IProduct[]> => {
-  return await fetchData<IProduct>(uid, 'products');
+export const getProducts = async (uid: string): Promise<IProduct[]> => {
+  return await getData<IProduct>(uid, 'products');
 };
 
-export const fetchCategories = async (uid: string): Promise<ICategory[]> => {
-  return await fetchData<ICategory>(uid, 'categories');
+export const getCategories = async (uid: string): Promise<ICategory[]> => {
+  return await getData<ICategory>(uid, 'categories');
 };
 
 export const getHistoryData = async <T>(uid: string, date: string, collectionName: string) => {
@@ -57,7 +57,7 @@ export const storeSalesHistory = async (
   await setDoc(ref, salesHistory);
 };
 
-export const addData = async ({ uid, data }: { uid: string; data: IProduct[] | ICategory[] }) => {
+export const setData = async ({ uid, data }: { uid: string; data: IProduct[] | ICategory[] }) => {
   const dataType = 'price' in data[0] ? 'products' : 'categories';
   const refArray = data.map((eachData) => {
     return doc(doc(db, 'userData', uid), dataType, eachData.number.toString());
@@ -127,7 +127,8 @@ export const setCashCheckHistory = async (uid: string, date: string, cashCheck: 
 
 export const getCashCheckDate = async (uid: string) => {
   const ref = doc(db, 'cashCheckData', uid);
-  return (await getDoc(ref))?.data()?.dates.sort((a: string, b: string) => {
+  const res = (await getDoc(ref))?.data()?.dates ?? [];
+  return res.sort((a: string, b: string) => {
     if (a > b) return 1;
     if (a < b) return -1;
     return 0;

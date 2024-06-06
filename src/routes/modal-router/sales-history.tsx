@@ -9,7 +9,7 @@ import { Background, CloseButton, WideModalComponent } from '../../components/Mo
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { IProduct, ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { fetchProducts, getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
+import { getProducts, getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import MyDatePicker from '../../utils/datePicker';
@@ -20,9 +20,9 @@ import { salesNumberAtom } from '../../atoms';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
-  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid));
+  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid, 'asc'));
   const { data: salesHistory, refetch: salesHistoryRefetch } = useQuery<ISalesHistory[]>(
     ['salesHistory', criteriaDate],
     () => getSalesHistory(uid, criteriaDate),

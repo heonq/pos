@@ -10,7 +10,7 @@ import {
 } from '../../components/Modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, fetchCategories, fetchProducts, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, getCategories, getProducts, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -65,8 +65,8 @@ const CategorySelect = styled.select`
 
 export default function ProductManagement() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
-  const { data: categories } = useQuery<ICategory[]>('categories', () => fetchCategories(uid));
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
+  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
   const [categoryCriteria, setCategoryCriteria] = useState(0);
   const [displayCriteria, setDisplayCriteira] = useState('전체');
   const [productsToDisplay, setProductsToDisplay] = useState(products);

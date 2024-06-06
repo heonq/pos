@@ -14,7 +14,7 @@ import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
 import { useQuery } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
-import { fetchSalesHistory, storeSalesHistory } from '../utils/fetchFunctions';
+import { getSalesHistory, setSalesDate, storeSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentBox = styled.div`
@@ -110,7 +110,7 @@ export default function Payment() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
-  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => fetchSalesHistory(uid, date));
+  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date));
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);

@@ -1,7 +1,7 @@
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { viewModeAtom } from '../atoms';
-import { fetchProducts, fetchCategories } from '../utils/fetchFunctions';
+import { getProducts, getCategories } from '../utils/fetchFunctions';
 import { auth } from '../firebase';
 import { useQuery } from 'react-query';
 import { ICategory, IProduct } from '../Interfaces/DataInterfaces';
@@ -28,9 +28,9 @@ const ProductsContainer = styled.div`
 export default function Products() {
   const viewMode = useRecoilValue(viewModeAtom);
   const uid = auth.currentUser?.uid || '';
-  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => fetchProducts(uid));
+  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => getProducts(uid));
   const { data: categories, isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () =>
-    fetchCategories(uid),
+    getCategories(uid),
   );
 
   const displayingProducts = products?.filter((product) => product.display);
