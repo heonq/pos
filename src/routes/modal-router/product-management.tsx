@@ -1,7 +1,13 @@
 /* eslint-disable no-restricted-globals */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { Background, CancelButton, ModalComponent, SubmitButton, SubmitButtonsContainer } from '../../components/Modal';
+import {
+  Background,
+  BigModalComponent,
+  CancelButton,
+  SubmitButton,
+  SubmitButtonsContainer,
+} from '../../components/Modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
 import { deleteData, fetchCategories, fetchProducts, updateChangedData } from '../../utils/fetchFunctions';
@@ -316,7 +322,7 @@ export default function ProductManagement() {
     <>
       <Background />
       <FormProvider {...methods}>
-        <ModalComponent className="big" onSubmit={handleSubmit(onSubmit)}>
+        <BigModalComponent onSubmit={handleSubmit(onSubmit)}>
           {categorySelectDisplay ? (
             <>
               <CategorySelectBackground />
@@ -420,7 +426,7 @@ export default function ProductManagement() {
             </SubmitButton>
             <CancelButton></CancelButton>
           </SubmitButtonsContainer>
-        </ModalComponent>
+        </BigModalComponent>
       </FormProvider>
     </>
   );

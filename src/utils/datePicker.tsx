@@ -12,6 +12,9 @@ const DatePickerContainer = styled.div`
     border-radius: 6px;
     height: 25px;
     width: 75px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
   }
 `;
 

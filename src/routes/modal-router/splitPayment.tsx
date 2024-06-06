@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ModalComponent, Background, SubmitButton, SubmitButtonsContainer, CancelButton } from '../../components/Modal';
+import {
+  Background,
+  SubmitButton,
+  SubmitButtonsContainer,
+  CancelButton,
+  SmallModalComponent,
+} from '../../components/Modal';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { paymentInfoAtom, paymentInfoSelector, splitPaymentAtom } from '../../atoms';
 import styled from 'styled-components';
@@ -89,7 +95,7 @@ export default function SplitPaymentModal() {
   return (
     <>
       <Background />
-      <ModalComponent className="small" onSubmit={onSubmitClick}>
+      <SmallModalComponent onSubmit={onSubmitClick}>
         <SplitPaymentContainer>
           <div>총 결제금액 : {formatter.formatNumber(chargedAmount)}원</div>
           {[0, 0].map((_, index) => {
@@ -112,7 +118,7 @@ export default function SplitPaymentModal() {
             <CancelButton />
           </SubmitButtonsContainer>
         </SplitPaymentContainer>
-      </ModalComponent>
+      </SmallModalComponent>
     </>
   );
 }

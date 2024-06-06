@@ -1,13 +1,20 @@
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
   ErrorMessage,
+  ModalHeader,
   PlusRowButtonContainer,
   SmallModalContainer,
   Table,
   TableContainer,
   TableHeader,
 } from '../../components/formComponents/FormContainerComponents';
-import { Background, CancelButton, ModalComponent, SubmitButton, SubmitButtonsContainer } from '../../components/Modal';
+import {
+  Background,
+  CancelButton,
+  SmallModalComponent,
+  SubmitButton,
+  SubmitButtonsContainer,
+} from '../../components/Modal';
 import { ICategory, ICategoryRegistration } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
 import { useQuery } from 'react-query';
@@ -77,11 +84,11 @@ export default function CategoryRegistration() {
     <>
       <Background />
       <FormProvider {...methods}>
-        <ModalComponent className="small" onSubmit={handleSubmit(onSubmit)}>
+        <SmallModalComponent onSubmit={handleSubmit(onSubmit)}>
           <SmallModalContainer>
-            <div>
+            <ModalHeader>
               <h2>카테고리 등록</h2>
-            </div>
+            </ModalHeader>
             <TableContainer>
               <Table>
                 <TableHeader>
@@ -126,7 +133,7 @@ export default function CategoryRegistration() {
             <SubmitButton onClick={() => clearErrors(['namesError', 'otherError'])}>확인</SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
-        </ModalComponent>
+        </SmallModalComponent>
       </FormProvider>
     </>
   );

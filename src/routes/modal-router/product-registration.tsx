@@ -1,4 +1,4 @@
-import { ModalComponent, Background, SubmitButtonsContainer } from '../../components/Modal';
+import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
@@ -110,7 +110,7 @@ export default function ProductRegistration() {
     <>
       <Background />
       <FormProvider {...methods}>
-        <ModalComponent className="big" onSubmit={handleSubmit(onSubmit)}>
+        <BigModalComponent onSubmit={handleSubmit(onSubmit)}>
           <BigModalContainer>
             <div>
               <h2>상품등록</h2>
@@ -169,7 +169,7 @@ export default function ProductRegistration() {
               <button>취소</button>
             </Link>
           </SubmitButtonsContainer>
-        </ModalComponent>
+        </BigModalComponent>
       </FormProvider>
     </>
   );

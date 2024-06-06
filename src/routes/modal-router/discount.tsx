@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ModalComponent, Background, SubmitButton, SubmitButtonsContainer, CancelButton } from '../../components/Modal';
+import {
+  Background,
+  SubmitButton,
+  SubmitButtonsContainer,
+  CancelButton,
+  SmallModalComponent,
+} from '../../components/Modal';
 import styled from 'styled-components';
 import { DISCOUNT_TYPE } from '../../constants/enums';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -134,7 +140,7 @@ export default function DiscountModal() {
   return (
     <>
       <Background />
-      <ModalComponent className="small" onSubmit={handleSubmit(onSubmitClick)}>
+      <SmallModalComponent onSubmit={handleSubmit(onSubmitClick)}>
         <DiscountContainer>
           <SelectDiscountTypeSection>
             <div>
@@ -177,12 +183,6 @@ export default function DiscountModal() {
                   <input {...field} onChangeCapture={(e) => field.onChange(+e.currentTarget.value)} />
                 )}
               />
-              {/* <input
-                {...register('note')}
-                type="text"
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setValue('note', e.currentTarget.value)}
-                value={watchNote}
-              /> */}
             </DiscountReasonSection>
           </DiscountInfoSection>
           <SubmitButtonsContainer>
@@ -192,7 +192,7 @@ export default function DiscountModal() {
             <CancelButton></CancelButton>
           </SubmitButtonsContainer>
         </DiscountContainer>
-      </ModalComponent>
+      </SmallModalComponent>
     </>
   );
 }

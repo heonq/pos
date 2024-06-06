@@ -11,21 +11,6 @@ export const ModalComponent = styled.form`
   justify-content: start;
   box-shadow: 15px 15px 15px rgba(69, 69, 69, 0.5);
   border-radius: 10px;
-  &.small {
-    width: 500px;
-    height: 500px;
-    top: 200px;
-  }
-  &.big {
-    width: 1000px;
-    height: 800px;
-    top: 38px;
-  }
-  &.wide {
-    width: 1300px;
-    height: 800px;
-    top: 38px;
-  }
   h2 {
     font-size: 19px;
     font-weight: 700;
@@ -36,6 +21,30 @@ export const ModalComponent = styled.form`
   button {
     border-width: 0.1px;
   }
+`;
+
+export const WideModalComponent = styled(ModalComponent)`
+  width: 1300px;
+  height: 800px;
+  top: 38px;
+`;
+
+export const BigModalComponent = styled(ModalComponent)`
+  width: 1000px;
+  height: 800px;
+  top: 38px;
+`;
+
+export const MediumModalComponent = styled(ModalComponent)`
+  width: 800px;
+  height: 800px;
+  top: 38px;
+`;
+
+export const SmallModalComponent = styled(ModalComponent)`
+  width: 500px;
+  height: 500px;
+  top: 200px;
 `;
 
 export const Background = styled.div`

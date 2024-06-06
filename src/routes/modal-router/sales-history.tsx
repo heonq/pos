@@ -5,7 +5,7 @@ import {
   TableHeader,
   SalesHistoryTable,
 } from '../../components/formComponents/FormContainerComponents';
-import { ModalComponent, Background, CloseButton } from '../../components/Modal';
+import { Background, CloseButton, WideModalComponent } from '../../components/Modal';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { IProduct, ISalesHistory } from '../../Interfaces/DataInterfaces';
@@ -37,7 +37,7 @@ export default function SalesHistory() {
   return (
     <>
       <Background />
-      <ModalComponent className="wide" as="div">
+      <WideModalComponent as="div">
         <WideModalContainer>
           <ModalHeader>
             <h2>판매내역</h2>
@@ -79,7 +79,7 @@ export default function SalesHistory() {
             </SalesHistoryTable>
           </TableContainer>
         </WideModalContainer>
-      </ModalComponent>
+      </WideModalComponent>
     </>
   );
 }

@@ -1,8 +1,15 @@
 /* eslint-disable no-restricted-globals */
 import styled from 'styled-components';
-import { ModalComponent, Background, SubmitButtonsContainer, SubmitButton, CancelButton } from '../../components/Modal';
+import {
+  Background,
+  SubmitButtonsContainer,
+  SubmitButton,
+  CancelButton,
+  SmallModalComponent,
+} from '../../components/Modal';
 import {
   ErrorMessage,
+  ModalHeader,
   SmallModalContainer,
   Table,
   TableContainer,
@@ -213,11 +220,11 @@ export default function CategoryManagement() {
     <>
       <Background />
       <FormProvider {...methods}>
-        <ModalComponent className="small" onSubmit={handleSubmit(onSubmit)}>
+        <SmallModalComponent onSubmit={handleSubmit(onSubmit)}>
           <SmallModalContainer>
-            <div>
+            <ModalHeader>
               <h2>카테고리 관리</h2>
-            </div>
+            </ModalHeader>
             <SelectedManagingButtonContainer>
               <select
                 onChange={(e) => {
@@ -264,7 +271,7 @@ export default function CategoryManagement() {
             <SubmitButton onClick={() => clearErrors(['namesError', 'otherError'])}>확인</SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
-        </ModalComponent>
+        </SmallModalComponent>
       </FormProvider>
     </>
   );

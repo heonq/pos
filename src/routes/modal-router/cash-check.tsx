@@ -1,14 +1,18 @@
 import styled from 'styled-components';
 import {
   ModalHeader,
-  Table,
   TableContainer,
   TableHeader,
   WideModalContainer,
-  SalesHistoryTable,
   TableWithBorder,
 } from '../../components/formComponents/FormContainerComponents';
-import { ModalComponent, Background, SubmitButtonsContainer, SubmitButton, CancelButton } from '../../components/Modal';
+import {
+  Background,
+  SubmitButtonsContainer,
+  SubmitButton,
+  CancelButton,
+  WideModalComponent,
+} from '../../components/Modal';
 import formatter from '../../utils/formatter';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -139,7 +143,7 @@ export default function CashCheck() {
   return (
     <>
       <Background />
-      <ModalComponent className="wide" onSubmit={handleSubmit(submitCashCheck)}>
+      <WideModalComponent onSubmit={handleSubmit(submitCashCheck)}>
         <WideModalContainer>
           <ModalHeader>
             <h2>현금점검 입력</h2>
@@ -244,7 +248,7 @@ export default function CashCheck() {
           <SubmitButton disabled={!(thousand || fiveThousand || tenThousand || fiftyThousand)}>확인</SubmitButton>
           <CancelButton></CancelButton>
         </SubmitButtonsContainer>
-      </ModalComponent>
+      </WideModalComponent>
     </>
   );
 }

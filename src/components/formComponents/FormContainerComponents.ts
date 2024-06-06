@@ -15,6 +15,11 @@ export const WideModalContainer = styled.div`
   width: 95%;
 `;
 
+export const MediumModalContainer = styled.div`
+  height: 85%;
+  width: 85%;
+`;
+
 export const TableContainer = styled.div`
   height: 85%;
   width: 100%;

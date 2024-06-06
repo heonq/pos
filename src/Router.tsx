@@ -13,6 +13,7 @@ import ResetPassword from './routes/reset-password';
 import ProtectedRoute from './components/protected-route';
 import SplitPaymentModal from './routes/modal-router/splitPayment';
 import DiscountModal from './routes/modal-router/discount';
+import SalesHistory from './routes/modal-router/sales-history';
 
 export const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '/sales-history',
-            element: <CategoryRegistration />,
+            element: <SalesHistory />,
           },
           {
             path: '/cash-check',
