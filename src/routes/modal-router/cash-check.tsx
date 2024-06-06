@@ -95,7 +95,7 @@ export default function CashCheck() {
     setNewCashCheckNumber(newestNumber);
     methods.reset({
       ...methods,
-      reserveCash: todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1].reserveCash,
+      reserveCash: todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash,
     });
   }, [todayCashCheckHistory, methods]);
 

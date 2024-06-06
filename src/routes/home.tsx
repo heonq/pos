@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import Products from '../components/Products';
 import ShoppingCart from '../components/ShoppingCart';
 import Payment from '../components/Payment';
 import { Outlet } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { headerMenusDisplaySelector } from '../atoms';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import { headerMenusDisplaySelector, shoppingCartSelector } from '../atoms';
+import { auth } from '../firebase';
 
 const Wrapper = styled.div`
   top: 30px;
@@ -35,6 +36,11 @@ export default function Home() {
   const onElseClick = () => {
     headerMenusDisplay && setHeaderMenusDisplay(false);
   };
+  const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
+  const uid = auth.currentUser?.uid;
+  useEffect(() => {
+    resetShoppingCart();
+  }, [uid, resetShoppingCart]);
 
   return (
     <>

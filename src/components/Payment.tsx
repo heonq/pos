@@ -148,6 +148,7 @@ export default function Payment() {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
+      if (updatedSalesHistory.number === 1) setSalesDate(uid);
       if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
       else handleNormalPayment(updatedSalesHistory);
       resetShoppingCart();

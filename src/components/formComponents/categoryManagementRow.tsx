@@ -2,7 +2,7 @@ import React from 'react';
 import { ICategoryTableRowProps } from '../../Interfaces/PropsInterfaces';
 import { ICategoryManagement, ICategoryMGMTForm } from '../../Interfaces/DataInterfaces';
 import { Controller, useFormContext } from 'react-hook-form';
-import { ERROR_MESSAGES } from '../../constants/enums';
+import { DISPLAY_OPTIONS, ERROR_MESSAGES } from '../../constants/enums';
 import validator from '../../utils/validator';
 import { ErrorMessage } from './FormContainerComponents';
 
@@ -53,8 +53,8 @@ export const CategoryManagementRow = ({ field, index, remove }: ICategoryTableRo
       </td>
       <td>
         <select {...register(`categories.${index}.display`)} defaultValue={field.display}>
-          <option value="전시">전시</option>
-          <option value="숨김">숨김</option>
+          <option value={DISPLAY_OPTIONS.show}>전시</option>
+          <option value={DISPLAY_OPTIONS.hide}>숨김</option>
         </select>
       </td>
       <td>

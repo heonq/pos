@@ -101,11 +101,11 @@ export const deleteData = async ({
   await batch.commit();
 };
 
-export const getSalesDate = async (uid: string) => {
+export const getSalesDate = async (uid: string, sort: 'asc' | 'desc') => {
   const ref = doc(db, 'salesData', uid);
   return (await getDoc(ref))?.data()?.dates.sort((a: string, b: string) => {
-    if (a > b) return 1;
-    if (a < b) return -1;
+    if (a > b) return sort === 'asc' ? 1 : -1;
+    if (a < b) return sort === 'asc' ? -1 : 1;
     return 0;
   });
 };

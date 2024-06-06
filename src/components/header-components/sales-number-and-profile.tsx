@@ -11,12 +11,15 @@ import {
 import { useRecoilValue } from 'recoil';
 import { salesNumberAtom } from '../../atoms';
 import { ISalesNumberAndProfileProps } from '../../Interfaces/PropsInterfaces';
+import { useQueryClient } from 'react-query';
 
 export default function SalesNumberAndProfile({ onProfileClick, profileMenuVisible }: ISalesNumberAndProfileProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const logOut = async () => {
     await auth.signOut();
+    queryClient.clear();
     navigate('/login');
   };
   const salesNumber = useRecoilValue(salesNumberAtom);
