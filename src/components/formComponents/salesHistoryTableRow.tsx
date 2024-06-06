@@ -2,7 +2,7 @@
 import { useSetRecoilState } from 'recoil';
 import { auth } from '../../firebase';
 import { ISalesHistoryRowProps } from '../../Interfaces/PropsInterfaces';
-import { storeSalesHistory, updateSalesHistory } from '../../utils/fetchFunctions';
+import { setSalesHistory, updateSalesHistory } from '../../utils/fetchFunctions';
 import formatter from '../../utils/formatter';
 import { salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';
@@ -38,7 +38,7 @@ export const SalesHistoryTableRow = ({
       }),
     };
     try {
-      storeSalesHistory(uid, formatter.formatDate(new Date()), updateData);
+      setSalesHistory(uid, formatter.formatDate(new Date()), updateData);
       updateSalesHistory(uid, date, salesHistory.number.toString(), { refund: true });
       setSalesNumber((value) => value + 1);
       refetch();

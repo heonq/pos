@@ -48,7 +48,7 @@ export const getCashCheckHistory = async (uid: string, date: string) => {
   return await getHistoryData<ICashCheckForm>(uid, date, 'cashCheckData');
 };
 
-export const storeSalesHistory = async (
+export const setSalesHistory = async (
   uid: string,
   date: string = formatter.formatDate(new Date()),
   salesHistory: ISalesHistory,

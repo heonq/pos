@@ -14,7 +14,7 @@ import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
 import { useQuery } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
-import { getSalesHistory, setSalesDate, storeSalesHistory } from '../utils/fetchFunctions';
+import { getSalesHistory, setSalesDate, setSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentBox = styled.div`
@@ -106,7 +106,7 @@ const PaymentMethodButton = styled.button`
 export default function Payment() {
   const [paymentInfo, setPaymentInfo] = useRecoilState(paymentInfoSelector);
   const shoppingCart = useRecoilValue(shoppingCartAtom);
-  const setSalesHistory = useSetRecoilState(salesHistorySelector);
+  const setSalesHistorySelector = useSetRecoilState(salesHistorySelector);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
@@ -133,7 +133,7 @@ export default function Payment() {
 
   const updateSalesHistory = () => {
     const time = formatter.formatTime(new Date());
-    setSalesHistory((originalSalesHistory) => {
+    setSalesHistorySelector((originalSalesHistory) => {
       return { ...originalSalesHistory, date, time };
     });
   };
@@ -160,7 +160,7 @@ export default function Payment() {
   const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
-    storeSalesHistory(uid, date, finalSalesHistory);
+    setSalesHistory(uid, date, finalSalesHistory);
     refetch();
   };
 
@@ -174,7 +174,7 @@ export default function Payment() {
       chargedAmount: splitPayment.price[0],
       note,
     } as ISalesHistory;
-    storeSalesHistory(uid, date, firstPaymentHistory);
+    setSalesHistory(uid, date, firstPaymentHistory);
     const secondSalesHistory = {
       ...updatedSalesHistory,
       products: [],
@@ -183,7 +183,7 @@ export default function Payment() {
       chargedAmount: splitPayment.price[1],
       note,
     } as ISalesHistory;
-    storeSalesHistory(uid, date, secondSalesHistory);
+    setSalesHistory(uid, date, secondSalesHistory);
     refetch();
   };
 
