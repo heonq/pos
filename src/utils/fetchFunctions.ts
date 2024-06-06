@@ -144,7 +144,18 @@ export const setCashCheckDate = async (uid: string) => {
 
 export const setSalesDate = async (uid: string) => {
   const ref = doc(db, 'salesData', uid);
-  const data = await getSalesDate(uid);
+  const data = await getSalesDate(uid, 'asc');
   const newData = { dates: [...data, formatter.formatDate(new Date())] };
   await setDoc(ref, newData);
+};
+
+export const getMultipleSalesHistory = async (uid: string, dateArray: string[]): Promise<ISalesHistory[][]> => {
+  const refArray = dateArray.map((date) => collection(doc(db, 'salesData', uid), date));
+  const resArray = await Promise.all(
+    refArray.map(async (ref) => {
+      const res = await getDocs(ref);
+      return res.docs.map((doc) => doc.data() as ISalesHistory);
+    }),
+  );
+  return resArray;
 };
