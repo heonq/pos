@@ -7,9 +7,9 @@ import {
 } from '../../components/formComponents/FormContainerComponents';
 import { Background, CloseButton, WideModalComponent } from '../../components/Modal';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { IProduct, ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { getProducts, getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
+import { getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import MyDatePicker from '../../utils/datePicker';
@@ -20,12 +20,17 @@ import { salesNumberAtom } from '../../atoms';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
+  const queryClient = useQueryClient();
+  const products = queryClient.getQueryData<IProduct[]>('products');
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
-  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid, 'asc'));
+  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid));
+  const existingData = queryClient.getQueryData(['salesHistory', criteriaDate]);
   const { data: salesHistory, refetch: salesHistoryRefetch } = useQuery<ISalesHistory[]>(
     ['salesHistory', criteriaDate],
     () => getSalesHistory(uid, criteriaDate),
+    {
+      enabled: !existingData,
+    },
   );
   const salesNumber = useRecoilValue(salesNumberAtom);
 

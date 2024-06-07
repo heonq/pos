@@ -17,8 +17,8 @@ import {
 } from '../../components/Modal';
 import { ICategory, ICategoryRegistration } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
-import { useQuery } from 'react-query';
-import { setData, getCategories } from '../../utils/fetchFunctions';
+import { useQueryClient } from 'react-query';
+import { setData } from '../../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import { CategoryRegistrationRow } from '../../components/formComponents/categoryRegistrationRow';
 import validator from '../../utils/validator';
@@ -26,9 +26,9 @@ import { ERROR_MESSAGES } from '../../constants/enums';
 
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
-  const categoryData = useQuery<ICategory[]>('categories', () => getCategories(uid));
-  const categories = categoryData.data ?? [];
-  const categoryRefetch = categoryData.refetch;
+  const queryClient = useQueryClient();
+  const categories = queryClient.getQueryData<ICategory[]>('categories') ?? [];
+  const refetchCategory = async () => await queryClient.refetchQueries('categories');
 
   const methods = useForm<ICategoryRegistration>({
     defaultValues: {
@@ -71,7 +71,7 @@ export default function CategoryRegistration() {
   const handleSetCategories = (data: ICategory[]) => {
     try {
       setData({ uid, data });
-      categoryRefetch();
+      refetchCategory();
       navigate('/');
     } catch (e) {
       if (e instanceof Error) {

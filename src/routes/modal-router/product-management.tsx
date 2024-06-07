@@ -8,9 +8,9 @@ import {
   SubmitButton,
   SubmitButtonsContainer,
 } from '../../components/Modal';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, getCategories, getProducts, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -65,8 +65,9 @@ const CategorySelect = styled.select`
 
 export default function ProductManagement() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
-  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
+  const queryClient = useQueryClient();
+  const products = queryClient.getQueryData<IProduct[]>('products');
+  const categories = queryClient.getQueryData<ICategory[]>('categories');
   const [categoryCriteria, setCategoryCriteria] = useState(0);
   const [displayCriteria, setDisplayCriteira] = useState('전체');
   const [productsToDisplay, setProductsToDisplay] = useState(products);
@@ -75,7 +76,6 @@ export default function ProductManagement() {
   const [selectedCategory, setSelectedCategory] = useState(categories?.[0]?.number ?? 1);
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
-  const queryClient = useQueryClient();
 
   const mutation = useMutation(updateChangedData, {
     onSuccess: () => {

@@ -12,7 +12,7 @@ import {
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
 import { getSalesHistory, setSalesDate, setSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
@@ -110,7 +110,11 @@ export default function Payment() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
-  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date));
+  const queryClient = useQueryClient();
+  const existingData = queryClient.getQueryData(['salesHistory', date]);
+  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date), {
+    enabled: !existingData,
+  });
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
@@ -148,7 +152,9 @@ export default function Payment() {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
-      if (updatedSalesHistory.number === 1) setSalesDate(uid);
+      if (updatedSalesHistory.number === 1) {
+        setSalesDate(uid);
+      }
       if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
       else handleNormalPayment(updatedSalesHistory);
       resetShoppingCart();

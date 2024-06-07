@@ -16,12 +16,18 @@ import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: salesDates } = useQuery('salesDates', () => getSalesDate(uid, 'desc'));
+  const { data: salesDates } = useQuery('salesDates', () => getSalesDate(uid));
+  const descSortedDates = [...salesDates].sort((a, b) => {
+    if (a < b) return 1;
+    if (a > b) return -1;
+    return 0;
+  });
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>(
     'salesHistory',
     ({ pageParam = 1 }) => {
       const datesPerPage = 50;
-      const dateArray = salesDates && [...salesDates].slice((pageParam - 1) * datesPerPage, datesPerPage * pageParam);
+      const dateArray =
+        descSortedDates && [...descSortedDates].slice((pageParam - 1) * datesPerPage, datesPerPage * pageParam);
       return getMultipleSalesHistory(uid, dateArray);
     },
     {

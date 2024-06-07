@@ -1,8 +1,8 @@
 import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { setData, getCategories, getProducts } from '../../utils/fetchFunctions';
+import { setData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -21,8 +21,10 @@ import { shoppingCartSelector } from '../../atoms';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: products, refetch: productRefetch } = useQuery<IProduct[]>('products', () => getProducts(uid));
-  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
+  const queryClient = useQueryClient();
+  const products = queryClient.getQueryData<IProduct[]>('products');
+  const productRefetch = async () => await queryClient.refetchQueries(['products']);
+  const categories = queryClient.getQueryData<ICategory[]>('categories');
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const methods = useForm<IProductRegistration>({
