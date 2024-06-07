@@ -10,7 +10,10 @@ const formatter: IFormatter = {
   },
 
   formatTime(date) {
-    return date.toISOString().split('T')[1].split('.')[0];
+    const timeInfo = [date.getHours(), date.getMinutes(), date.getSeconds()].map((info) =>
+      this.formatZero(String(info)),
+    );
+    return timeInfo.join(':');
   },
 
   formatZero(number) {
