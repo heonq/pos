@@ -24,13 +24,8 @@ export default function SalesHistory() {
   const products = queryClient.getQueryData<IProduct[]>('products');
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
   const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid));
-  const existingData = queryClient.getQueryData(['salesHistory', criteriaDate]);
-  const { data: salesHistory, refetch: salesHistoryRefetch } = useQuery<ISalesHistory[]>(
-    ['salesHistory', criteriaDate],
-    () => getSalesHistory(uid, criteriaDate),
-    {
-      enabled: !existingData,
-    },
+  const { data: salesHistory } = useQuery<ISalesHistory[]>(['salesHistory', criteriaDate], () =>
+    getSalesHistory(uid, criteriaDate),
   );
   const salesNumber = useRecoilValue(salesNumberAtom);
 
@@ -77,7 +72,6 @@ export default function SalesHistory() {
                       products={products}
                       salesHistory={history}
                       salesNumber={salesNumber}
-                      refetch={salesHistoryRefetch}
                     />
                   ))}
               </tbody>

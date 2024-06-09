@@ -17,8 +17,8 @@ import {
 } from '../../components/Modal';
 import { ICategory, ICategoryRegistration } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
-import { useQueryClient } from 'react-query';
-import { setData } from '../../utils/fetchFunctions';
+import { useQueryClient, useMutation, useQuery } from 'react-query';
+import { getCategories, setData } from '../../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import { CategoryRegistrationRow } from '../../components/formComponents/categoryRegistrationRow';
 import validator from '../../utils/validator';
@@ -27,8 +27,12 @@ import { ERROR_MESSAGES } from '../../constants/enums';
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const categories = queryClient.getQueryData<ICategory[]>('categories') ?? [];
-  const refetchCategory = async () => await queryClient.refetchQueries('categories');
+  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
+  const mutation = useMutation(setData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('categories');
+    },
+  });
 
   const methods = useForm<ICategoryRegistration>({
     defaultValues: {
@@ -51,7 +55,7 @@ export default function CategoryRegistration() {
   const navigate = useNavigate();
 
   const onSubmit = (data: ICategoryRegistration) => {
-    const newestCategoryNumber = categories.sort((a, b) => b.number - a.number)[0].number + 1 ?? 1;
+    const newestCategoryNumber = (categories && categories?.sort((a, b) => b.number - a.number)[0].number + 1) ?? 1;
     const categoryData = data.categories.map((category, index) => {
       return { ...category, display: category.display === '전시', number: newestCategoryNumber + index };
     });
@@ -59,7 +63,7 @@ export default function CategoryRegistration() {
   };
 
   const handleCategoriesNames = (data: ICategoryRegistration) => {
-    const categoryNames = [...data.categories, ...categories].map((category) => category.name);
+    const categoryNames = [...data.categories, ...(categories ?? [])].map((category) => category.name);
     const duplicatedCategoryNames = validator.validateDuplicatedNames(categoryNames).join(',');
     if (duplicatedCategoryNames.length) {
       setError('namesError', { type: 'manual', message: ERROR_MESSAGES.duplicatedName + duplicatedCategoryNames });
@@ -70,8 +74,7 @@ export default function CategoryRegistration() {
 
   const handleSetCategories = (data: ICategory[]) => {
     try {
-      setData({ uid, data });
-      refetchCategory();
+      mutation.mutate({ uid, data });
       navigate('/');
     } catch (e) {
       if (e instanceof Error) {

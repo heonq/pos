@@ -51,5 +51,4 @@ export interface ISalesHistoryRowProps {
   products: IProduct[];
   salesHistory: ISalesHistory;
   salesNumber: number;
-  refetch: () => void;
 }

@@ -23,22 +23,20 @@ const ScrollContainer = styled.div`
 export default function CategoryMode({ categories, products }: IProductProps) {
   return (
     <>
-      {categories
-        .filter((category) => category.display)
-        .map((category, index) => {
-          return (
-            <Fragment key={'Fragment' + index}>
-              <CategoryHeader key={index}>{category.name}</CategoryHeader>
-              <ScrollContainer key={'scrollContainer' + index}>
-                {products
-                  .filter((product) => product.category === category.number)
-                  .map((product, i) => (
-                    <ProductButton key={'button' + i} product={product} />
-                  ))}
-              </ScrollContainer>
-            </Fragment>
-          );
-        })}
+      {categories.map((category, index) => {
+        return (
+          <Fragment key={'Fragment' + index}>
+            <CategoryHeader key={index}>{category.name}</CategoryHeader>
+            <ScrollContainer key={'scrollContainer' + index}>
+              {products
+                .filter((product) => product.category === category.number)
+                .map((product, i) => (
+                  <ProductButton key={'button' + i} product={product} />
+                ))}
+            </ScrollContainer>
+          </Fragment>
+        );
+      })}
     </>
   );
 }

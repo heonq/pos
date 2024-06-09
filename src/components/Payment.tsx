@@ -12,7 +12,7 @@ import {
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
 import { getSalesHistory, setSalesDate, setSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
@@ -111,14 +111,16 @@ export default function Payment() {
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
   const queryClient = useQueryClient();
-  const existingData = queryClient.getQueryData(['salesHistory', date]);
-  const { data, refetch } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date), {
-    enabled: !existingData,
-  });
+  const { data } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date));
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
   const [etcReason, setEtcReason] = useState('');
+  const mutation = useMutation(setSalesHistory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['salesHistory', date]);
+    },
+  });
 
   const checkShoppingCartEmpty = () => {
     if (!shoppingCart.length) {
@@ -166,8 +168,7 @@ export default function Payment() {
   const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
-    setSalesHistory(uid, date, finalSalesHistory);
-    refetch();
+    mutation.mutate({ uid, date, salesHistory: finalSalesHistory });
   };
 
   const handleSplitPayment = (updatedSalesHistory: ISalesHistory) => {
@@ -180,7 +181,7 @@ export default function Payment() {
       chargedAmount: splitPayment.price[0],
       note,
     } as ISalesHistory;
-    setSalesHistory(uid, date, firstPaymentHistory);
+    mutation.mutate({ uid, date, salesHistory: firstPaymentHistory });
     const secondSalesHistory = {
       ...updatedSalesHistory,
       products: [],
@@ -189,8 +190,7 @@ export default function Payment() {
       chargedAmount: splitPayment.price[1],
       note,
     } as ISalesHistory;
-    setSalesHistory(uid, date, secondSalesHistory);
-    refetch();
+    mutation.mutate({ uid, date, salesHistory: secondSalesHistory });
   };
 
   const onPaymentModalButtonClick = (path: string) => {

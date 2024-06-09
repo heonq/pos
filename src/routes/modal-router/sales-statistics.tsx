@@ -13,14 +13,20 @@ import { auth } from '../../firebase';
 import { useQuery, useInfiniteQuery } from 'react-query';
 import { getMultipleSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
+import { useState } from 'react';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
-  const { data: salesDates } = useQuery('salesDates', () => getSalesDate(uid));
-  const descSortedDates = [...salesDates].sort((a, b) => {
-    if (a < b) return 1;
-    if (a > b) return -1;
-    return 0;
+  const [descSortedDates, setSortedDates] = useState<string[]>([]);
+  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid), {
+    onSuccess: (data) => {
+      const sortedDates = [...data].sort((a, b) => {
+        if (a < b) return 1;
+        if (a > b) return -1;
+        return 0;
+      });
+      setSortedDates(sortedDates);
+    },
   });
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>(
     'salesHistory',
@@ -34,7 +40,7 @@ export default function SalesStatistics() {
       enabled: !!salesDates,
       getNextPageParam: (lastPage, pages) => {
         const datesPerPage = 50;
-        const hasMore = lastPage.length === datesPerPage && salesDates.length !== pages.length * datesPerPage;
+        const hasMore = lastPage.length === datesPerPage && salesDates?.length !== pages.length * datesPerPage;
         return hasMore ? pages.length + 1 : undefined;
       },
     },

@@ -15,9 +15,9 @@ import {
   TableContainer,
   TableHeader,
 } from '../../components/formComponents/FormContainerComponents';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICategory, ICategoryManagement, IProduct } from '../../Interfaces/DataInterfaces';
-import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, getCategories, getProducts, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { CategoryManagementRow } from '../../components/formComponents/categoryManagementRow';
@@ -41,13 +41,14 @@ export default function CategoryManagement() {
   const [isAllChecked, setAllChecked] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const products = queryClient.getQueryData<IProduct[]>('products');
-  const categories = queryClient.getQueryData<ICategory[]>('categories');
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
+  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
   const navigate = useNavigate();
 
   const mutation = useMutation(updateChangedData, {
     onSuccess: () => {
       queryClient.invalidateQueries('categories');
+      navigate('/');
     },
   });
 
@@ -146,7 +147,6 @@ export default function CategoryManagement() {
           type: 'categories',
         });
       }
-      navigate('/');
     } catch (e) {
       if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
     }

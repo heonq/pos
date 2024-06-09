@@ -1,8 +1,8 @@
 import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
-import { useQueryClient } from 'react-query';
+import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { setData } from '../../utils/fetchFunctions';
+import { getProducts, setData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -22,8 +22,7 @@ import { shoppingCartSelector } from '../../atoms';
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const products = queryClient.getQueryData<IProduct[]>('products');
-  const productRefetch = async () => await queryClient.refetchQueries(['products']);
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
   const categories = queryClient.getQueryData<ICategory[]>('categories');
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
@@ -47,6 +46,11 @@ export default function ProductRegistration() {
     name: 'products',
   });
   const navigate = useNavigate();
+  const mutation = useMutation(setData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('products');
+    },
+  });
 
   const onSubmit = (data: IProductRegistration) => {
     if (handleProductNames(data) && handleProductBarcodes(data)) {
@@ -67,8 +71,7 @@ export default function ProductRegistration() {
       };
     });
     try {
-      setData({ uid: uid, data: newProducts });
-      productRefetch();
+      mutation.mutate({ uid, data: newProducts });
       navigate('/');
       resetShoppingCart();
     } catch (e) {

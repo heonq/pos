@@ -7,19 +7,25 @@ import formatter from '../../utils/formatter';
 import { salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
+import { useMutation, useQueryClient } from 'react-query';
 
-export const SalesHistoryTableRow = ({
-  index,
-  products,
-  salesHistory,
-  salesNumber,
-  refetch,
-}: ISalesHistoryRowProps) => {
+export const SalesHistoryTableRow = ({ index, products, salesHistory, salesNumber }: ISalesHistoryRowProps) => {
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const [editing, setEditing] = useState(false);
   const [note, setNote] = useState(salesHistory.note);
+  const queryClient = useQueryClient();
+  const mutationTodayHistory = useMutation(setSalesHistory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['salesHistory', date]);
+    },
+  });
+  const mutationRowHistory = useMutation(updateSalesHistory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['salesHistory', salesHistory.date]);
+    },
+  });
 
   const refund = () => {
     if (salesHistory.refund) return alert(ERROR_MESSAGES.refundExist);
@@ -38,10 +44,14 @@ export const SalesHistoryTableRow = ({
       }),
     };
     try {
-      setSalesHistory(uid, formatter.formatDate(new Date()), updateData);
-      updateSalesHistory(uid, date, salesHistory.number.toString(), { refund: true });
+      mutationRowHistory.mutate({
+        uid,
+        date: salesHistory.date,
+        number: salesHistory.number.toString(),
+        updateData: { refund: true },
+      });
+      mutationTodayHistory.mutate({ uid, date, salesHistory: updateData });
       setSalesNumber((value) => value + 1);
-      refetch();
     } catch (e) {
       if (e instanceof Error) alert(e.message);
     }
@@ -56,8 +66,12 @@ export const SalesHistoryTableRow = ({
     if (note === salesHistory.note) return;
     const newNote = { note };
     try {
-      updateSalesHistory(uid, salesHistory.date, salesHistory.number.toString(), newNote);
-      refetch();
+      mutationRowHistory.mutate({
+        uid,
+        date: salesHistory.date,
+        number: salesHistory.number.toString(),
+        updateData: newNote,
+      });
     } catch (e) {
       if (e instanceof Error) alert(e.message);
     }

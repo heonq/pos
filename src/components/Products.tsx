@@ -8,6 +8,7 @@ import { ICategory, IProduct } from '../Interfaces/DataInterfaces';
 import CategoryMode from './product-components/category-mode';
 import { IProductProps } from '../Interfaces/PropsInterfaces';
 import TotalMode from './product-components/total-mode';
+import { useState } from 'react';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -28,15 +29,26 @@ const ProductsContainer = styled.div`
 export default function Products() {
   const viewMode = useRecoilValue(viewModeAtom);
   const uid = auth.currentUser?.uid || '';
-  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => getProducts(uid));
-  const { data: categories, isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () =>
-    getCategories(uid),
-  );
-
-  const displayingProducts = products?.filter((product) => product.display);
-  const categoriesContainsProduct = categories
-    ?.filter((category) => displayingProducts?.some((product) => category.number === product.category))
-    .sort((a, b) => a.number - b.number);
+  const [categoriesContainsProduct, setCategoriesContainsProduct] = useState<ICategory[]>([]);
+  const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
+  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => getProducts(uid), {
+    onSuccess: (data) => {
+      setDisplayingProducts(data.filter((product) => product.display));
+    },
+  });
+  const { isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () => getCategories(uid), {
+    enabled: !!products,
+    onSuccess: (data) => {
+      const sortedCategory =
+        data
+          ?.filter(
+            (category) =>
+              category.display && displayingProducts?.some((product) => category.number === product.category),
+          )
+          .sort((a, b) => a.number - b.number) ?? [];
+      setCategoriesContainsProduct(sortedCategory);
+    },
+  });
 
   const props: IProductProps = { products: displayingProducts ?? [], categories: categoriesContainsProduct ?? [] };
   const isLoading = productIsLoading || categoryIsLoading;

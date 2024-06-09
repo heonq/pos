@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import { useQueryClient } from 'react-query';
 
 const GlobalStyle = createGlobalStyle`
 	${reset}
@@ -48,6 +49,13 @@ button {
 `;
 
 export default function Root() {
+  const queryClientForSetting = useQueryClient();
+  queryClientForSetting.setDefaultOptions({
+    queries: {
+      staleTime: Infinity,
+    },
+  });
+
   return (
     <>
       <GlobalStyle />

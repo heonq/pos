@@ -48,11 +48,15 @@ export const getCashCheckHistory = async (uid: string, date: string) => {
   return await getHistoryData<ICashCheckForm>(uid, date, 'cashCheckData');
 };
 
-export const setSalesHistory = async (
-  uid: string,
-  date: string = formatter.formatDate(new Date()),
-  salesHistory: ISalesHistory,
-) => {
+export const setSalesHistory = async ({
+  uid,
+  date,
+  salesHistory,
+}: {
+  uid: string;
+  date: string;
+  salesHistory: ISalesHistory;
+}) => {
   const ref = doc(doc(db, 'salesData', uid), date, salesHistory.number.toString());
   await setDoc(ref, salesHistory);
 };
@@ -111,12 +115,19 @@ export const getSalesDate = async (uid: string) => {
   });
 };
 
-export const updateSalesHistory = async (
-  uid: string,
-  date: string,
-  number: string,
-  updateData: Partial<ISalesHistory>,
-) => {
+export const updateSalesHistory = async ({
+  uid,
+  date,
+  number,
+  updateData,
+}: {
+  uid: string;
+  date: string;
+  number: string;
+  updateData: Partial<ISalesHistory>;
+}) => {
+  console.log(date);
+  console.log(updateData);
   const ref = doc(doc(db, 'salesData', uid), date, number);
   await updateDoc(ref, updateData);
 };

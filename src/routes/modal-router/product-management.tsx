@@ -8,9 +8,9 @@ import {
   SubmitButton,
   SubmitButtonsContainer,
 } from '../../components/Modal';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, getProducts, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -66,11 +66,13 @@ const CategorySelect = styled.select`
 export default function ProductManagement() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const products = queryClient.getQueryData<IProduct[]>('products');
+  const [productsToDisplay, setProductsToDisplay] = useState<IProduct[]>();
+  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid), {
+    onSuccess: (data) => setProductsToDisplay(data),
+  });
   const categories = queryClient.getQueryData<ICategory[]>('categories');
   const [categoryCriteria, setCategoryCriteria] = useState(0);
   const [displayCriteria, setDisplayCriteira] = useState('전체');
-  const [productsToDisplay, setProductsToDisplay] = useState(products);
   const [categorySelectDisplay, setCategorySelectDisplay] = useState(false);
   const [isAllChecked, setAllChecked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categories?.[0]?.number ?? 1);
@@ -78,6 +80,13 @@ export default function ProductManagement() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const mutation = useMutation(updateChangedData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('products');
+      navigate('/');
+    },
+  });
+
+  const deleteMutation = useMutation(deleteData, {
     onSuccess: () => {
       queryClient.invalidateQueries('products');
     },
@@ -118,10 +127,6 @@ export default function ProductManagement() {
   const watchedProduct = watch('products');
 
   useEffect(() => {
-    setProductsToDisplay(products);
-  }, [products]);
-
-  useEffect(() => {
     if (productsToDisplay) {
       methods.reset({
         products: productsToDisplay.map((product) => ({
@@ -136,7 +141,7 @@ export default function ProductManagement() {
         })),
       });
     }
-  }, [productsToDisplay]);
+  }, [productsToDisplay, methods]);
 
   const onSearchClick = () => {
     let filteredProducts = products ?? [];
@@ -220,7 +225,6 @@ export default function ProductManagement() {
           type: 'products',
         });
       }
-      navigate('/');
       resetShoppingCart();
     } catch (e) {
       if (e instanceof Error) {
@@ -243,13 +247,13 @@ export default function ProductManagement() {
     const salesQuantities = watchedProduct.filter((product) => product.checked).map((product) => product.salesQuantity);
     if (!confirmDelete(salesQuantities)) return;
     const checkedNumbers = watchedProduct.filter((product) => product.checked).map((product) => product.number);
-    deleteData({ uid, numbers: checkedNumbers, type: 'products' });
+    deleteMutation.mutate({ uid, numbers: checkedNumbers, type: 'products' });
   };
 
   const deleteProduct = (number: number) => {
     const targetProduct = watchedProduct?.find((product) => product.number === number);
     if (targetProduct && !confirmDelete([targetProduct.salesQuantity])) return;
-    targetProduct && deleteData({ uid, numbers: [number], type: 'products' });
+    targetProduct && deleteMutation.mutate({ uid, numbers: [number], type: 'products' });
   };
 
   const handleProductNames = (data: IProductManagement) => {
