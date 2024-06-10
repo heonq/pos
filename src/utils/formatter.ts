@@ -6,7 +6,10 @@ const formatter: IFormatter = {
   },
 
   formatDate(date) {
-    return date.toISOString().split('T')[0];
+    const dateInfo = [date.getFullYear(), date.getMonth() + 1, date.getDate()].map((info) =>
+      this.formatZero(String(info)),
+    );
+    return dateInfo.join('-');
   },
 
   formatTime(date) {
