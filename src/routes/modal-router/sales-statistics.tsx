@@ -10,15 +10,16 @@ import {
 import { Background, CloseButton, MediumModalComponent } from '../../components/Modal';
 import { SalesStatisticTableRow } from '../../components/formComponents/salesStatisticTableRow';
 import { auth } from '../../firebase';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { getMultipleSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getMultipleSalesHistory } from '../../utils/fetchFunctions';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { useEffect, useState } from 'react';
+import useSalesDates from '../../hooks/useSalesDates';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
   const [descSortedDates, setSortedDates] = useState<string[]>([]);
-  const { data: salesDates } = useQuery<string[]>({ queryKey: ['salesDates'], queryFn: () => getSalesDate(uid) });
+  const { salesDates } = useSalesDates(uid);
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>({
     queryKey: ['salesHistory'],
     enabled: !!descSortedDates.length,
