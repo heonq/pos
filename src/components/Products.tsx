@@ -27,28 +27,19 @@ const ProductsContainer = styled.div`
 export default function Products() {
   const viewMode = useRecoilValue(viewModeAtom);
   const uid = auth.currentUser?.uid ?? '';
-  const [categoriesContainsProduct, setCategoriesContainsProduct] = useState<ICategory[]>([]);
+  const [displayingCategories, setDisplayingCategories] = useState<ICategory[]>([]);
   const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
   const { products, categories, isLoading } = useProductsAndCategories(uid);
 
   useEffect(() => {
-    products && setDisplayingProducts(products.filter((product) => product.display));
+    products && setDisplayingProducts(products?.filter((product) => product.display));
   }, [products]);
 
   useEffect(() => {
-    const sortedCategory =
-      categories
-        ?.filter(
-          (category) => category.display && displayingProducts?.some((product) => category.number === product.category),
-        )
-        .sort((a, b) => a.number - b.number) ?? [];
-    setCategoriesContainsProduct(sortedCategory);
-    setDisplayingProducts((prev) =>
-      prev.filter((product) => sortedCategory.some((category) => category.number === product.category)),
-    );
+    categories && setDisplayingCategories(categories?.filter((category) => category.display));
   }, [categories]);
 
-  const props = { products: displayingProducts, categories: categoriesContainsProduct };
+  const props = { products: displayingProducts, categories: displayingCategories };
 
   return (
     <ProductsContainer>

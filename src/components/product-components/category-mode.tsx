@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import ProductButton from './product-button';
 import { IProductProps } from '../../Interfaces/PropsInterfaces';
 import { Fragment } from 'react/jsx-runtime';
+import { useEffect, useState } from 'react';
+import { ICategory } from '../../Interfaces/DataInterfaces';
 
 const CategoryHeader = styled.div`
   margin-bottom: 5px;
@@ -21,9 +23,16 @@ const ScrollContainer = styled.div`
 `;
 
 export default function CategoryMode({ categories, products }: IProductProps) {
+  const [categoriesWithProduct, setCategoriesWithProduct] = useState<ICategory[]>([]);
+  useEffect(() => {
+    setCategoriesWithProduct(
+      categories.filter((category) => products.some((product) => product.category === category.number)),
+    );
+  }, [products, categories]);
+
   return (
     <>
-      {categories.map((category, index) => {
+      {categoriesWithProduct.map((category, index) => {
         return (
           <Fragment key={'Fragment' + index}>
             <CategoryHeader key={index}>{category.name}</CategoryHeader>

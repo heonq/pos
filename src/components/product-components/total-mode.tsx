@@ -12,13 +12,16 @@ const TotalViewModeContainer = styled.div`
   }
 `;
 
-export default function TotalMode({ products }: IProductProps) {
+export default function TotalMode({ products, categories }: IProductProps) {
+  const displayingCategories = categories.filter((category) => category.display).map((category) => category.number);
   return (
     <>
       <TotalViewModeContainer>
-        {products.map((product, index) => (
-          <ProductButton key={index} product={product} />
-        ))}
+        {products
+          .filter((product) => displayingCategories.includes(product.category))
+          .map((product, index) => (
+            <ProductButton key={index} product={product} />
+          ))}
       </TotalViewModeContainer>
     </>
   );
