@@ -12,10 +12,12 @@ import {
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
-import { getSalesHistory, setSalesDate, setSalesHistory } from '../utils/fetchFunctions';
+import { getSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
+import useSalesDates from '../hooks/useSalesDates';
+import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -110,7 +112,7 @@ export default function Payment() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
-  const queryClient = useQueryClient();
+  const { salesDates } = useSalesDates(uid);
   const { data } = useQuery<ISalesHistory[]>({
     queryKey: ['salesHistory', date],
     queryFn: () => getSalesHistory(uid, date),
@@ -119,12 +121,7 @@ export default function Payment() {
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
   const [etcReason, setEtcReason] = useState('');
-  const mutation = useMutation({
-    mutationFn: setSalesHistory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['salesHistory', date] });
-    },
-  });
+  const mutation = useSetSalesHistoryMutation(uid, date, salesDates ?? []);
 
   const checkShoppingCartEmpty = () => {
     if (!shoppingCart.length) {
@@ -158,9 +155,6 @@ export default function Payment() {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
     try {
       const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
-      if (updatedSalesHistory.number === 1) {
-        setSalesDate(uid);
-      }
       if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
       else handleNormalPayment(updatedSalesHistory);
       resetShoppingCart();
