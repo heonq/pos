@@ -1,14 +1,12 @@
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { viewModeAtom } from '../atoms';
-import { getProducts, getCategories } from '../utils/fetchFunctions';
 import { auth } from '../firebase';
-import { useQuery } from 'react-query';
 import { ICategory, IProduct } from '../Interfaces/DataInterfaces';
 import CategoryMode from './product-components/category-mode';
-import { IProductProps } from '../Interfaces/PropsInterfaces';
 import TotalMode from './product-components/total-mode';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useProductsAndCategories from '../hooks/useProductsAndCategories';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -28,30 +26,29 @@ const ProductsContainer = styled.div`
 
 export default function Products() {
   const viewMode = useRecoilValue(viewModeAtom);
-  const uid = auth.currentUser?.uid || '';
+  const uid = auth.currentUser?.uid ?? '';
   const [categoriesContainsProduct, setCategoriesContainsProduct] = useState<ICategory[]>([]);
   const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
-  const { data: products, isLoading: productIsLoading } = useQuery<IProduct[]>('products', () => getProducts(uid), {
-    onSuccess: (data) => {
-      setDisplayingProducts(data.filter((product) => product.display));
-    },
-  });
-  const { isLoading: categoryIsLoading } = useQuery<ICategory[]>('categories', () => getCategories(uid), {
-    enabled: !!products,
-    onSuccess: (data) => {
-      const sortedCategory =
-        data
-          ?.filter(
-            (category) =>
-              category.display && displayingProducts?.some((product) => category.number === product.category),
-          )
-          .sort((a, b) => a.number - b.number) ?? [];
-      setCategoriesContainsProduct(sortedCategory);
-    },
-  });
+  const { products, categories, isLoading } = useProductsAndCategories(uid);
 
-  const props: IProductProps = { products: displayingProducts ?? [], categories: categoriesContainsProduct ?? [] };
-  const isLoading = productIsLoading || categoryIsLoading;
+  useEffect(() => {
+    products && setDisplayingProducts(products.filter((product) => product.display));
+  }, [products]);
+
+  useEffect(() => {
+    const sortedCategory =
+      categories
+        ?.filter(
+          (category) => category.display && displayingProducts?.some((product) => category.number === product.category),
+        )
+        .sort((a, b) => a.number - b.number) ?? [];
+    setCategoriesContainsProduct(sortedCategory);
+    setDisplayingProducts((prev) =>
+      prev.filter((product) => sortedCategory.some((category) => category.number === product.category)),
+    );
+  }, [categories]);
+
+  const props = { products: displayingProducts, categories: categoriesContainsProduct };
 
   return (
     <ProductsContainer>

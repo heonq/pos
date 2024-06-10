@@ -17,20 +17,22 @@ import {
 } from '../../components/Modal';
 import { ICategory, ICategoryRegistration } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
-import { useQueryClient, useMutation, useQuery } from 'react-query';
-import { getCategories, setData } from '../../utils/fetchFunctions';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { setData } from '../../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import { CategoryRegistrationRow } from '../../components/formComponents/categoryRegistrationRow';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
+import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
-  const mutation = useMutation(setData, {
+  const { categories } = useProductsAndCategories(uid);
+  const mutation = useMutation({
+    mutationFn: setData,
     onSuccess: () => {
-      queryClient.invalidateQueries('categories');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 

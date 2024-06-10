@@ -5,11 +5,10 @@ import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './theme';
 import { auth } from './firebase';
 import { useEffect, useState } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-
-const queryClient = new QueryClient();
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function App() {
+  const queryClient = new QueryClient();
   const [isLoading, setLoading] = useState(true);
   const init = async () => {
     await auth.authStateReady();

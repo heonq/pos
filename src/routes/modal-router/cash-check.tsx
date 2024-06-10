@@ -25,7 +25,7 @@ import {
   setCashCheckDate,
   setCashCheckHistory,
 } from '../../utils/fetchFunctions';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { PAYMENT_METHODS } from '../../constants/enums';
 import { useNavigate } from 'react-router-dom';
 import MyDatePicker from '../../utils/datePicker';
@@ -67,14 +67,18 @@ export default function CashCheck() {
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
   const [criteriaDate, setCriteriaDate] = useState(date);
-  const { data: salesHistory } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date));
-  const { data: todayCashCheckHistory } = useQuery<ICashCheckForm[]>(['cashCheck', date], () =>
-    getCashCheckHistory(uid, date),
-  );
-  const { data: cashCheckHistory, refetch: cashCheckRefetch } = useQuery<ICashCheckForm[]>(
-    ['cashCheck', criteriaDate],
-    () => getCashCheckHistory(uid, criteriaDate),
-  );
+  const { data: salesHistory } = useQuery<ISalesHistory[]>({
+    queryKey: ['salesHistory', date],
+    queryFn: () => getSalesHistory(uid, date),
+  });
+  const { data: todayCashCheckHistory } = useQuery<ICashCheckForm[]>({
+    queryKey: ['cashCheck', date],
+    queryFn: () => getCashCheckHistory(uid, date),
+  });
+  const { data: cashCheckHistory, refetch: cashCheckRefetch } = useQuery<ICashCheckForm[]>({
+    queryKey: ['cashCheck', criteriaDate],
+    queryFn: () => getCashCheckHistory(uid, criteriaDate),
+  });
   const [cashSalesAmount, setCashSalesAmount] = useState(0);
   const [expectedAmount, setExpectedAmount] = useState(0);
   const [countedAmount, setCountedAmount] = useState(0);
@@ -84,7 +88,10 @@ export default function CashCheck() {
   const [thousand, fiveThousand, tenThousand, fiftyThousand, reserveCash] = values;
   const [newCashCheckNumber, setNewCashCheckNumber] = useState(1);
   const navigate = useNavigate();
-  const { data: cashCheckDates } = useQuery<string[]>('cashCheckDates', () => getCashCheckDate(uid));
+  const { data: cashCheckDates } = useQuery<string[]>({
+    queryKey: ['cashCheckDates'],
+    queryFn: () => getCashCheckDate(uid),
+  });
 
   useEffect(() => {
     const newestNumber =

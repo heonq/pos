@@ -7,8 +7,8 @@ import {
 } from '../../components/formComponents/FormContainerComponents';
 import { Background, CloseButton, WideModalComponent } from '../../components/Modal';
 import { Link } from 'react-router-dom';
-import { useQuery, useQueryClient } from 'react-query';
-import { IProduct, ISalesHistory } from '../../Interfaces/DataInterfaces';
+import { useQuery } from '@tanstack/react-query';
+import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { getSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
@@ -17,16 +17,17 @@ import formatter from '../../utils/formatter';
 import { SalesHistoryTableRow } from '../../components/formComponents/salesHistoryTableRow';
 import { useRecoilValue } from 'recoil';
 import { salesNumberAtom } from '../../atoms';
+import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
-  const queryClient = useQueryClient();
-  const products = queryClient.getQueryData<IProduct[]>('products');
+  const { products } = useProductsAndCategories(uid);
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
-  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid));
-  const { data: salesHistory } = useQuery<ISalesHistory[]>(['salesHistory', criteriaDate], () =>
-    getSalesHistory(uid, criteriaDate),
-  );
+  const { data: salesDates } = useQuery<string[]>({ queryKey: ['salesDates'], queryFn: () => getSalesDate(uid) });
+  const { data: salesHistory } = useQuery<ISalesHistory[]>({
+    queryKey: ['salesHistory', criteriaDate],
+    queryFn: () => getSalesHistory(uid, criteriaDate),
+  });
   const salesNumber = useRecoilValue(salesNumberAtom);
 
   const [dates, setDates] = useState([new Date()]);

@@ -8,9 +8,9 @@ import {
   SubmitButton,
   SubmitButtonsContainer,
 } from '../../components/Modal';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ICategory, IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, getProducts, updateChangedData } from '../../utils/fetchFunctions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
+import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -26,6 +26,7 @@ import { CONFIRM_MESSAGES, DISPLAY_OPTIONS, ERROR_MESSAGES, SELECTED_MANAGEMENT_
 import { ErrorMessage } from '../../components/formComponents/FormContainerComponents';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
+import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 
 const ManagementButtonsContainer = styled.div`
   display: flex;
@@ -67,10 +68,7 @@ export default function ProductManagement() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
   const [productsToDisplay, setProductsToDisplay] = useState<IProduct[]>();
-  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid), {
-    onSuccess: (data) => setProductsToDisplay(data),
-  });
-  const categories = queryClient.getQueryData<ICategory[]>('categories');
+  const { products, categories } = useProductsAndCategories(uid);
   const [categoryCriteria, setCategoryCriteria] = useState(0);
   const [displayCriteria, setDisplayCriteira] = useState('전체');
   const [categorySelectDisplay, setCategorySelectDisplay] = useState(false);
@@ -79,18 +77,24 @@ export default function ProductManagement() {
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
-  const mutation = useMutation(updateChangedData, {
+  const mutation = useMutation({
+    mutationFn: updateChangedData,
     onSuccess: () => {
-      queryClient.invalidateQueries('products');
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       navigate('/');
     },
   });
 
-  const deleteMutation = useMutation(deleteData, {
+  const deleteMutation = useMutation({
+    mutationFn: deleteData,
     onSuccess: () => {
-      queryClient.invalidateQueries('products');
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
+
+  useEffect(() => {
+    setProductsToDisplay(products);
+  }, [products]);
 
   const methods = useForm<IProductManagement>({
     defaultValues: {

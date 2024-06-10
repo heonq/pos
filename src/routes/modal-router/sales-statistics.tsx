@@ -10,41 +10,42 @@ import {
 import { Background, CloseButton, MediumModalComponent } from '../../components/Modal';
 import { SalesStatisticTableRow } from '../../components/formComponents/salesStatisticTableRow';
 import { auth } from '../../firebase';
-import { useQuery, useInfiniteQuery } from 'react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { getMultipleSalesHistory, getSalesDate } from '../../utils/fetchFunctions';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
   const [descSortedDates, setSortedDates] = useState<string[]>([]);
-  const { data: salesDates } = useQuery<string[]>('salesDates', () => getSalesDate(uid), {
-    onSuccess: (data) => {
-      const sortedDates = [...data].sort((a, b) => {
-        if (a < b) return 1;
-        if (a > b) return -1;
-        return 0;
-      });
-      setSortedDates(sortedDates);
-    },
-  });
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>(
-    'salesHistory',
-    ({ pageParam = 1 }) => {
+  const { data: salesDates } = useQuery<string[]>({ queryKey: ['salesDates'], queryFn: () => getSalesDate(uid) });
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>({
+    queryKey: ['salesHistory'],
+    enabled: !!descSortedDates.length,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => {
       const datesPerPage = 50;
       const dateArray =
-        descSortedDates && [...descSortedDates].slice((pageParam - 1) * datesPerPage, datesPerPage * pageParam);
+        descSortedDates &&
+        [...descSortedDates].slice((Number(pageParam) - 1) * datesPerPage, datesPerPage * Number(pageParam));
       return getMultipleSalesHistory(uid, dateArray);
     },
-    {
-      enabled: !!salesDates,
-      getNextPageParam: (lastPage, pages) => {
-        const datesPerPage = 50;
-        const hasMore = lastPage.length === datesPerPage && salesDates?.length !== pages.length * datesPerPage;
-        return hasMore ? pages.length + 1 : undefined;
-      },
+    getNextPageParam: (lastPage, pages) => {
+      const datesPerPage = 50;
+      const hasMore = lastPage.length === datesPerPage && salesDates?.length !== pages.length * datesPerPage;
+      return hasMore ? pages.length + 1 : undefined;
     },
-  );
+  });
+
+  useEffect(() => {
+    const sortedDates = [...(salesDates ?? [])].sort((a, b) => {
+      if (a < b) return 1;
+      if (a > b) return -1;
+      return 0;
+    });
+    setSortedDates(sortedDates);
+  }, [salesDates]);
+
   return (
     <>
       <Background />

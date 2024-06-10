@@ -1,8 +1,8 @@
 import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
-import { useQueryClient, useMutation, useQuery } from 'react-query';
-import { ICategory, IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { getProducts, setData } from '../../utils/fetchFunctions';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { IProductRegistration } from '../../Interfaces/DataInterfaces';
+import { setData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -18,13 +18,19 @@ import {
 } from '../../components/formComponents/FormContainerComponents';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
+import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
-  const categories = queryClient.getQueryData<ICategory[]>('categories');
+  const { products, categories } = useProductsAndCategories(uid);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
+  const mutation = useMutation({
+    mutationFn: setData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
 
   const methods = useForm<IProductRegistration>({
     defaultValues: {
@@ -46,11 +52,6 @@ export default function ProductRegistration() {
     name: 'products',
   });
   const navigate = useNavigate();
-  const mutation = useMutation(setData, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('products');
-    },
-  });
 
   const onSubmit = (data: IProductRegistration) => {
     if (handleProductNames(data) && handleProductBarcodes(data)) {

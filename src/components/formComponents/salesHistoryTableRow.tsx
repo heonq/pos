@@ -7,7 +7,7 @@ import formatter from '../../utils/formatter';
 import { salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const SalesHistoryTableRow = ({ index, products, salesHistory, salesNumber }: ISalesHistoryRowProps) => {
   const uid = auth.currentUser?.uid ?? '';
@@ -16,14 +16,16 @@ export const SalesHistoryTableRow = ({ index, products, salesHistory, salesNumbe
   const [editing, setEditing] = useState(false);
   const [note, setNote] = useState(salesHistory.note);
   const queryClient = useQueryClient();
-  const mutationTodayHistory = useMutation(setSalesHistory, {
+  const mutationTodayHistory = useMutation({
+    mutationFn: setSalesHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['salesHistory', date]);
+      queryClient.invalidateQueries({ queryKey: ['salesHistory', date] });
     },
   });
-  const mutationRowHistory = useMutation(updateSalesHistory, {
+  const mutationRowHistory = useMutation({
+    mutationFn: updateSalesHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['salesHistory', salesHistory.date]);
+      queryClient.invalidateQueries({ queryKey: ['salesHistory', salesHistory.date] });
     },
   });
 

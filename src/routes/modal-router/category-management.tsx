@@ -15,9 +15,9 @@ import {
   TableContainer,
   TableHeader,
 } from '../../components/formComponents/FormContainerComponents';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ICategory, ICategoryManagement, IProduct } from '../../Interfaces/DataInterfaces';
-import { deleteData, getCategories, getProducts, updateChangedData } from '../../utils/fetchFunctions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ICategory, ICategoryManagement } from '../../Interfaces/DataInterfaces';
+import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { CategoryManagementRow } from '../../components/formComponents/categoryManagementRow';
@@ -31,6 +31,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';
+import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 
 const SelectedManagingButtonContainer = styled.div`
   display: flex;
@@ -41,13 +42,13 @@ export default function CategoryManagement() {
   const [isAllChecked, setAllChecked] = useState(false);
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
-  const { data: products } = useQuery<IProduct[]>('products', () => getProducts(uid));
-  const { data: categories } = useQuery<ICategory[]>('categories', () => getCategories(uid));
+  const { products, categories } = useProductsAndCategories(uid);
   const navigate = useNavigate();
 
-  const mutation = useMutation(updateChangedData, {
+  const mutation = useMutation({
+    mutationFn: updateChangedData,
     onSuccess: () => {
-      queryClient.invalidateQueries('categories');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
       navigate('/');
     },
   });

@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const GlobalStyle = createGlobalStyle`
 	${reset}
@@ -45,12 +45,11 @@ button {
     filter:brightness(0.8);
   }
 }
-
 `;
 
 export default function Root() {
-  const queryClientForSetting = useQueryClient();
-  queryClientForSetting.setDefaultOptions({
+  const queryClient = useQueryClient();
+  queryClient.setDefaultOptions({
     queries: {
       staleTime: Infinity,
     },

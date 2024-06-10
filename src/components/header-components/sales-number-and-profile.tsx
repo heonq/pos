@@ -11,7 +11,7 @@ import {
 import { useRecoilValue } from 'recoil';
 import { salesNumberAtom } from '../../atoms';
 import { ISalesNumberAndProfileProps } from '../../Interfaces/PropsInterfaces';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function SalesNumberAndProfile({ onProfileClick, profileMenuVisible }: ISalesNumberAndProfileProps) {
   const navigate = useNavigate();

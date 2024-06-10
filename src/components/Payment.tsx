@@ -12,7 +12,7 @@ import {
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
-import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
 import { getSalesHistory, setSalesDate, setSalesHistory } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
@@ -111,14 +111,18 @@ export default function Payment() {
   const uid = auth.currentUser?.uid ?? '';
   const date = formatter.formatDate(new Date());
   const queryClient = useQueryClient();
-  const { data } = useQuery<ISalesHistory[]>(['salesHistory', date], () => getSalesHistory(uid, date));
+  const { data } = useQuery<ISalesHistory[]>({
+    queryKey: ['salesHistory', date],
+    queryFn: () => getSalesHistory(uid, date),
+  });
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
   const splitPayment = useRecoilValue(splitPaymentAtom);
   const [etcReason, setEtcReason] = useState('');
-  const mutation = useMutation(setSalesHistory, {
+  const mutation = useMutation({
+    mutationFn: setSalesHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['salesHistory', date]);
+      queryClient.invalidateQueries({ queryKey: ['salesHistory', date] });
     },
   });
 
