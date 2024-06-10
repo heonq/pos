@@ -25,7 +25,7 @@ import {
   setCashCheckDate,
   setCashCheckHistory,
 } from '../../utils/fetchFunctions';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PAYMENT_METHODS } from '../../constants/enums';
 import { useNavigate } from 'react-router-dom';
 import MyDatePicker from '../../utils/datePicker';
@@ -75,10 +75,15 @@ export default function CashCheck() {
     queryKey: ['cashCheck', date],
     queryFn: () => getCashCheckHistory(uid, date),
   });
-  const { data: cashCheckHistory, refetch: cashCheckRefetch } = useQuery<ICashCheckForm[]>({
+  const { data: cashCheckHistory } = useQuery<ICashCheckForm[]>({
     queryKey: ['cashCheck', criteriaDate],
     queryFn: () => getCashCheckHistory(uid, criteriaDate),
   });
+  const { data: cashCheckDates } = useQuery<string[]>({
+    queryKey: ['cashCheckDates'],
+    queryFn: () => getCashCheckDate(uid),
+  });
+  const queryClient = useQueryClient();
   const [cashSalesAmount, setCashSalesAmount] = useState(0);
   const [expectedAmount, setExpectedAmount] = useState(0);
   const [countedAmount, setCountedAmount] = useState(0);
@@ -88,9 +93,20 @@ export default function CashCheck() {
   const [thousand, fiveThousand, tenThousand, fiftyThousand, reserveCash] = values;
   const [newCashCheckNumber, setNewCashCheckNumber] = useState(1);
   const navigate = useNavigate();
-  const { data: cashCheckDates } = useQuery<string[]>({
-    queryKey: ['cashCheckDates'],
-    queryFn: () => getCashCheckDate(uid),
+
+  const cashCheckMutation = useMutation({
+    mutationFn: setCashCheckHistory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cashCheck', date] });
+      !cashCheckDates?.includes(date) && cashCheckDateMutation.mutate(uid);
+      navigate('/');
+    },
+  });
+  const cashCheckDateMutation = useMutation({
+    mutationFn: setCashCheckDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cashCheckDates'] });
+    },
   });
 
   useEffect(() => {
@@ -140,10 +156,7 @@ export default function CashCheck() {
       correct,
     };
     try {
-      if (newCashCheckNumber === 1) setCashCheckDate(uid);
-      setCashCheckHistory(uid, date, cashCheck);
-      cashCheckRefetch();
-      navigate('/');
+      cashCheckMutation.mutate({ uid, date, cashCheck });
     } catch (e) {}
   };
 

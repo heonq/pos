@@ -132,7 +132,15 @@ export const updateSalesHistory = async ({
   await updateDoc(ref, updateData);
 };
 
-export const setCashCheckHistory = async (uid: string, date: string, cashCheck: ICashCheckForm) => {
+export const setCashCheckHistory = async ({
+  uid,
+  date,
+  cashCheck,
+}: {
+  uid: string;
+  date: string;
+  cashCheck: ICashCheckForm;
+}) => {
   const newRef = doc(doc(db, 'cashCheckData', uid), date, cashCheck.number.toString());
   await setDoc(newRef, cashCheck);
 };
