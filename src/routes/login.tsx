@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { Wrapper, Form, Input, Title, Error, Switcher } from '../components/auth-components';
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -6,6 +6,7 @@ import { auth } from '../firebase';
 import { FirebaseError } from 'firebase/app';
 
 export default function Login() {
+  const user = auth.currentUser;
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ export default function Login() {
       setLoading(false);
     }
   };
-
+  if (user !== null) return <Navigate to="/" />;
   return (
     <Wrapper>
       <Title>로그인</Title>
