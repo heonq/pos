@@ -179,3 +179,18 @@ export const getMultipleSalesHistory = async (uid: string, dateArray: string[]):
   );
   return resArray;
 };
+
+export const updateSalesQuantity = async ({
+  uid,
+  numbers,
+  quantities,
+}: {
+  uid: string;
+  numbers: string[];
+  quantities: number[];
+}) => {
+  const refArray = numbers.map((number) => doc(doc(db, 'userData', uid), 'products', number));
+  const batch = writeBatch(db);
+  quantities.forEach((quantity, index) => batch.update(refArray[index], { salesQuantity: quantity }));
+  await batch.commit();
+};

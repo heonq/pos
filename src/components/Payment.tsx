@@ -12,12 +12,13 @@ import {
 import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ISalesHistory } from '../Interfaces/DataInterfaces';
-import { getSalesHistory } from '../utils/fetchFunctions';
+import { getSalesHistory, updateSalesQuantity } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import useSalesDates from '../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';
+import useProductsAndCategories from '../hooks/useProductsAndCategories';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -122,6 +123,41 @@ export default function Payment() {
   const splitPayment = useRecoilValue(splitPaymentAtom);
   const [etcReason, setEtcReason] = useState('');
   const mutation = useSetSalesHistoryMutation(uid, date, salesDates ?? []);
+  const { products } = useProductsAndCategories(uid);
+  const queryClient = useQueryClient();
+  const salesQuantityMutation = useMutation({
+    mutationFn: updateSalesQuantity,
+    scope: {
+      id: 'salesHistoryAndQuantity',
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+
+  const getNumbersAndQuantities = () => {
+    return shoppingCart.reduce(
+      (acc: { numbers: number[]; quantities: number[] }, product) => {
+        acc.numbers.push(product?.number);
+        acc.quantities.push(product?.quantity);
+        return acc;
+      },
+      { numbers: [], quantities: [] },
+    );
+  };
+
+  const handleSalesQuantity = () => {
+    const { numbers, quantities } = getNumbersAndQuantities();
+    const previousQuantity = numbers.map(
+      (number) => products?.find((product) => product.number === number)?.salesQuantity as number,
+    );
+    const updatedQuantities = quantities.map((quantity, index) => quantity + previousQuantity[index]);
+    salesQuantityMutation.mutate({
+      uid,
+      numbers: numbers.map((number) => number.toString()),
+      quantities: updatedQuantities,
+    });
+  };
 
   const checkShoppingCartEmpty = () => {
     if (!shoppingCart.length) {
@@ -166,29 +202,32 @@ export default function Payment() {
   const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
-    mutation.mutate({ uid, date, salesHistory: finalSalesHistory });
+
+    try {
+      mutation.mutate({ uid, date, salesHistory: finalSalesHistory });
+      handleSalesQuantity();
+    } catch (e) {}
   };
 
   const handleSplitPayment = (updatedSalesHistory: ISalesHistory) => {
-    const note = `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
-      updatedSalesHistory.number + 1
-    } 분할결제`.trim();
-    const firstPaymentHistory = {
-      ...updatedSalesHistory,
-      method: splitPayment.method[0],
-      chargedAmount: splitPayment.price[0],
-      note,
-    } as ISalesHistory;
-    mutation.mutate({ uid, date, salesHistory: firstPaymentHistory });
-    const secondSalesHistory = {
-      ...updatedSalesHistory,
-      products: [],
-      number: updatedSalesHistory.number + 1,
-      method: splitPayment.method[1],
-      chargedAmount: splitPayment.price[1],
-      note,
-    } as ISalesHistory;
-    mutation.mutate({ uid, date, salesHistory: secondSalesHistory });
+    try {
+      const note = `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
+        updatedSalesHistory.number + 1
+      } 분할결제`.trim();
+      const [firstPaymentInfo, secondPaymentInfo] = splitPayment.method.map((method, index) => {
+        return {
+          ...updatedSalesHistory,
+          method,
+          chargedAmount: splitPayment.price[index],
+          note,
+        } as ISalesHistory;
+      });
+      secondPaymentInfo.products = [];
+      secondPaymentInfo.number = updatedSalesHistory.number + 1;
+      mutation.mutate({ uid, date, salesHistory: firstPaymentInfo });
+      mutation.mutate({ uid, date, salesHistory: secondPaymentInfo });
+      handleSalesQuantity();
+    } catch (e) {}
   };
 
   const onPaymentModalButtonClick = (path: string) => {
