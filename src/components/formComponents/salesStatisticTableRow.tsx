@@ -9,18 +9,20 @@ export const SalesStatisticTableRow = ({ salesHistory }: { salesHistory: ISalesH
   const [transferAmount, setTransferAmount] = useState(0);
   const [cashAmount, setCashAmount] = useState(0);
 
-  const sumAmount = (salesHistory: ISalesHistory[], filterBy: PAYMENT_METHODS | 'all') => {
-    const filteredSalesHistory =
-      filterBy === 'all' ? salesHistory : salesHistory.filter((salesData) => salesData.method === filterBy) ?? [];
+  const sumAmount = (salesHistory: ISalesHistory[], filterBy: PAYMENT_METHODS) => {
+    const filteredSalesHistory = salesHistory.filter((salesData) => salesData.method === filterBy) ?? [];
     return filteredSalesHistory && filteredSalesHistory.reduce((acc, salesData) => acc + salesData.chargedAmount, 0);
   };
 
   useEffect(() => {
-    setTotalAmount(sumAmount(salesHistory ?? [], 'all'));
     setCardAmount(sumAmount(salesHistory ?? [], PAYMENT_METHODS.Card));
     setTransferAmount(sumAmount(salesHistory ?? [], PAYMENT_METHODS.Transfer));
     setCashAmount(sumAmount(salesHistory ?? [], PAYMENT_METHODS.Cash));
   }, [salesHistory]);
+
+  useEffect(() => {
+    setTotalAmount(cardAmount + transferAmount + cashAmount);
+  }, [cardAmount, transferAmount, cashAmount]);
 
   return (
     <tr>
