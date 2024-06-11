@@ -61,6 +61,9 @@ export const TableHeader = styled.thead`
 `;
 
 export const TableWithBorder = styled(Table)`
+  tr {
+    width: 100%;
+  }
   th {
     min-width: 100px;
     background-color: rgb(240, 240, 240);
@@ -68,6 +71,12 @@ export const TableWithBorder = styled(Table)`
   th,
   td {
     border: 0.5px solid rgb(200, 200, 200);
+  }
+`;
+
+export const SalesStatisticTable = styled(TableWithBorder)`
+  td {
+    width: 20%;
   }
 `;
 

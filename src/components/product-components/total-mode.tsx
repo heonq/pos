@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import ProductButton from './product-button';
 import { IProductProps } from '../../Interfaces/PropsInterfaces';
 
-const TotalViewModeContainer = styled.div`
+export const TotalViewModeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-content: baseline;

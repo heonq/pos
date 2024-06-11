@@ -1,11 +1,12 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   MediumModalContainer,
   ModalHeader,
   PlusRowButtonContainer,
+  SalesStatisticTable,
   TableContainer,
   TableHeader,
-  TableWithBorder,
 } from '../../components/formComponents/FormContainerComponents';
 import { Background, CloseButton, MediumModalComponent } from '../../components/Modal';
 import { SalesStatisticTableRow } from '../../components/formComponents/salesStatisticTableRow';
@@ -15,12 +16,13 @@ import { getMultipleSalesHistory } from '../../utils/fetchFunctions';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { useEffect, useState } from 'react';
 import useSalesDates from '../../hooks/useSalesDates';
+import { SalesStatisticTableSkeleton } from '../../skeletons/salesStatisticTable';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
   const [descSortedDates, setSortedDates] = useState<string[]>([]);
   const { salesDates } = useSalesDates(uid);
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<ISalesHistory[][], Error>({
+  const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery<ISalesHistory[][], Error>({
     queryKey: ['salesHistory'],
     enabled: !!descSortedDates.length,
     initialPageParam: 1,
@@ -59,7 +61,7 @@ export default function SalesStatistics() {
             </Link>
           </ModalHeader>
           <TableContainer>
-            <TableWithBorder>
+            <SalesStatisticTable>
               <TableHeader>
                 <tr>
                   <th>날짜</th>
@@ -73,8 +75,9 @@ export default function SalesStatistics() {
                 {data?.pages.flat().map((data: ISalesHistory[], index) => (
                   <SalesStatisticTableRow key={index} salesHistory={data} />
                 ))}
+                {isLoading ? <SalesStatisticTableSkeleton /> : null}
               </tbody>
-            </TableWithBorder>
+            </SalesStatisticTable>
             {hasNextPage ? (
               <PlusRowButtonContainer>
                 <button type="button" onClick={() => fetchNextPage()}>
