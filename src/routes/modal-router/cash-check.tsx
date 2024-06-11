@@ -14,7 +14,7 @@ import {
   WideModalComponent,
 } from '../../components/Modal';
 import formatter from '../../utils/formatter';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ICashCheckForm, ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
@@ -111,16 +111,13 @@ export default function CashCheck() {
 
   useEffect(() => {
     const newestNumber =
-      (todayCashCheckHistory &&
-        todayCashCheckHistory.length &&
-        todayCashCheckHistory[todayCashCheckHistory.length - 1].number + 1) ||
-      1;
+      (todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.number + 1) ?? 1;
     setNewCashCheckNumber(newestNumber);
     methods.reset({
       ...methods,
-      reserveCash: todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash,
+      reserveCash: (todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash) ?? 0,
     });
-  }, [todayCashCheckHistory, methods]);
+  }, [todayCashCheckHistory]);
 
   useEffect(() => {
     const cashSalesHistory = salesHistory?.filter((sales) => sales.method === PAYMENT_METHODS.Cash);
