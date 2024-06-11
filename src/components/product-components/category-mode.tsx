@@ -5,12 +5,13 @@ import { Fragment } from 'react/jsx-runtime';
 import { useEffect, useState } from 'react';
 import { ICategory } from '../../Interfaces/DataInterfaces';
 
-const CategoryHeader = styled.div`
+export const CategoryHeader = styled.div`
   margin-bottom: 5px;
   font-size: 15px;
+  height: 20px;
 `;
 
-const ScrollContainer = styled.div`
+export const ScrollContainer = styled.div`
   width: 100%;
   display: flex;
   overflow-x: scroll;

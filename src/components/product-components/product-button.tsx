@@ -5,9 +5,9 @@ import { IProduct, IShoppingCartProduct } from '../../Interfaces/DataInterfaces'
 import formatter from '../../utils/formatter';
 import { IProductButtonProps } from '../../Interfaces/PropsInterfaces';
 
-const Button = styled.button`
+export const Button = styled.button`
   flex: 0 0 auto;
-  width: 173px;
+  width: 170px;
   height: 70px;
   border-style: none;
   border-width: 0.5px;

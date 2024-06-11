@@ -7,6 +7,7 @@ import CategoryMode from './product-components/category-mode';
 import TotalMode from './product-components/total-mode';
 import { useEffect, useState } from 'react';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
+import { CategoryModeSkeleton } from '../skeletons/product';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -43,7 +44,13 @@ export default function Products() {
 
   return (
     <ProductsContainer>
-      {isLoading ? null : viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />}
+      {isLoading ? (
+        <CategoryModeSkeleton />
+      ) : viewMode === 'category' ? (
+        <CategoryMode {...props} />
+      ) : (
+        <TotalMode {...props} />
+      )}
     </ProductsContainer>
   );
 }
