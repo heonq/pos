@@ -22,21 +22,23 @@ export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
   const [descSortedDates, setSortedDates] = useState<string[]>([]);
   const { salesDates } = useSalesDates(uid);
-  const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery<ISalesHistory[][], Error>({
+  const DATES_PER_PAGE = 50;
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteQuery<
+    ISalesHistory[][],
+    Error
+  >({
     queryKey: ['salesHistory'],
     enabled: !!descSortedDates.length,
     initialPageParam: 1,
     queryFn: ({ pageParam }) => {
-      const datesPerPage = 50;
       const dateArray =
         descSortedDates &&
-        [...descSortedDates].slice((Number(pageParam) - 1) * datesPerPage, datesPerPage * Number(pageParam));
+        [...descSortedDates].slice((Number(pageParam) - 1) * DATES_PER_PAGE, DATES_PER_PAGE * Number(pageParam));
       return getMultipleSalesHistory(uid, dateArray);
     },
-    getNextPageParam: (lastPage, pages) => {
-      const datesPerPage = 50;
-      const hasMore = lastPage.length === datesPerPage && salesDates?.length !== pages.length * datesPerPage;
-      return hasMore ? pages.length + 1 : undefined;
+    getNextPageParam: (lastPage, pages, lastPageParam) => {
+      const hasMore = lastPage.length === DATES_PER_PAGE && salesDates?.length !== pages.length * DATES_PER_PAGE;
+      return hasMore ? Number(lastPageParam) + 1 : undefined;
     },
   });
 
@@ -75,7 +77,7 @@ export default function SalesStatistics() {
                 {data?.pages.flat().map((data: ISalesHistory[], index) => (
                   <SalesStatisticTableRow key={index} salesHistory={data} />
                 ))}
-                {isLoading ? <SalesStatisticTableSkeleton /> : null}
+                {isLoading || isFetchingNextPage ? <SalesStatisticTableSkeleton /> : null}
               </tbody>
             </SalesStatisticTable>
             {hasNextPage ? (
