@@ -6,8 +6,9 @@ import ShoppingCart from '../components/ShoppingCart';
 import Payment from '../components/Payment';
 import { Outlet } from 'react-router-dom';
 import { useRecoilState, useResetRecoilState } from 'recoil';
-import { headerMenusDisplaySelector, shoppingCartSelector } from '../atoms';
+import { dateState, headerMenusDisplaySelector, shoppingCartSelector } from '../atoms';
 import { auth } from '../firebase';
+import formatter from '../utils/formatter';
 
 const Wrapper = styled.div`
   top: 30px;
@@ -38,9 +39,19 @@ export default function Home() {
   };
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid;
+  const [date, setDate] = useRecoilState(dateState);
+
   useEffect(() => {
     resetShoppingCart();
   }, [uid, resetShoppingCart]);
+
+  useEffect(() => {
+    const updateDate = () => {
+      if (new Date(date).getDate() !== new Date().getDate()) setDate(formatter.formatDate(new Date()));
+    };
+    const intervalId = setInterval(updateDate, 1000);
+    return () => clearInterval(intervalId);
+  }, [date, setDate]);
 
   return (
     <>

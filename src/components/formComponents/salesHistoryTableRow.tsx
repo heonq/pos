@@ -1,10 +1,10 @@
 /* eslint-disable no-restricted-globals */
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { auth } from '../../firebase';
 import { ISalesHistoryRowProps } from '../../Interfaces/PropsInterfaces';
 import { updateSalesHistory } from '../../utils/fetchFunctions';
 import formatter from '../../utils/formatter';
-import { salesNumberAtom } from '../../atoms';
+import { dateState, salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ import useSetSalesHistoryMutation from '../../hooks/useSetSalesHistoryMutation';
 
 export const SalesHistoryTableRow = ({ index, products, salesHistory, salesNumber }: ISalesHistoryRowProps) => {
   const uid = auth.currentUser?.uid ?? '';
-  const date = formatter.formatDate(new Date());
+  const date = useRecoilValue(dateState);
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const { salesDates } = useSalesDates(uid);
   const [editing, setEditing] = useState(false);

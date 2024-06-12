@@ -1,6 +1,7 @@
 import { atom, selector } from 'recoil';
 import { IPaymentInfo, ISalesHistory, IShoppingCartProduct, ISplitPayment } from './Interfaces/DataInterfaces';
 import FormGenerator from './utils/formGenerator';
+import formatter from './utils/formatter';
 
 export const viewModeAtom = atom({
   key: 'viewMode',
@@ -149,4 +150,9 @@ export const headerMenusDisplaySelector = selector({
     reset(viewModeMenuDisplayAtom);
     reset(productMenuDisplayAtom);
   },
+});
+
+export const dateState = atom({
+  key: 'date',
+  default: formatter.formatDate(new Date()),
 });

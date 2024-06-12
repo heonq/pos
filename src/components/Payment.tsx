@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRecoilCallback, useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
+  dateState,
   paymentInfoSelector,
   salesHistorySelector,
   salesNumberAtom,
@@ -112,7 +113,7 @@ export default function Payment() {
   const setSalesHistorySelector = useSetRecoilState(salesHistorySelector);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const uid = auth.currentUser?.uid ?? '';
-  const date = formatter.formatDate(new Date());
+  const date = useRecoilValue(dateState);
   const { salesDates } = useSalesDates(uid);
   const { data } = useQuery<ISalesHistory[]>({
     queryKey: ['salesHistory', date],

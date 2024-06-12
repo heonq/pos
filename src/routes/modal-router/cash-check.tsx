@@ -29,6 +29,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PAYMENT_METHODS } from '../../constants/enums';
 import { useNavigate } from 'react-router-dom';
 import MyDatePicker from '../../utils/datePicker';
+import { useRecoilValue } from 'recoil';
+import { dateState } from '../../atoms';
 
 const CashCheckRow = styled.div`
   display: flex;
@@ -65,7 +67,7 @@ export default function CashCheck() {
     reValidateMode: 'onSubmit',
   });
   const uid = auth.currentUser?.uid ?? '';
-  const date = formatter.formatDate(new Date());
+  const date = useRecoilValue(dateState);
   const [criteriaDate, setCriteriaDate] = useState(date);
   const { data: salesHistory } = useQuery<ISalesHistory[]>({
     queryKey: ['salesHistory', date],
