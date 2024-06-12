@@ -126,8 +126,6 @@ export const updateSalesHistory = async ({
   number: string;
   updateData: Partial<ISalesHistory>;
 }) => {
-  console.log(date);
-  console.log(updateData);
   const ref = doc(doc(db, 'salesData', uid), date, number);
   await updateDoc(ref, updateData);
 };
