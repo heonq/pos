@@ -10,6 +10,7 @@ export enum ERROR_MESSAGES {
   SelectCategory = '카테고리를 선택해주세요.',
   cantDeleteDefaultCategory = '기본 카테고리는 삭제할 수 없습니다.',
   refundExist = '이미 환불된 결제 내역입니다.',
+  cashCheckInput = '현금 수량을 입력해주세요.',
 }
 
 export enum CONFIRM_MESSAGES {
@@ -19,4 +20,5 @@ export enum CONFIRM_MESSAGES {
   deleteSelectedCategory = '선택한 카테고리를 삭제하시겠습니까?',
   changeSelectedCategoryDisplay = '선택한 카테고리의 전시 상태를 변경하시겠습니까?',
   refundSalesHistory = '결제 내역을 환불하시겠습니까?',
+  saveCashCheck = '현금 점검 내역을 저장하시겠습니까?',
 }
