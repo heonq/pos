@@ -23,12 +23,15 @@ import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { products, categories } = useProductsAndCategories(uid);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const mutation = useMutation({
     mutationFn: setData,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      navigate('/');
+      resetShoppingCart();
     },
   });
 
@@ -51,7 +54,6 @@ export default function ProductRegistration() {
     control,
     name: 'products',
   });
-  const navigate = useNavigate();
 
   const onSubmit = (data: IProductRegistration) => {
     if (handleProductNames(data) && handleProductBarcodes(data)) {
@@ -73,8 +75,6 @@ export default function ProductRegistration() {
     });
     try {
       mutation.mutate({ uid, data: newProducts });
-      navigate('/');
-      resetShoppingCart();
     } catch (e) {
       if (e instanceof Error) {
         setError('otherError', { type: 'manual', message: e.message });
