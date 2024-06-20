@@ -26,6 +26,10 @@ export const TableContainer = styled.div`
   overflow: auto;
 `;
 
+export const SalesStatisticTableContainer = styled(TableContainer)`
+  height: 100%;
+`;
+
 export const Table = styled.table`
   min-width: 100%;
   border-spacing: 0;
