@@ -32,6 +32,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
+import { useResetRecoilState } from 'recoil';
+import { shoppingCartSelector } from '../../atoms';
 
 const SelectedManagingButtonContainer = styled.div`
   display: flex;
@@ -44,6 +46,7 @@ export default function CategoryManagement() {
   const queryClient = useQueryClient();
   const { products, categories } = useProductsAndCategories(uid);
   const navigate = useNavigate();
+  const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const mutation = useMutation({
     mutationFn: updateChangedData,
@@ -122,9 +125,9 @@ export default function CategoryManagement() {
   };
 
   const handleData = (data: ICategoryManagement) => {
-    const categoriesWithountChecked = getDataWithoutChecked(data);
-    const changedArray = categoriesWithountChecked.map((category, index) => {
-      return category && categories && findChanges(categories?.[index], categoriesWithountChecked[index]);
+    const categoriesWithoutChecked = getDataWithoutChecked(data);
+    const changedArray = categoriesWithoutChecked.map((category, index) => {
+      return category && categories && findChanges(categories?.[index], categoriesWithoutChecked[index]);
     });
     const changedCategoryNumbers = changedArray
       .map((changed, index) => {
@@ -147,7 +150,9 @@ export default function CategoryManagement() {
           changedData: changedArrayFiltered,
           type: 'categories',
         });
+        resetShoppingCart();
       }
+      navigate('/');
     } catch (e) {
       if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
     }

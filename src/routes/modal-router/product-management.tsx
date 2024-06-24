@@ -188,7 +188,7 @@ export default function ProductManagement() {
 
   const onSubmit = (data: IProductManagement) => {
     if (handleProductNames(data) && handleBarcodes(data)) {
-      handleSubmitChanges(data);
+      return handleSubmitChanges(data);
     }
   };
 
@@ -228,8 +228,9 @@ export default function ProductManagement() {
           changedData: changedArrayFiltered,
           type: 'products',
         });
+        return resetShoppingCart();
       }
-      resetShoppingCart();
+      navigate('/');
     } catch (e) {
       if (e instanceof Error) {
         setError('otherError', { type: 'manual', message: e.message });

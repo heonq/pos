@@ -3,19 +3,40 @@ import { Outlet } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { useQueryClient } from '@tanstack/react-query';
+import PretendardRegular from './fonts/Pretendard-Regular.otf';
+import PretendardBold from './fonts/Pretendard-Bold.otf';
 
 const GlobalStyle = createGlobalStyle`
 	${reset}
 	* {
 		box-sizing: border-box;
+    color:${(props) => props.theme.textColor};
 	}
+
+  @font-face {
+    font-family : "Pretendard";
+    src : url(${PretendardRegular});
+    style:normal;
+    font-weight:400;
+  }
+
+  @font-face {
+    font-family : "Pretendard";
+    src: url(${PretendardBold});
+    style:normal;
+    font-weight:800;
+  }
 	
-	a {
-  text-decoration : none;
-  color:inherit;
-}
 body {
   overflow:hidden;
+  font-family: "Pretendard";
+  font-weight:400;
+  font-size:14px;
+}
+
+a {
+  text-decoration : none;
+  color:inherit;
 }
 
 #root {
@@ -35,6 +56,7 @@ select {
 }
 
 button {
+  font:inherit;
   cursor:pointer;
   border:none;
   border-radius:5px;

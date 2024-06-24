@@ -7,6 +7,7 @@ const useSetSalesDatesMutation = () => {
     mutationFn: setSalesDate,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['salesDates'] });
+      queryClient.invalidateQueries({ queryKey: ['salesHistory'] });
     },
   });
   return setSalesDatesMutation;

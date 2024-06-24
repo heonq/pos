@@ -5,6 +5,7 @@ import {
   ModalHeader,
   PlusRowButtonContainer,
   SalesStatisticTable,
+  SalesStatisticTableContainer,
   TableContainer,
   TableHeader,
 } from '../../components/formComponents/FormContainerComponents';
@@ -62,7 +63,7 @@ export default function SalesStatistics() {
               <CloseButton>X</CloseButton>
             </Link>
           </ModalHeader>
-          <TableContainer>
+          <SalesStatisticTableContainer>
             <SalesStatisticTable>
               <TableHeader>
                 <tr>
@@ -87,7 +88,7 @@ export default function SalesStatistics() {
                 </button>
               </PlusRowButtonContainer>
             ) : null}
-          </TableContainer>
+          </SalesStatisticTableContainer>
         </MediumModalContainer>
       </MediumModalComponent>
     </>

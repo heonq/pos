@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import styled from 'styled-components';
 import {
   ModalHeader,
@@ -31,6 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import MyDatePicker from '../../utils/datePicker';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '../../atoms';
+import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/messages';
 
 const CashCheckRow = styled.div`
   display: flex;
@@ -113,18 +115,22 @@ export default function CashCheck() {
 
   useEffect(() => {
     const newestNumber =
-      (todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.number + 1) ?? 1;
+      (todayCashCheckHistory &&
+        todayCashCheckHistory?.length > 0 &&
+        todayCashCheckHistory[todayCashCheckHistory.length - 1]?.number + 1) ||
+      1;
     setNewCashCheckNumber(newestNumber);
-    methods.reset({
-      ...methods,
-      reserveCash: (todayCashCheckHistory && todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash) ?? 0,
-    });
+    todayCashCheckHistory &&
+      todayCashCheckHistory?.length > 0 &&
+      methods.reset({
+        ...methods,
+        reserveCash: todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash ?? 0,
+      });
   }, [todayCashCheckHistory]);
 
   useEffect(() => {
     const cashSalesHistory = salesHistory?.filter((sales) => sales.method === PAYMENT_METHODS.Cash);
     const newCashSalesAmount = cashSalesHistory?.reduce((acc, sales) => acc + sales.chargedAmount, 0) ?? 0;
-    console.log('newCash', newCashSalesAmount);
     setCashSalesAmount(newCashSalesAmount);
   }, [salesHistory]);
 
@@ -140,23 +146,26 @@ export default function CashCheck() {
   }, [cashSalesAmount, reserveCash]);
 
   const submitCashCheck = (data: ICashCheckForm) => {
-    const cashCheck = {
-      time: formatter.formatTime(new Date()),
-      date: formatter.formatDate(new Date()),
-      '1000': +data['1000'],
-      '5000': +data['5000'],
-      '10000': +data['10000'],
-      '50000': +data['50000'],
-      reserveCash: +data.reserveCash,
-      number: newCashCheckNumber,
-      cashSalesAmount,
-      expectedAmount,
-      countedAmount,
-      correct,
-    };
-    try {
-      cashCheckMutation.mutate({ uid, date, cashCheck });
-    } catch (e) {}
+    if (confirm(CONFIRM_MESSAGES.saveCashCheck)) {
+      const cashCheck = {
+        time: formatter.formatTime(new Date()),
+        date: formatter.formatDate(new Date()),
+        '1000': +data['1000'],
+        '5000': +data['5000'],
+        '10000': +data['10000'],
+        '50000': +data['50000'],
+        reserveCash: +data.reserveCash,
+        number: newCashCheckNumber,
+        cashSalesAmount,
+        expectedAmount,
+        countedAmount,
+        correct,
+      };
+      try {
+        if (!(thousand || fiveThousand || tenThousand || fiftyThousand)) return alert(ERROR_MESSAGES.cashCheckInput);
+        cashCheckMutation.mutate({ uid, date, cashCheck });
+      } catch (e) {}
+    } else navigate('/');
   };
 
   return (
@@ -264,7 +273,7 @@ export default function CashCheck() {
           </CashCheckTableContainer>
         </WideModalContainer>
         <SubmitButtonsContainer>
-          <SubmitButton disabled={!(thousand || fiveThousand || tenThousand || fiftyThousand)}>확인</SubmitButton>
+          <SubmitButton>확인</SubmitButton>
           <CancelButton></CancelButton>
         </SubmitButtonsContainer>
       </WideModalComponent>

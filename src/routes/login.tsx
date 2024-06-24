@@ -59,11 +59,11 @@ export default function Login() {
       </Form>
       {error !== '' ? <Error>{error}</Error> : null}
       <Switcher>
-        계정이 없어요.
+        {'계정이 없어요. '}
         <Link to="/create-account">회원가입하기 &rarr;</Link>
       </Switcher>
       <Switcher>
-        비밀번호를 잊어버렸어요.
+        {'비밀번호를 잊어버렸어요. '}
         <Link to="/reset-password"> 비밀번호 재설정하기 &rarr;</Link>
       </Switcher>
     </Wrapper>
