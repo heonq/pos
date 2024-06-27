@@ -74,6 +74,7 @@ export default function SalesHistory() {
                       products={products}
                       salesHistory={history}
                       salesNumber={salesNumber}
+                      salesDates={salesDates ?? []}
                     />
                   ))}
               </tbody>

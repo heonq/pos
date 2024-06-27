@@ -8,14 +8,18 @@ import { dateState, salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useSalesDates from '../../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../../hooks/useSetSalesHistoryMutation';
 
-export const SalesHistoryTableRow = ({ index, products, salesHistory, salesNumber }: ISalesHistoryRowProps) => {
+export const SalesHistoryTableRow = ({
+  index,
+  products,
+  salesHistory,
+  salesNumber,
+  salesDates,
+}: ISalesHistoryRowProps) => {
   const uid = auth.currentUser?.uid ?? '';
   const date = useRecoilValue(dateState);
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
-  const { salesDates } = useSalesDates(uid);
   const [editing, setEditing] = useState(false);
   const [note, setNote] = useState(salesHistory.note);
   const queryClient = useQueryClient();

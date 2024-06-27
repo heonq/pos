@@ -51,4 +51,5 @@ export interface ISalesHistoryRowProps {
   products: IProduct[];
   salesHistory: ISalesHistory;
   salesNumber: number;
+  salesDates: string[];
 }
