@@ -9,6 +9,7 @@ const useSetSalesHistoryMutation = (uid: string, date: string, salesDates: strin
     mutationFn: setSalesHistory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['salesHistory', date] });
+      queryClient.invalidateQueries({ queryKey: ['salesHistory'] });
       !salesDates?.includes(date) && salesDatesMutation.mutate(uid);
     },
     scope: {
