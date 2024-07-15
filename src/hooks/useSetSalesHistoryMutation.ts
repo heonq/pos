@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { setSalesHistory } from '../utils/fetchFunctions';
 import useSetSalesDatesMutation from './useSetSalesDatesMutation';
+import QUERY_KEYS from '../constants/queryKeys';
 
 const useSetSalesHistoryMutation = (uid: string, date: string, salesDates: string[]) => {
   const queryClient = useQueryClient();
@@ -8,8 +9,8 @@ const useSetSalesHistoryMutation = (uid: string, date: string, salesDates: strin
   const setSalesHistoryMutation = useMutation({
     mutationFn: setSalesHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['salesHistory', date] });
-      queryClient.invalidateQueries({ queryKey: ['salesHistory'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.salesHistory, date] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.salesHistory] });
       !salesDates?.includes(date) && salesDatesMutation.mutate(uid);
     },
     scope: {

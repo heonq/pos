@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useSetSalesHistoryMutation from '../../hooks/useSetSalesHistoryMutation';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 export const SalesHistoryTableRow = ({
   index,
@@ -27,7 +28,7 @@ export const SalesHistoryTableRow = ({
   const mutationRowHistory = useMutation({
     mutationFn: updateSalesHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['salesHistory', salesHistory.date] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.salesHistory, salesHistory.date] });
     },
   });
 

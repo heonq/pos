@@ -17,6 +17,7 @@ import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { useEffect, useState } from 'react';
 import useSalesDates from '../../hooks/useSalesDates';
 import { SalesStatisticTableSkeleton } from '../../skeletons/salesStatisticTable';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
@@ -27,7 +28,7 @@ export default function SalesStatistics() {
     ISalesHistory[][],
     Error
   >({
-    queryKey: ['salesHistory'],
+    queryKey: [QUERY_KEYS.salesHistory],
     enabled: !!descSortedDates.length,
     initialPageParam: 1,
     queryFn: ({ pageParam }) => {

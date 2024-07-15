@@ -19,6 +19,7 @@ import {
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
@@ -29,7 +30,7 @@ export default function ProductRegistration() {
   const mutation = useMutation({
     mutationFn: setData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
       navigate('/');
       resetShoppingCart();
     },

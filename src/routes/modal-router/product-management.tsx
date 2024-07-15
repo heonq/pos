@@ -27,6 +27,7 @@ import { ErrorMessage } from '../../components/formComponents/FormContainerCompo
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 const ManagementButtonsContainer = styled.div`
   display: flex;
@@ -80,7 +81,7 @@ export default function ProductManagement() {
   const mutation = useMutation({
     mutationFn: updateChangedData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
       navigate('/');
     },
   });
@@ -88,7 +89,7 @@ export default function ProductManagement() {
   const deleteMutation = useMutation({
     mutationFn: deleteData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
     },
   });
 

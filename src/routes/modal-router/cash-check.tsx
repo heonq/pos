@@ -33,6 +33,7 @@ import MyDatePicker from '../../utils/datePicker';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '../../atoms';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/messages';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 const CashCheckRow = styled.div`
   display: flex;
@@ -72,19 +73,19 @@ export default function CashCheck() {
   const date = useRecoilValue(dateState);
   const [criteriaDate, setCriteriaDate] = useState(date);
   const { data: salesHistory } = useQuery<ISalesHistory[]>({
-    queryKey: ['salesHistory', date],
+    queryKey: [QUERY_KEYS.salesHistory, date],
     queryFn: () => getSalesHistory(uid, date),
   });
   const { data: todayCashCheckHistory } = useQuery<ICashCheckForm[]>({
-    queryKey: ['cashCheck', date],
+    queryKey: [QUERY_KEYS.cashCheck, date],
     queryFn: () => getCashCheckHistory(uid, date),
   });
   const { data: cashCheckHistory } = useQuery<ICashCheckForm[]>({
-    queryKey: ['cashCheck', criteriaDate],
+    queryKey: [QUERY_KEYS.cashCheck, criteriaDate],
     queryFn: () => getCashCheckHistory(uid, criteriaDate),
   });
   const { data: cashCheckDates } = useQuery<string[]>({
-    queryKey: ['cashCheckDates'],
+    queryKey: [QUERY_KEYS.cashCheckDates],
     queryFn: () => getCashCheckDate(uid),
   });
   const queryClient = useQueryClient();
@@ -101,7 +102,7 @@ export default function CashCheck() {
   const cashCheckMutation = useMutation({
     mutationFn: setCashCheckHistory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cashCheck', date] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cashCheck, date] });
       !cashCheckDates?.includes(date) && cashCheckDateMutation.mutate(uid);
       navigate('/');
     },
@@ -109,7 +110,7 @@ export default function CashCheck() {
   const cashCheckDateMutation = useMutation({
     mutationFn: setCashCheckDate,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cashCheckDates'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cashCheckDates] });
     },
   });
 

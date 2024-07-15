@@ -34,6 +34,7 @@ import validator from '../../utils/validator';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 const SelectedManagingButtonContainer = styled.div`
   display: flex;
@@ -51,7 +52,7 @@ export default function CategoryManagement() {
   const mutation = useMutation({
     mutationFn: updateChangedData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
       navigate('/');
     },
   });

@@ -19,6 +19,7 @@ import { useRecoilValue } from 'recoil';
 import { salesNumberAtom } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import useSalesDates from '../../hooks/useSalesDates';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
@@ -26,7 +27,7 @@ export default function SalesHistory() {
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
   const { salesDates } = useSalesDates(uid);
   const { data: salesHistory } = useQuery<ISalesHistory[]>({
-    queryKey: ['salesHistory', criteriaDate],
+    queryKey: [QUERY_KEYS.salesHistory, criteriaDate],
     queryFn: () => getSalesHistory(uid, criteriaDate),
   });
   const salesNumber = useRecoilValue(salesNumberAtom);

@@ -24,6 +24,7 @@ import { CategoryRegistrationRow } from '../../components/formComponents/categor
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
+import QUERY_KEYS from '../../constants/queryKeys';
 
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
@@ -32,7 +33,7 @@ export default function CategoryRegistration() {
   const mutation = useMutation({
     mutationFn: setData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
     },
   });
 

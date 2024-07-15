@@ -3,6 +3,8 @@ enum QUERY_KEYS {
   categories = 'cateogries',
   salesHistory = 'salesHistory',
   salesDates = 'salesDates',
+  cashCheck = 'cashCheck',
+  cashCheckDates = 'cashCheckDates',
 }
 
 export default QUERY_KEYS;

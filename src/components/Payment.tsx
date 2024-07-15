@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import useSalesDates from '../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
+import QUERY_KEYS from '../constants/queryKeys';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -116,7 +117,7 @@ export default function Payment() {
   const date = useRecoilValue(dateState);
   const { salesDates } = useSalesDates(uid);
   const { data } = useQuery<ISalesHistory[]>({
-    queryKey: ['salesHistory', date],
+    queryKey: [QUERY_KEYS.salesHistory, date],
     queryFn: () => getSalesHistory(uid, date),
   });
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
@@ -132,7 +133,7 @@ export default function Payment() {
       id: 'salesHistoryAndQuantity',
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
     },
   });
 
