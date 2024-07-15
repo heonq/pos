@@ -6,7 +6,6 @@ import {
   PlusRowButtonContainer,
   SalesStatisticTable,
   SalesStatisticTableContainer,
-  TableContainer,
   TableHeader,
 } from '../../components/formComponents/FormContainerComponents';
 import { Background, CloseButton, MediumModalComponent } from '../../components/Modal';

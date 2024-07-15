@@ -16,7 +16,7 @@ export const WideModalContainer = styled.div`
 `;
 
 export const MediumModalContainer = styled.div`
-  height: 85%;
+  height: 80%;
   width: 85%;
 `;
 

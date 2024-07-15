@@ -12,12 +12,9 @@ import { CategoryModeSkeleton } from '../skeletons/product';
 const ProductsContainer = styled.div`
   width: 75%;
   height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
   overflow-y: scroll;
+  overflow-x: hidden;
   min-height: inherit;
-  position: relative;
   background-color: white;
   padding: 20px;
   border-radius: ${(props) => props.theme.borderRadius};
