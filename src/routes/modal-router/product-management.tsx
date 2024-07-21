@@ -81,16 +81,12 @@ export default function ProductManagement() {
   const mutation = useMutation({
     mutationFn: updateChangedData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
       navigate('/');
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteData,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
-    },
   });
 
   useEffect(() => {
@@ -193,7 +189,7 @@ export default function ProductManagement() {
     }
   };
 
-  const getDatasWithoutChecked = (data: IProductManagement) => {
+  const getDatasWithoutChecked = (data: IProductManagement): IProduct[] => {
     return data.products.map((product) => {
       const newData = {
         ...product,
@@ -209,7 +205,7 @@ export default function ProductManagement() {
   const handleSubmitChanges = (data: IProductManagement) => {
     const productsWithoutChecked = getDatasWithoutChecked(data);
     const changedArray = productsWithoutChecked.map((product, index) => {
-      return products && findChanges(products?.[index], productsWithoutChecked?.[index]);
+      return products && findChanges(products?.[index], product);
     });
     const changedProductNumbers = changedArray
       .map((changed, index) => {
@@ -228,6 +224,9 @@ export default function ProductManagement() {
           numberArray: changedProductNumbers,
           changedData: changedArrayFiltered,
           type: 'products',
+        });
+        queryClient.setQueryData([QUERY_KEYS.products], () => {
+          return productsWithoutChecked;
         });
         return resetShoppingCart();
       }
@@ -253,13 +252,31 @@ export default function ProductManagement() {
     const salesQuantities = watchedProduct.filter((product) => product.checked).map((product) => product.salesQuantity);
     if (!confirmDelete(salesQuantities)) return;
     const checkedNumbers = watchedProduct.filter((product) => product.checked).map((product) => product.number);
-    deleteMutation.mutate({ uid, numbers: checkedNumbers, type: 'products' });
+    try {
+      deleteMutation.mutate({ uid, numbers: checkedNumbers, type: 'products' });
+      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+        return before.filter((product) => !checkedNumbers.includes(product.number));
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        setError('otherError', { type: 'manual', message: e.message });
+      }
+    }
   };
 
   const deleteProduct = (number: number) => {
     const targetProduct = watchedProduct?.find((product) => product.number === number);
     if (targetProduct && !confirmDelete([targetProduct.salesQuantity])) return;
-    targetProduct && deleteMutation.mutate({ uid, numbers: [number], type: 'products' });
+    try {
+      targetProduct && deleteMutation.mutate({ uid, numbers: [number], type: 'products' });
+      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+        return before.filter((product) => number !== product.number);
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        setError('otherError', { type: 'manual', message: e.message });
+      }
+    }
   };
 
   const handleProductNames = (data: IProductManagement) => {

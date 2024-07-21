@@ -14,7 +14,7 @@ import formatter from '../utils/formatter';
 import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ISalesHistory } from '../Interfaces/DataInterfaces';
+import { IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import { getSalesHistory, updateSalesQuantity } from '../utils/fetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import useSalesDates from '../hooks/useSalesDates';
@@ -132,9 +132,6 @@ export default function Payment() {
     scope: {
       id: 'salesHistoryAndQuantity',
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
-    },
   });
 
   const getNumbersAndQuantities = () => {
@@ -158,6 +155,14 @@ export default function Payment() {
       uid,
       numbers: numbers.map((number) => number.toString()),
       quantities: updatedQuantities,
+    });
+    queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+      const newData = [...before];
+      const targetIndexes = numbers.map((number) => newData.findIndex((product) => product.number === number));
+      targetIndexes.forEach((targetIndex, index) => {
+        newData[targetIndex].salesQuantity = updatedQuantities[index];
+      });
+      return newData;
     });
   };
 
@@ -207,6 +212,9 @@ export default function Payment() {
 
     try {
       mutation.mutate({ uid, date, salesHistory: finalSalesHistory });
+      queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
+        return [...before, finalSalesHistory];
+      });
       handleSalesQuantity();
     } catch (e) {}
   };
@@ -228,6 +236,9 @@ export default function Payment() {
       secondPaymentInfo.number = updatedSalesHistory.number + 1;
       mutation.mutate({ uid, date, salesHistory: firstPaymentInfo });
       mutation.mutate({ uid, date, salesHistory: secondPaymentInfo });
+      queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
+        return [...before, firstPaymentInfo, secondPaymentInfo];
+      });
       handleSalesQuantity();
     } catch (e) {}
   };

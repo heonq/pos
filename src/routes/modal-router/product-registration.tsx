@@ -1,7 +1,7 @@
 import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { IProductRegistration } from '../../Interfaces/DataInterfaces';
+import { IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
 import { setData } from '../../utils/fetchFunctions';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
@@ -30,7 +30,6 @@ export default function ProductRegistration() {
   const mutation = useMutation({
     mutationFn: setData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
       navigate('/');
       resetShoppingCart();
     },
@@ -76,6 +75,9 @@ export default function ProductRegistration() {
     });
     try {
       mutation.mutate({ uid, data: newProducts });
+      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+        return [...before, ...newProducts];
+      });
     } catch (e) {
       if (e instanceof Error) {
         setError('otherError', { type: 'manual', message: e.message });
