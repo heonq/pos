@@ -8,7 +8,14 @@ import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+        gcTime: Infinity,
+      },
+    },
+  });
   const [isLoading, setLoading] = useState(true);
   const init = async () => {
     await auth.authStateReady();
