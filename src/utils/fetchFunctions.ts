@@ -10,13 +10,14 @@ import {
   writeBatch,
   updateDoc,
   setDoc,
+  arrayUnion,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import { ICashCheckForm, ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
+import { ICashCheckForm, ICategory, IProduct, ISalesHistory, ISalesStatistic } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
 
 const getData = async <T>(uid: string, collectionName: string): Promise<T[]> => {
-  const ref = collection(doc(db, 'userData', uid), collectionName);
+  const ref = collection(doc(db, uid, collectionName), 'data');
   const querySortedByNumber = query(ref, orderBy('number', 'asc'));
   const res: QuerySnapshot<DocumentData> = await getDocs(querySortedByNumber);
   return res.docs.map((doc) => doc.data() as T) ?? [];
@@ -31,40 +32,40 @@ export const getCategories = async (uid: string): Promise<ICategory[]> => {
 };
 
 export const getHistoryData = async <T>(uid: string, date: string, collectionName: string) => {
-  const ref = collection(doc(db, collectionName, uid), date);
-  const querySortedByNumber = query(ref, orderBy('number', 'asc'));
-  const res: QuerySnapshot<DocumentData> = await getDocs(querySortedByNumber);
-  return res.docs.map((doc) => doc.data() as T) ?? [];
+  const ref = doc(doc(db, uid, collectionName), 'data', date);
+  const res = (await getDoc(ref)).data();
+  return (res?.['data'] as T[]) ?? [];
 };
 
 export const getSalesHistory = async (
   uid: string,
   date: string = formatter.formatDate(new Date()),
 ): Promise<ISalesHistory[]> => {
-  return await getHistoryData<ISalesHistory>(uid, date, 'salesData');
+  return (await getHistoryData<ISalesHistory>(uid, date, 'salesData')).sort((a, b) => a.number - b.number);
 };
 
 export const getCashCheckHistory = async (uid: string, date: string) => {
-  return await getHistoryData<ICashCheckForm>(uid, date, 'cashCheckData');
+  const res = await getHistoryData<ICashCheckForm>(uid, date, 'cashCheckData');
+  return res.sort((a, b) => a.number - b.number);
 };
 
-export const setSalesHistory = async ({
-  uid,
-  date,
-  salesHistory,
-}: {
-  uid: string;
-  date: string;
-  salesHistory: ISalesHistory;
-}) => {
-  const ref = doc(doc(db, 'salesData', uid), date, salesHistory.number.toString());
-  await setDoc(ref, salesHistory);
+export const setSalesHistory = async ({ uid, salesHistory }: { uid: string; salesHistory: ISalesHistory }) => {
+  const ref = doc(doc(db, uid, 'salesData'), 'data', salesHistory.date);
+  try {
+    await updateDoc(ref, {
+      data: arrayUnion(salesHistory),
+    });
+  } catch {
+    await setDoc(ref, {
+      data: arrayUnion(salesHistory),
+    });
+  }
 };
 
 export const setData = async ({ uid, data }: { uid: string; data: IProduct[] | ICategory[] }) => {
   const dataType = 'price' in data[0] ? 'products' : 'categories';
   const refArray = data.map((eachData) => {
-    return doc(doc(db, 'userData', uid), dataType, eachData.number.toString());
+    return doc(doc(db, uid, dataType), 'data', eachData.number.toString());
   });
   const batch = writeBatch(db);
   refArray.forEach((ref, index) => batch.set(ref, data[index]));
@@ -84,7 +85,7 @@ export const updateChangedData = async ({
 }): Promise<void> => {
   const batch = writeBatch(db);
   const refArray = numberArray.map((number) => {
-    return doc(doc(db, 'userData', uid), type, number.toString());
+    return doc(doc(db, uid, type), 'data', number.toString());
   });
   refArray.forEach((ref, index) => batch.update(ref, changedData[index]));
   await batch.commit();
@@ -106,7 +107,7 @@ export const deleteData = async ({
 };
 
 export const getSalesDate = async (uid: string) => {
-  const ref = doc(db, 'salesData', uid);
+  const ref = doc(db, uid, 'salesData');
   const res = (await getDoc(ref)).data()?.dates ?? [];
   return res.sort((a: string, b: string) => {
     if (a > b) return 1;
@@ -115,36 +116,28 @@ export const getSalesDate = async (uid: string) => {
   });
 };
 
-export const updateSalesHistory = async ({
-  uid,
-  date,
-  number,
-  updateData,
-}: {
-  uid: string;
-  date: string;
-  number: string;
-  updateData: Partial<ISalesHistory>;
-}) => {
-  const ref = doc(doc(db, 'salesData', uid), date, number);
-  await updateDoc(ref, updateData);
+export const updateSalesHistory = async ({ uid, updateData }: { uid: string; updateData: ISalesHistory[] }) => {
+  const date = updateData[0].date;
+  const ref = doc(doc(db, uid, 'salesData'), 'data', date);
+  await updateDoc(ref, { data: updateData });
 };
 
-export const setCashCheckHistory = async ({
-  uid,
-  date,
-  cashCheck,
-}: {
-  uid: string;
-  date: string;
-  cashCheck: ICashCheckForm;
-}) => {
-  const newRef = doc(doc(db, 'cashCheckData', uid), date, cashCheck.number.toString());
-  await setDoc(newRef, cashCheck);
+export const setCashCheckHistory = async ({ uid, cashCheck }: { uid: string; cashCheck: ICashCheckForm }) => {
+  const date = formatter.formatDate(new Date());
+  const newRef = doc(doc(db, uid, 'cashCheckData'), 'data', date);
+  try {
+    await updateDoc(newRef, { data: arrayUnion(cashCheck) });
+  } catch {
+    try {
+      await setDoc(newRef, { data: [cashCheck] });
+    } catch (e) {
+      if (e instanceof Error) throw e;
+    }
+  }
 };
 
 export const getCashCheckDate = async (uid: string) => {
-  const ref = doc(db, 'cashCheckData', uid);
+  const ref = doc(db, uid, 'cashCheckData');
   const res = (await getDoc(ref))?.data()?.dates ?? [];
   return res.sort((a: string, b: string) => {
     if (a > b) return 1;
@@ -154,25 +147,38 @@ export const getCashCheckDate = async (uid: string) => {
 };
 
 export const setCashCheckDate = async (uid: string) => {
-  const ref = doc(db, 'cashCheckData', uid);
-  const data = await getCashCheckDate(uid);
-  const newData = { dates: [...data, formatter.formatDate(new Date())] };
-  await setDoc(ref, newData);
+  const date = formatter.formatDate(new Date());
+  const ref = doc(db, uid, 'cashCheckData');
+  try {
+    await updateDoc(ref, { dates: arrayUnion(date) });
+  } catch {
+    try {
+      await setDoc(ref, { dates: [date] });
+    } catch (e) {
+      if (e instanceof Error) throw e;
+    }
+  }
 };
 
 export const setSalesDate = async (uid: string) => {
-  const ref = doc(db, 'salesData', uid);
-  const data = await getSalesDate(uid);
-  const newData = { dates: [...data, formatter.formatDate(new Date())] };
-  await setDoc(ref, newData);
+  const ref = doc(db, uid, 'salesData');
+  try {
+    await updateDoc(ref, { dates: arrayUnion(formatter.formatDate(new Date())) });
+  } catch {
+    try {
+      await setDoc(ref, { dates: [formatter.formatDate(new Date())] });
+    } catch (e) {
+      if (e instanceof Error) throw e;
+    }
+  }
 };
 
 export const getMultipleSalesHistory = async (uid: string, dateArray: string[]): Promise<ISalesHistory[][]> => {
-  const refArray = dateArray.map((date) => collection(doc(db, 'salesData', uid), date));
+  const refArray = dateArray.map((date) => doc(doc(db, uid, 'salesData'), 'data', date));
   const resArray = await Promise.all(
     refArray.map(async (ref) => {
-      const res = await getDocs(ref);
-      return res.docs.map((doc) => doc.data() as ISalesHistory);
+      const res = await getDoc(ref);
+      return res.data()?.['data'] as ISalesHistory[];
     }),
   );
   return resArray;
@@ -191,4 +197,16 @@ export const updateSalesQuantity = async ({
   const batch = writeBatch(db);
   quantities.forEach((quantity, index) => batch.update(refArray[index], { salesQuantity: quantity }));
   await batch.commit();
+};
+
+export const createSalesStatisticDoc = async (uid: string) => {
+  const ref = doc(db, 'salesStatistic', uid);
+  await setDoc(ref, {});
+};
+
+export const setSalesStatistic = async ({ uid, salesStatistic }: { uid: string; salesStatistic: ISalesStatistic }) => {
+  const ref = doc(db, 'salesStatistic', uid);
+  await updateDoc(ref, {
+    statistic: arrayUnion(salesStatistic),
+  });
 };
