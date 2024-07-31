@@ -49,12 +49,12 @@ export default function CategoryManagement() {
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
-  const mutation = useMutation({
+  const updateCategoryMutation = useMutation({
     mutationFn: updateChangedData,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
-      navigate('/');
-    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: deleteData,
   });
 
   const methods = useForm<ICategoryManagement>({
@@ -143,19 +143,24 @@ export default function CategoryManagement() {
   };
 
   const updateData = (changedCategoryNumbers: number[], changedArrayFiltered: Partial<ICategory>[]) => {
-    try {
-      if (changedArrayFiltered.length) {
-        mutation.mutate({
+    if (changedArrayFiltered.length) {
+      updateCategoryMutation.mutate(
+        {
           uid,
           numberArray: changedCategoryNumbers,
           changedData: changedArrayFiltered,
           type: 'categories',
-        });
-        resetShoppingCart();
-      }
-      navigate('/');
-    } catch (e) {
-      if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
+        },
+        {
+          onSuccess: () => {
+            navigate('/');
+            resetShoppingCart();
+          },
+          onError: (e) => {
+            if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
+          },
+        },
+      );
     }
   };
 
@@ -185,16 +190,23 @@ export default function CategoryManagement() {
     return true;
   };
 
-  const deleteCategory = (number: number | number[]) => {
-    const numberArray = Array.isArray(number) ? number : [number];
+  const deleteCategory = (numberArray: number[]) => {
     if (numberArray.includes(CONDITION_VALUES.defaultCategoryNumber))
       return alert(ERROR_MESSAGES.cantDeleteDefaultCategory);
     if (!confirmDelete(numberArray)) return;
-    try {
-      deleteData({ uid, numbers: numberArray, type: 'categories' });
-    } catch (e) {
-      if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
-    }
+    deleteCategoryMutation.mutate(
+      { uid, numbers: numberArray, type: 'categories' },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.categories], (before: ICategory[]) => {
+            return before.filter((category) => !numberArray.includes(category.number));
+          });
+        },
+        onError: (e) => {
+          if (e instanceof Error) setError('otherError', { type: 'manual', message: e.message });
+        },
+      },
+    );
   };
 
   const handleCategoryDisplay = (selectedIndexArray: number[], option: SELECTED_MANAGEMENT_OPTIONS) => {

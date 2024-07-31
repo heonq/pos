@@ -32,9 +32,6 @@ export default function CategoryRegistration() {
   const { categories } = useProductsAndCategories(uid);
   const mutation = useMutation({
     mutationFn: setData,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
-    },
   });
 
   const methods = useForm<ICategoryRegistration>({
@@ -76,14 +73,22 @@ export default function CategoryRegistration() {
   };
 
   const handleSetCategories = (data: ICategory[]) => {
-    try {
-      mutation.mutate({ uid, data });
-      navigate('/');
-    } catch (e) {
-      if (e instanceof Error) {
-        setError('otherError', { type: 'manual', message: e.message });
-      }
-    }
+    mutation.mutate(
+      { uid, data },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.categories], (before: ICategory[]) => {
+            return [...before, ...data];
+          });
+          navigate('/');
+        },
+        onError: (e) => {
+          if (e instanceof Error) {
+            setError('otherError', { type: 'manual', message: e.message });
+          }
+        },
+      },
+    );
   };
 
   return (

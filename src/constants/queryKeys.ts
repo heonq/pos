@@ -1,6 +1,6 @@
 enum QUERY_KEYS {
   products = 'products',
-  categories = 'cateogries',
+  categories = 'categories',
   salesHistory = 'salesHistory',
   salesDates = 'salesDates',
   cashCheck = 'cashCheck',

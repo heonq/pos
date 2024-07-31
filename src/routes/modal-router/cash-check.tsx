@@ -101,16 +101,13 @@ export default function CashCheck() {
 
   const cashCheckMutation = useMutation({
     mutationFn: setCashCheckHistory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cashCheck, date] });
-      !cashCheckDates?.includes(date) && cashCheckDateMutation.mutate(uid);
-      navigate('/');
-    },
   });
   const cashCheckDateMutation = useMutation({
     mutationFn: setCashCheckDate,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cashCheckDates] });
+      queryClient.setQueryData([QUERY_KEYS.cashCheckDates], (before: string[]) => {
+        return [...before, date];
+      });
     },
   });
 
@@ -162,10 +159,19 @@ export default function CashCheck() {
         countedAmount,
         correct,
       };
-      try {
-        if (!(thousand || fiveThousand || tenThousand || fiftyThousand)) return alert(ERROR_MESSAGES.cashCheckInput);
-        cashCheckMutation.mutate({ uid, date, cashCheck });
-      } catch (e) {}
+      if (!(thousand || fiveThousand || tenThousand || fiftyThousand)) return alert(ERROR_MESSAGES.cashCheckInput);
+      cashCheckMutation.mutate(
+        { uid, cashCheck },
+        {
+          onSuccess: () => {
+            !cashCheckDates?.includes(date) && cashCheckDateMutation.mutate(uid);
+            queryClient.setQueryData([QUERY_KEYS.cashCheck, date], (before: ICashCheckForm[]) => {
+              return [...before, cashCheck];
+            });
+            navigate('/');
+          },
+        },
+      );
     } else navigate('/');
   };
 

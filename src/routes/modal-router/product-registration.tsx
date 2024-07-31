@@ -27,12 +27,8 @@ export default function ProductRegistration() {
   const navigate = useNavigate();
   const { products, categories } = useProductsAndCategories(uid);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
-  const mutation = useMutation({
+  const productRegistrationMutation = useMutation({
     mutationFn: setData,
-    onSuccess: () => {
-      navigate('/');
-      resetShoppingCart();
-    },
   });
 
   const methods = useForm<IProductRegistration>({
@@ -73,16 +69,23 @@ export default function ProductRegistration() {
         display: product.display === '전시',
       };
     });
-    try {
-      mutation.mutate({ uid, data: newProducts });
-      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
-        return [...before, ...newProducts];
-      });
-    } catch (e) {
-      if (e instanceof Error) {
-        setError('otherError', { type: 'manual', message: e.message });
-      }
-    }
+    productRegistrationMutation.mutate(
+      { uid, data: newProducts },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+            return [...before, ...newProducts];
+          });
+          navigate('/');
+          resetShoppingCart();
+        },
+        onError: (e) => {
+          if (e instanceof Error) {
+            setError('otherError', { type: 'manual', message: e.message });
+          }
+        },
+      },
+    );
   };
 
   const handleProductNames = (data: IProductRegistration) => {

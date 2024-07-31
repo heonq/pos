@@ -196,51 +196,62 @@ export default function Payment() {
 
   const handleSalesHistory = useRecoilCallback(({ snapshot }) => async () => {
     if (paymentInfo.method === '') return alert('결제수단을 선택해주세요.');
-    try {
-      const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
-      if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
-      else handleNormalPayment(updatedSalesHistory);
-      resetShoppingCart();
-    } catch (e) {
-      console.log(e);
-    }
+    const updatedSalesHistory = await snapshot.getPromise(salesHistorySelector);
+    if (paymentInfo.method === PAYMENT_METHODS.Split) handleSplitPayment(updatedSalesHistory);
+    else handleNormalPayment(updatedSalesHistory);
+    resetShoppingCart();
   });
 
   const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
-
-    try {
-      mutation.mutate({ uid, date, salesHistory: finalSalesHistory });
-      queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
-        return [...before, finalSalesHistory];
-      });
-      handleSalesQuantity();
-    } catch (e) {}
+    mutation.mutate(
+      { uid, salesHistory: finalSalesHistory },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
+            return [...before, finalSalesHistory];
+          });
+          queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: ISalesHistory[][]) => {
+            if (before[0][0].date !== date) return [[finalSalesHistory], ...before];
+            return [...before][0].unshift(finalSalesHistory);
+          });
+          handleSalesQuantity();
+        },
+      },
+    );
   };
 
   const handleSplitPayment = (updatedSalesHistory: ISalesHistory) => {
-    try {
-      const note = `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
-        updatedSalesHistory.number + 1
-      } 분할결제`.trim();
-      const [firstPaymentInfo, secondPaymentInfo] = splitPayment.method.map((method, index) => {
-        return {
-          ...updatedSalesHistory,
-          method,
-          chargedAmount: splitPayment.price[index],
-          note,
-        } as ISalesHistory;
-      });
-      secondPaymentInfo.products = [];
-      secondPaymentInfo.number = updatedSalesHistory.number + 1;
-      mutation.mutate({ uid, date, salesHistory: firstPaymentInfo });
-      mutation.mutate({ uid, date, salesHistory: secondPaymentInfo });
-      queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
-        return [...before, firstPaymentInfo, secondPaymentInfo];
-      });
-      handleSalesQuantity();
-    } catch (e) {}
+    const note = `${updatedSalesHistory.note} ${updatedSalesHistory.number},${
+      updatedSalesHistory.number + 1
+    } 분할결제`.trim();
+    const [firstPaymentInfo, secondPaymentInfo] = splitPayment.method.map((method, index) => {
+      return {
+        ...updatedSalesHistory,
+        method,
+        chargedAmount: splitPayment.price[index],
+        note,
+      } as ISalesHistory;
+    });
+    secondPaymentInfo.products = [];
+    secondPaymentInfo.number = updatedSalesHistory.number + 1;
+    mutation.mutate({ uid, salesHistory: firstPaymentInfo });
+    mutation.mutate(
+      { uid, salesHistory: secondPaymentInfo },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
+            return [...before, firstPaymentInfo, secondPaymentInfo];
+          });
+          queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: ISalesHistory[][]) => {
+            if (before[0][0].date !== date) return [[firstPaymentInfo, secondPaymentInfo], ...before];
+            return [...before][0].unshift(firstPaymentInfo, secondPaymentInfo);
+          });
+          handleSalesQuantity();
+        },
+      },
+    );
   };
 
   const onPaymentModalButtonClick = (path: string) => {

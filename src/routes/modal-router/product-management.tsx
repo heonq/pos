@@ -78,11 +78,8 @@ export default function ProductManagement() {
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
-  const mutation = useMutation({
+  const productChangeMutation = useMutation({
     mutationFn: updateChangedData,
-    onSuccess: () => {
-      navigate('/');
-    },
   });
 
   const deleteMutation = useMutation({
@@ -217,25 +214,31 @@ export default function ProductManagement() {
       (changed): changed is Partial<IProduct> => changed !== undefined && Object.keys(changed).length > 0,
     );
 
-    try {
-      if (changedArrayFiltered.length) {
-        mutation.mutate({
+    if (changedArrayFiltered.length) {
+      return productChangeMutation.mutate(
+        {
           uid,
           numberArray: changedProductNumbers,
           changedData: changedArrayFiltered,
           type: 'products',
-        });
-        queryClient.setQueryData([QUERY_KEYS.products], () => {
-          return productsWithoutChecked;
-        });
-        return resetShoppingCart();
-      }
-      navigate('/');
-    } catch (e) {
-      if (e instanceof Error) {
-        setError('otherError', { type: 'manual', message: e.message });
-      }
+        },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData([QUERY_KEYS.products], () => {
+              return productsWithoutChecked;
+            });
+            resetShoppingCart();
+            navigate('/');
+          },
+          onError: (e) => {
+            if (e instanceof Error) {
+              setError('otherError', { type: 'manual', message: e.message });
+            }
+          },
+        },
+      );
     }
+    navigate('/');
   };
 
   const confirmDelete = (salesQuantities: number[]) => {
@@ -252,31 +255,42 @@ export default function ProductManagement() {
     const salesQuantities = watchedProduct.filter((product) => product.checked).map((product) => product.salesQuantity);
     if (!confirmDelete(salesQuantities)) return;
     const checkedNumbers = watchedProduct.filter((product) => product.checked).map((product) => product.number);
-    try {
-      deleteMutation.mutate({ uid, numbers: checkedNumbers, type: 'products' });
-      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
-        return before.filter((product) => !checkedNumbers.includes(product.number));
-      });
-    } catch (e) {
-      if (e instanceof Error) {
-        setError('otherError', { type: 'manual', message: e.message });
-      }
-    }
+    deleteMutation.mutate(
+      { uid, numbers: checkedNumbers, type: 'products' },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+            return before.filter((product) => !checkedNumbers.includes(product.number));
+          });
+        },
+        onError: (e) => {
+          if (e instanceof Error) {
+            setError('otherError', { type: 'manual', message: e.message });
+          }
+        },
+      },
+    );
   };
 
   const deleteProduct = (number: number) => {
     const targetProduct = watchedProduct?.find((product) => product.number === number);
     if (targetProduct && !confirmDelete([targetProduct.salesQuantity])) return;
-    try {
-      targetProduct && deleteMutation.mutate({ uid, numbers: [number], type: 'products' });
-      queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
-        return before.filter((product) => number !== product.number);
-      });
-    } catch (e) {
-      if (e instanceof Error) {
-        setError('otherError', { type: 'manual', message: e.message });
-      }
-    }
+    targetProduct &&
+      deleteMutation.mutate(
+        { uid, numbers: [number], type: 'products' },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData([QUERY_KEYS.products], (before: IProduct[]) => {
+              return before.filter((product) => number !== product.number);
+            });
+          },
+          onError: (e) => {
+            if (e instanceof Error) {
+              setError('otherError', { type: 'manual', message: e.message });
+            }
+          },
+        },
+      );
   };
 
   const handleProductNames = (data: IProductManagement) => {

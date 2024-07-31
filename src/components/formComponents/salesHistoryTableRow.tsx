@@ -10,15 +10,17 @@ import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useSetSalesHistoryMutation from '../../hooks/useSetSalesHistoryMutation';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 
 export const SalesHistoryTableRow = ({
   index,
   products,
-  salesHistory,
+  salesHistories,
   salesNumber,
   salesDates,
 }: ISalesHistoryRowProps) => {
   const uid = auth.currentUser?.uid ?? '';
+  const salesHistory = salesHistories[index];
   const date = useRecoilValue(dateState);
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const [editing, setEditing] = useState(false);
@@ -48,18 +50,25 @@ export const SalesHistoryTableRow = ({
         return { ...product, quantity: -product.quantity };
       }),
     };
-    try {
-      mutationRowHistory.mutate({
+    const newSalesHistories = salesHistories.map((salesHistory, idx) => {
+      if (idx === index) {
+        return { ...salesHistory, refund: true };
+      }
+      return history;
+    }) as ISalesHistory[];
+    mutationRowHistory.mutate(
+      {
         uid,
-        date: salesHistory.date,
-        number: salesHistory.number.toString(),
-        updateData: { refund: true },
-      });
-      mutationTodayHistory.mutate({ uid, date, salesHistory: updateData });
-      setSalesNumber((value) => value + 1);
-    } catch (e) {
-      if (e instanceof Error) alert(e.message);
-    }
+        updateData: newSalesHistories,
+      },
+      {
+        onSuccess: () => {
+          mutationTodayHistory.mutate({ uid, salesHistory: updateData });
+          setSalesNumber((value) => value + 1);
+          queryClient.setQueryData([QUERY_KEYS.salesHistory], newSalesHistories);
+        },
+      },
+    );
   };
 
   const handleEditing = () => {
@@ -69,17 +78,19 @@ export const SalesHistoryTableRow = ({
 
   const updateNote = () => {
     if (note === salesHistory.note) return;
-    const newNote = { note };
-    try {
-      mutationRowHistory.mutate({
+    const newSalesHistories = [...salesHistories];
+    newSalesHistories[index].note = note;
+    mutationRowHistory.mutate(
+      {
         uid,
-        date: salesHistory.date,
-        number: salesHistory.number.toString(),
-        updateData: newNote,
-      });
-    } catch (e) {
-      if (e instanceof Error) alert(e.message);
-    }
+        updateData: newSalesHistories,
+      },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData([QUERY_KEYS.salesHistory], newSalesHistories);
+        },
+      },
+    );
   };
 
   return (
