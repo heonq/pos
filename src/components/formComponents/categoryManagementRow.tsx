@@ -58,7 +58,7 @@ export const CategoryManagementRow = ({ field, index, remove }: ICategoryTableRo
         </select>
       </td>
       <td>
-        <button type="button" onClick={() => remove(field.number)}>
+        <button type="button" onClick={() => remove([field.number])}>
           삭제
         </button>
       </td>

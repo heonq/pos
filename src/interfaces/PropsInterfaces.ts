@@ -41,7 +41,7 @@ export interface IProductTableRowProps<T> {
 export interface ICategoryTableRowProps<T> {
   field: T;
   index: number;
-  remove: (index: number) => void;
+  remove: (index: number[]) => void;
   products?: IProduct[];
   removable?: boolean;
 }
@@ -49,7 +49,7 @@ export interface ICategoryTableRowProps<T> {
 export interface ISalesHistoryRowProps {
   index: number;
   products: IProduct[];
-  salesHistory: ISalesHistory;
+  salesHistories: ISalesHistory[];
   salesNumber: number;
   salesDates: string[];
 }

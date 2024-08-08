@@ -13,7 +13,7 @@ import {
   arrayUnion,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import { ICashCheckForm, ICategory, IProduct, ISalesHistory, ISalesStatistic } from '../Interfaces/DataInterfaces';
+import { ICashCheckForm, ICategory, IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
 import formatter from './formatter';
 
 const getData = async <T>(uid: string, collectionName: string): Promise<T[]> => {
@@ -202,11 +202,4 @@ export const updateSalesQuantity = async ({
 export const createSalesStatisticDoc = async (uid: string) => {
   const ref = doc(db, 'salesStatistic', uid);
   await setDoc(ref, {});
-};
-
-export const setSalesStatistic = async ({ uid, salesStatistic }: { uid: string; salesStatistic: ISalesStatistic }) => {
-  const ref = doc(db, 'salesStatistic', uid);
-  await updateDoc(ref, {
-    statistic: arrayUnion(salesStatistic),
-  });
 };

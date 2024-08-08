@@ -52,9 +52,13 @@ export const SalesHistoryTableRow = ({
     };
     const newSalesHistories = salesHistories.map((salesHistory, idx) => {
       if (idx === index) {
-        return { ...salesHistory, refund: true };
+        return {
+          ...salesHistory,
+          refund: true,
+          note: `${salesHistory.note} ${updateData.date} ${updateData.time} 환불`.trim(),
+        };
       }
-      return history;
+      return salesHistory;
     }) as ISalesHistory[];
     mutationRowHistory.mutate(
       {
@@ -65,8 +69,12 @@ export const SalesHistoryTableRow = ({
         onSuccess: () => {
           mutationTodayHistory.mutate({ uid, salesHistory: updateData });
           setSalesNumber((value) => value + 1);
-          queryClient.setQueryData([QUERY_KEYS.salesHistory], newSalesHistories);
+          queryClient.setQueryData([QUERY_KEYS.salesHistory, newSalesHistories[0].date], newSalesHistories);
+          queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
+            return [...before, updateData];
+          });
         },
+        onError: (e) => alert(e.message),
       },
     );
   };
@@ -98,7 +106,7 @@ export const SalesHistoryTableRow = ({
       <td>{salesHistory.number}</td>
       <td>{formatter.formatNumber(salesHistory.chargedAmount)}</td>
       <td>{salesHistory.method}</td>
-      <td>{editing ? <input value={note} onChange={(e) => setNote(e.target.value)}></input> : note}</td>
+      <td>{editing ? <input value={note} onChange={(e) => setNote(e.target.value)}></input> : salesHistory.note}</td>
       <td>{salesHistory.date}</td>
       <td>{salesHistory.time}</td>
       <td>

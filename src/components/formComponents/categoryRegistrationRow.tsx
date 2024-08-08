@@ -35,7 +35,7 @@ export const CategoryRegistrationRow = ({ field, index, remove, removable }: ICa
         </select>
       </td>
       <td>
-        <button type="button" onClick={() => removable && remove(index)}>
+        <button type="button" onClick={() => removable && remove([index])}>
           삭제
         </button>
       </td>

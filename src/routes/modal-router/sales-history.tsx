@@ -26,7 +26,7 @@ export default function SalesHistory() {
   const { products } = useProductsAndCategories(uid);
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
   const { salesDates } = useSalesDates(uid);
-  const { data: salesHistory } = useQuery<ISalesHistory[]>({
+  const { data: salesHistories } = useQuery<ISalesHistory[]>({
     queryKey: [QUERY_KEYS.salesHistory, criteriaDate],
     queryFn: () => getSalesHistory(uid, criteriaDate),
   });
@@ -68,12 +68,12 @@ export default function SalesHistory() {
               </TableHeader>
               <tbody>
                 {products &&
-                  salesHistory?.map((history, index) => (
+                  salesHistories?.map((_, index) => (
                     <SalesHistoryTableRow
                       key={index}
                       index={index}
                       products={products}
-                      salesHistory={history}
+                      salesHistories={salesHistories}
                       salesNumber={salesNumber}
                       salesDates={salesDates ?? []}
                     />
