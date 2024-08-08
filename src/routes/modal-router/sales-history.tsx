@@ -20,13 +20,14 @@ import { salesNumberAtom } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import useSalesDates from '../../hooks/useSalesDates';
 import QUERY_KEYS from '../../constants/queryKeys';
+import SalesHistoryTableSkeleton from '../../skeletons/salesHistoryTable';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
   const { products } = useProductsAndCategories(uid);
   const [criteriaDate, setCriteriaDate] = useState(formatter.formatDate(new Date()));
   const { salesDates } = useSalesDates(uid);
-  const { data: salesHistories } = useQuery<ISalesHistory[]>({
+  const { data: salesHistories, isLoading: salesHistoryLoading } = useQuery<ISalesHistory[]>({
     queryKey: [QUERY_KEYS.salesHistory, criteriaDate],
     queryFn: () => getSalesHistory(uid, criteriaDate),
   });
@@ -36,6 +37,16 @@ export default function SalesHistory() {
   useEffect(() => {
     setDates(salesDates?.map((date) => new Date(date)) ?? [new Date()]);
   }, [salesDates]);
+
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    setShowSkeleton(false);
+    const timer = setTimeout(() => {
+      if (salesHistoryLoading) setShowSkeleton(true);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [salesHistoryLoading, salesHistories]);
 
   return (
     <>
@@ -67,6 +78,9 @@ export default function SalesHistory() {
                 </tr>
               </TableHeader>
               <tbody>
+                {salesHistoryLoading && showSkeleton ? (
+                  <SalesHistoryTableSkeleton {...{ productLength: products?.length ?? 0 }} />
+                ) : null}
                 {products &&
                   salesHistories?.map((_, index) => (
                     <SalesHistoryTableRow

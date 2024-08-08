@@ -28,6 +28,15 @@ export default function Products() {
   const [displayingCategories, setDisplayingCategories] = useState<ICategory[]>([]);
   const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
   const { products, categories, isLoading } = useProductsAndCategories(uid);
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    setShowSkeleton(false);
+    const timer = setTimeout(() => {
+      if (isLoading) setShowSkeleton(true);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isLoading, products]);
 
   useEffect(() => {
     products && setDisplayingProducts(products?.filter((product) => product.display));
@@ -41,13 +50,8 @@ export default function Products() {
 
   return (
     <ProductsContainer>
-      {isLoading ? (
-        <CategoryModeSkeleton />
-      ) : viewMode === 'category' ? (
-        <CategoryMode {...props} />
-      ) : (
-        <TotalMode {...props} />
-      )}
+      {isLoading && showSkeleton ? <CategoryModeSkeleton /> : null}
+      {viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />}
     </ProductsContainer>
   );
 }

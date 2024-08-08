@@ -24,6 +24,7 @@ export default function SalesStatistics() {
   const [descSortedDates, setSortedDates] = useState<string[]>([]);
   const { salesDates } = useSalesDates(uid);
   const DATES_PER_PAGE = 50;
+  const [showSkeleton, setShowSkeleton] = useState(false);
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteQuery<
     ISalesHistory[][],
     Error
@@ -42,6 +43,14 @@ export default function SalesStatistics() {
       return hasMore ? Number(lastPageParam) + 1 : undefined;
     },
   });
+
+  useEffect(() => {
+    setShowSkeleton(false);
+    const timer = setTimeout(() => {
+      if (isLoading || isFetchingNextPage) setShowSkeleton(true);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [data, isLoading, isFetchingNextPage]);
 
   useEffect(() => {
     const sortedDates = [...(salesDates ?? [])].sort((a, b) => {
@@ -78,7 +87,7 @@ export default function SalesStatistics() {
                 {data?.pages.flat().map((data: ISalesHistory[]) => (
                   <SalesStatisticTableRow key={data[0].date} salesHistory={data} />
                 ))}
-                {isLoading || isFetchingNextPage ? <SalesStatisticTableSkeleton /> : null}
+                {showSkeleton && (isLoading || isFetchingNextPage) ? <SalesStatisticTableSkeleton /> : null}
               </tbody>
             </SalesStatisticTable>
             {hasNextPage ? (
