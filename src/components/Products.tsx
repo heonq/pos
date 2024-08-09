@@ -8,6 +8,7 @@ import TotalMode from './product-components/total-mode';
 import { useEffect, useState } from 'react';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import { CategoryModeSkeleton } from '../skeletons/product';
+import { ReloadIcon } from './ReloadIcon';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -27,7 +28,15 @@ export default function Products() {
   const uid = auth.currentUser?.uid ?? '';
   const [displayingCategories, setDisplayingCategories] = useState<ICategory[]>([]);
   const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
-  const { products, categories, isLoading } = useProductsAndCategories(uid);
+  const {
+    products,
+    categories,
+    isLoading,
+    productsLoadingError,
+    categoriesLoadingError,
+    refetchProducts,
+    refetchCategories,
+  } = useProductsAndCategories(uid);
   const [showSkeleton, setShowSkeleton] = useState(true);
 
   useEffect(() => {
@@ -47,10 +56,15 @@ export default function Products() {
   }, [categories]);
 
   const props = { products: displayingProducts, categories: displayingCategories };
+  const reload = () => {
+    if (productsLoadingError) refetchProducts();
+    if (!productsLoadingError && categoriesLoadingError) refetchCategories();
+  };
 
   return (
     <ProductsContainer>
       {isLoading && showSkeleton ? <CategoryModeSkeleton /> : null}
+      {productsLoadingError || categoriesLoadingError ? <ReloadIcon {...{ reload }} /> : null}
       {viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />}
     </ProductsContainer>
   );
