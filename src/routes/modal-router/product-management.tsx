@@ -28,6 +28,7 @@ import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { BUTTON_MESSAGES } from '../../constants/messages';
 
 const ManagementButtonsContainer = styled.div`
   display: flex;
@@ -78,7 +79,7 @@ export default function ProductManagement() {
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
-  const productChangeMutation = useMutation({
+  const { mutate: productChangeMutate, isPending } = useMutation({
     mutationFn: updateChangedData,
   });
 
@@ -134,7 +135,7 @@ export default function ProductManagement() {
           price: product.price,
           barcode: product.barcode,
           category: product.category,
-          display: product.display ? '전시' : '숨김',
+          display: product.display ? DISPLAY_OPTIONS.show : DISPLAY_OPTIONS.hide,
           salesQuantity: product.salesQuantity,
         })),
       });
@@ -215,7 +216,7 @@ export default function ProductManagement() {
     );
 
     if (changedArrayFiltered.length) {
-      return productChangeMutation.mutate(
+      return productChangeMutate(
         {
           uid,
           numberArray: changedProductNumbers,
@@ -462,8 +463,12 @@ export default function ProductManagement() {
           <ErrorMessage className="big">{errors?.barcodesError && errors?.barcodesError?.message}</ErrorMessage>
           <ErrorMessage className="big">{errors?.otherError && errors?.otherError?.message}</ErrorMessage>
           <SubmitButtonsContainer>
-            <SubmitButton type="submit" onClick={() => clearErrors(['namesError', 'barcodesError'])}>
-              확인
+            <SubmitButton
+              disabled={isPending}
+              type="submit"
+              onClick={() => clearErrors(['namesError', 'barcodesError'])}
+            >
+              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.confirm}
             </SubmitButton>
             <CancelButton></CancelButton>
           </SubmitButtonsContainer>

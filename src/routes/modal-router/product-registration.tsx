@@ -20,6 +20,7 @@ import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { BUTTON_MESSAGES } from '../../constants/messages';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
@@ -27,7 +28,7 @@ export default function ProductRegistration() {
   const navigate = useNavigate();
   const { products, categories } = useProductsAndCategories(uid);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
-  const productRegistrationMutation = useMutation({
+  const { mutate: productRegistrationMutate, isPending } = useMutation({
     mutationFn: setData,
   });
 
@@ -69,7 +70,7 @@ export default function ProductRegistration() {
         display: product.display === '전시',
       };
     });
-    productRegistrationMutation.mutate(
+    productRegistrationMutate(
       { uid, data: newProducts },
       {
         onSuccess: () => {
@@ -174,8 +175,13 @@ export default function ProductRegistration() {
           <ErrorMessage className="big">{errors?.barcodeError && errors?.barcodeError?.message}</ErrorMessage>
           <ErrorMessage className="big">{errors?.otherError && errors?.otherError.message}</ErrorMessage>
           <SubmitButtonsContainer>
-            <button onClick={() => clearErrors(['barcodeError', 'namesError'])} type="submit" className="submit">
-              확인
+            <button
+              disabled={isPending}
+              onClick={() => clearErrors(['barcodeError', 'namesError'])}
+              type="submit"
+              className="submit"
+            >
+              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.confirm}
             </button>
             <Link to="/">
               <button>취소</button>

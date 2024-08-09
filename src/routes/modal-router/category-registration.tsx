@@ -25,12 +25,13 @@ import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { BUTTON_MESSAGES } from '../../constants/messages';
 
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
   const { categories } = useProductsAndCategories(uid);
-  const mutation = useMutation({
+  const { mutate: mutateCategory, isPending } = useMutation({
     mutationFn: setData,
   });
 
@@ -73,7 +74,7 @@ export default function CategoryRegistration() {
   };
 
   const handleSetCategories = (data: ICategory[]) => {
-    mutation.mutate(
+    mutateCategory(
       { uid, data },
       {
         onSuccess: () => {
@@ -141,7 +142,9 @@ export default function CategoryRegistration() {
           <ErrorMessage className="big">{errors?.namesError && errors?.namesError.message}</ErrorMessage>
           <ErrorMessage className="big"></ErrorMessage>
           <SubmitButtonsContainer>
-            <SubmitButton onClick={() => clearErrors(['namesError', 'otherError'])}>확인</SubmitButton>
+            <SubmitButton disabled={isPending} onClick={() => clearErrors(['namesError', 'otherError'])}>
+              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.cancel}
+            </SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
         </SmallModalComponent>

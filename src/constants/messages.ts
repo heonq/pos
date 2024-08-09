@@ -22,3 +22,9 @@ export enum CONFIRM_MESSAGES {
   refundSalesHistory = '결제 내역을 환불하시겠습니까?',
   saveCashCheck = '현금 점검 내역을 저장하시겠습니까?',
 }
+
+export enum BUTTON_MESSAGES {
+  confirm = '확인',
+  pending = '등록중...',
+  cancel = '취소',
+}

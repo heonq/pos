@@ -35,6 +35,7 @@ import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { BUTTON_MESSAGES } from '../../constants/messages';
 
 const SelectedManagingButtonContainer = styled.div`
   display: flex;
@@ -49,7 +50,7 @@ export default function CategoryManagement() {
   const navigate = useNavigate();
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
-  const updateCategoryMutation = useMutation({
+  const { mutate: updateCategoryMutate, isPending } = useMutation({
     mutationFn: updateChangedData,
   });
 
@@ -144,7 +145,7 @@ export default function CategoryManagement() {
 
   const updateData = (changedCategoryNumbers: number[], changedArrayFiltered: Partial<ICategory>[]) => {
     if (changedArrayFiltered.length) {
-      updateCategoryMutation.mutate(
+      updateCategoryMutate(
         {
           uid,
           numberArray: changedCategoryNumbers,
@@ -161,7 +162,7 @@ export default function CategoryManagement() {
           },
         },
       );
-    }
+    } else navigate('/');
   };
 
   const onSelectOption = (option: SELECTED_MANAGEMENT_OPTIONS) => {
@@ -285,7 +286,9 @@ export default function CategoryManagement() {
           <ErrorMessage className="big">{errors?.namesError && errors?.namesError?.message}</ErrorMessage>
           <ErrorMessage className="big">{errors?.otherError && errors?.otherError?.message}</ErrorMessage>
           <SubmitButtonsContainer>
-            <SubmitButton onClick={() => clearErrors(['namesError', 'otherError'])}>확인</SubmitButton>
+            <SubmitButton disabled={isPending} onClick={() => clearErrors(['namesError', 'otherError'])}>
+              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.confirm}
+            </SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
         </SmallModalComponent>
