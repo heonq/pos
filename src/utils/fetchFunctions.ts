@@ -84,9 +84,7 @@ export const updateChangedData = async ({
   type: 'products' | 'categories';
 }): Promise<void> => {
   const batch = writeBatch(db);
-  const refArray = numberArray.map((number) => {
-    return doc(doc(db, uid, type), 'data', number.toString());
-  });
+  const refArray = numberArray.map((number) => doc(doc(db, uid, type), 'data', number.toString()));
   refArray.forEach((ref, index) => batch.update(ref, changedData[index]));
   await batch.commit();
 };
@@ -100,7 +98,7 @@ export const deleteData = async ({
   numbers: number[];
   type: 'products' | 'categories';
 }) => {
-  const refArray = numbers.map((number) => doc(doc(db, 'userData', uid), type, number.toString()));
+  const refArray = numbers.map((number) => doc(doc(db, uid, type), 'data', number.toString()));
   const batch = writeBatch(db);
   refArray.forEach((ref) => batch.delete(ref));
   await batch.commit();
