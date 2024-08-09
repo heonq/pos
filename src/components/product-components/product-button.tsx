@@ -17,6 +17,7 @@ export const Button = styled.button`
   line-height: 35px;
   background-color: rgb(248, 248, 248);
   border-radius: 5px;
+  overflow: hidden;
   :hover {
     filter: brightness(0.9);
     cursor: pointer;

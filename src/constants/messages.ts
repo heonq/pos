@@ -3,7 +3,7 @@ export enum ERROR_MESSAGES {
   blankName = '이름은 공백으로 설정할 수 없습니다.',
   duplicatedName = '중복된 이름이 존재합니다. 상품명 : ',
   duplicatedBarcode = '중복된 바코드가 존재합니다. 상품명 : ',
-  shouldBeInt = '가격은 0 이상의 자연수여야 합니다.',
+  shouldBeInt = '가격은 0 이상의 정수여야 합니다.',
   cantDeleteProduct = '판매내역이 존재하는 상품은 삭제할 수 없습니다.',
   selectProduct = '상품을 선택해주세요.',
   cantDeleteCategory = '상품이 존재하는 카테고리는 삭제할 수 없습니다.',
