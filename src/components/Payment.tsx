@@ -21,6 +21,7 @@ import useSalesDates from '../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../constants/queryKeys';
+import { infiniteQueryData } from '../Interfaces/types';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -212,10 +213,18 @@ export default function Payment() {
           queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
             return [...before, finalSalesHistory];
           });
-          queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: ISalesHistory[][]) => {
-            if (before[0][0].date !== date) return [[finalSalesHistory], ...before];
-            return [...before][0].unshift(finalSalesHistory);
-          });
+          queryClient.getQueryData([QUERY_KEYS.salesHistory]) &&
+            queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: infiniteQueryData<ISalesHistory[]>) => {
+              const { pages } = before;
+              const newData = [...pages];
+              pages[0][0][0].date !== date
+                ? newData[0].unshift([finalSalesHistory])
+                : newData[0][0].unshift(finalSalesHistory);
+              return {
+                ...before,
+                pages: newData,
+              };
+            });
           handleSalesQuantity();
         },
       },
