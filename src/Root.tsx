@@ -5,7 +5,7 @@ import reset from 'styled-reset';
 import PretendardRegular from './fonts/Pretendard-Regular.otf';
 import PretendardBold from './fonts/Pretendard-Bold.otf';
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
 	${reset}
 	* {
 		box-sizing: border-box;
@@ -27,7 +27,6 @@ const GlobalStyle = createGlobalStyle`
   }
 	
 body {
-  overflow:hidden;
   font-family: "Pretendard";
   font-weight:400;
   font-size:14px;

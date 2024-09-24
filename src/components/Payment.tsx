@@ -321,7 +321,7 @@ export default function Payment() {
       </PaymentMethodButtonsContainer>
       <PaymentBox>
         <Amount>
-          <span className={paymentInfo.discountAmount > 0 ? 'discount' : ''}>
+          <span data-testid="amount" className={paymentInfo.discountAmount > 0 ? 'discount' : ''}>
             {formatter.formatNumber(paymentInfo.chargedAmount)}
           </span>
         </Amount>

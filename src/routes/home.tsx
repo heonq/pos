@@ -26,8 +26,9 @@ const MainSection = styled.div`
   margin-top: 30px;
 `;
 
-const ShoppingCartContainer = styled.div`
+export const ShoppingCartContainer = styled.div`
   width: 25%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;

@@ -40,7 +40,7 @@ export default function ProductButton({ product }: IProductButtonProps) {
   };
 
   return (
-    <Button onClick={() => addToShoppingCart(product)}>
+    <Button data-testid={product.name} onClick={() => addToShoppingCart(product)}>
       {product.name}
       <br />
       {formatter.formatNumber(product.price)}

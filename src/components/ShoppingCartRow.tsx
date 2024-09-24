@@ -83,17 +83,23 @@ export default function ShoppingCartRow({ number, name, price, quantity }: IShop
   };
 
   return (
-    <CartRow>
+    <CartRow data-testid={name}>
       <CartProduct>
-        {name}
+        <span data-testid={`${name}-name`}>{name}</span>
         <br />
-        {formatter.formatNumber(price * quantity)}원
+        <span data-testid={`${name}-price`}>{formatter.formatNumber(price * quantity)}원</span>
       </CartProduct>
       <QuantityBox>
-        <QuantityButton onClick={() => minusQuantity(number)}>-</QuantityButton>
-        <div>{quantity}</div>
-        <QuantityButton onClick={() => plusQuantity(number)}>+</QuantityButton>
-        <DeleteButton onClick={() => deleteFromCart(number)}>x</DeleteButton>
+        <QuantityButton data-testid={`${name}-minus-button`} onClick={() => minusQuantity(number)}>
+          -
+        </QuantityButton>
+        <div data-testid={`${name}-quantity`}>{quantity}</div>
+        <QuantityButton data-testid={`${name}-plus-button`} onClick={() => plusQuantity(number)}>
+          +
+        </QuantityButton>
+        <DeleteButton data-testid={`${name}-delete-button`} onClick={() => deleteFromCart(number)}>
+          x
+        </DeleteButton>
       </QuantityBox>
     </CartRow>
   );
