@@ -203,6 +203,19 @@ export default function Payment() {
     resetShoppingCart();
   });
 
+  const updateSalesStatistics = (salesHistory: ISalesHistory[]) => {
+    queryClient.getQueryData([QUERY_KEYS.salesHistory]) &&
+      queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: infiniteQueryData<ISalesHistory[]>) => {
+        const { pages } = before;
+        const newData = [...pages];
+        pages[0][0][0].date !== date ? newData[0].unshift([...salesHistory]) : newData[0][0].unshift(...salesHistory);
+        return {
+          ...before,
+          pages: newData,
+        };
+      });
+  };
+
   const handleNormalPayment = (updatedSalesHistory: ISalesHistory) => {
     const finalSalesHistory =
       paymentInfo.method === PAYMENT_METHODS.Other ? handleEtcMethod(updatedSalesHistory) : updatedSalesHistory;
@@ -213,18 +226,7 @@ export default function Payment() {
           queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
             return [...before, finalSalesHistory];
           });
-          queryClient.getQueryData([QUERY_KEYS.salesHistory]) &&
-            queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: infiniteQueryData<ISalesHistory[]>) => {
-              const { pages } = before;
-              const newData = [...pages];
-              pages[0][0][0].date !== date
-                ? newData[0].unshift([finalSalesHistory])
-                : newData[0][0].unshift(finalSalesHistory);
-              return {
-                ...before,
-                pages: newData,
-              };
-            });
+          updateSalesStatistics([finalSalesHistory]);
           handleSalesQuantity();
         },
       },
@@ -253,10 +255,7 @@ export default function Payment() {
           queryClient.setQueryData([QUERY_KEYS.salesHistory, date], (before: ISalesHistory[]) => {
             return [...before, firstPaymentInfo, secondPaymentInfo];
           });
-          queryClient.setQueryData([QUERY_KEYS.salesHistory], (before: ISalesHistory[][]) => {
-            if (before[0][0].date !== date) return [[firstPaymentInfo, secondPaymentInfo], ...before];
-            return [...before][0].unshift(firstPaymentInfo, secondPaymentInfo);
-          });
+          updateSalesStatistics([firstPaymentInfo, secondPaymentInfo]);
           handleSalesQuantity();
         },
       },
