@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import ProductButton from './product-button';
 import { IProductProps } from '../../Interfaces/PropsInterfaces';
 import { Fragment } from 'react/jsx-runtime';
-import { useEffect, useState } from 'react';
-import { ICategory } from '../../Interfaces/DataInterfaces';
+import { useMemo } from 'react';
 
 export const CategoryHeader = styled.div`
   margin-bottom: 5px;
@@ -24,25 +23,27 @@ export const ScrollContainer = styled.div`
 `;
 
 export default function CategoryMode({ categories, products }: IProductProps) {
-  const [categoriesWithProduct, setCategoriesWithProduct] = useState<ICategory[]>([]);
-  useEffect(() => {
-    setCategoriesWithProduct(
-      categories.filter((category) => products.some((product) => product.category === category.number)),
+  const { categoriesWithProduct, productToDisplay } = useMemo(() => {
+    const categoriesWithProduct = categories.filter(
+      (category) =>
+        category.display && products.some((product) => product.display && product.category === category.number),
     );
-  }, [products, categories]);
+    const productToDisplay = categoriesWithProduct.map((category) => {
+      return products.filter((product) => product.category === category.number && product.display);
+    });
+    return { categoriesWithProduct, productToDisplay };
+  }, [categories, products]);
 
   return (
     <>
       {categoriesWithProduct.map((category, index) => {
         return (
-          <Fragment key={'Fragment' + index}>
-            <CategoryHeader key={index}>{category.name}</CategoryHeader>
-            <ScrollContainer key={'scrollContainer' + index}>
-              {products
-                .filter((product) => product.category === category.number)
-                .map((product, i) => (
-                  <ProductButton key={'button' + i} product={product} />
-                ))}
+          <Fragment key={`category-${category.number}`}>
+            <CategoryHeader>{category.name}</CategoryHeader>
+            <ScrollContainer>
+              {productToDisplay[index].map((product) => (
+                <ProductButton key={`product-${product.number}`} product={product} />
+              ))}
             </ScrollContainer>
           </Fragment>
         );

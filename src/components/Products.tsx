@@ -2,10 +2,9 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { viewModeAtom } from '../atoms';
 import { auth } from '../firebase';
-import { ICategory, IProduct } from '../Interfaces/DataInterfaces';
 import CategoryMode from './product-components/category-mode';
 import TotalMode from './product-components/total-mode';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import { CategoryModeSkeleton } from '../skeletons/product';
 import { ReloadIcon } from './ReloadIcon';
@@ -26,8 +25,6 @@ const ProductsContainer = styled.div`
 export default function Products() {
   const viewMode = useRecoilValue(viewModeAtom);
   const uid = auth.currentUser?.uid ?? '';
-  const [displayingCategories, setDisplayingCategories] = useState<ICategory[]>([]);
-  const [displayingProducts, setDisplayingProducts] = useState<IProduct[]>([]);
   const {
     products,
     categories,
@@ -47,25 +44,27 @@ export default function Products() {
     return () => clearInterval(timer);
   }, [isLoading, products]);
 
-  useEffect(() => {
-    products && setDisplayingProducts(products?.filter((product) => product.display));
-  }, [products]);
+  const props = useMemo(
+    () => ({
+      products: products ?? [],
+      categories: categories ?? [],
+    }),
+    [products, categories],
+  );
 
-  useEffect(() => {
-    categories && setDisplayingCategories(categories?.filter((category) => category.display));
-  }, [categories]);
-
-  const props = { products: displayingProducts, categories: displayingCategories };
   const reload = () => {
     if (productsLoadingError) refetchProducts();
     if (!productsLoadingError && categoriesLoadingError) refetchCategories();
   };
 
-  return (
-    <ProductsContainer>
-      {isLoading && showSkeleton ? <CategoryModeSkeleton /> : null}
-      {productsLoadingError || categoriesLoadingError ? <ReloadIcon {...{ reload }} /> : null}
-      {viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />}
-    </ProductsContainer>
-  );
+  const renderContent = () => {
+    if (isLoading && showSkeleton) return <CategoryModeSkeleton />;
+    if (productsLoadingError || categoriesLoadingError) return <ReloadIcon reload={reload} />;
+    if (!isLoading) {
+      return viewMode === 'category' ? <CategoryMode {...props} /> : <TotalMode {...props} />;
+    }
+    return null;
+  };
+
+  return <ProductsContainer>{renderContent()}</ProductsContainer>;
 }
