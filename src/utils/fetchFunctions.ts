@@ -51,12 +51,12 @@ export const getCashCheckHistory = async (uid: string, date: string) => {
 
 export const setSalesHistory = async ({ uid, salesHistory }: { uid: string; salesHistory: ISalesHistory }) => {
   const ref = doc(doc(db, uid, 'salesData'), 'data', salesHistory.date);
-  try {
-    await updateDoc(ref, {
+  if (salesHistory.number === 1) {
+    await setDoc(ref, {
       data: arrayUnion(salesHistory),
     });
-  } catch {
-    await setDoc(ref, {
+  } else {
+    await updateDoc(ref, {
       data: arrayUnion(salesHistory),
     });
   }
