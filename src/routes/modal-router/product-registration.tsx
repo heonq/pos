@@ -2,7 +2,7 @@ import { Background, SubmitButtonsContainer, BigModalComponent } from '../../com
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { setData } from '../../utils/fetchFunctions';
+import { setData } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';

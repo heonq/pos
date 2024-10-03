@@ -9,7 +9,7 @@ import { Background, CloseButton, WideModalComponent } from '../../components/Mo
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { getSalesHistory } from '../../utils/fetchFunctions';
+import { getSalesHistory } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import MyDatePicker from '../../utils/datePicker';

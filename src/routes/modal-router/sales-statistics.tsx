@@ -12,7 +12,7 @@ import { Background, CloseButton, MediumModalComponent } from '../../components/
 import { SalesStatisticTableRow } from '../../components/formComponents/salesStatisticTableRow';
 import { auth } from '../../firebase';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getMultipleSalesHistory } from '../../utils/fetchFunctions';
+import { getMultipleSalesHistory } from '../../utils/firebaseApi';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { useEffect, useState } from 'react';
 import useSalesDates from '../../hooks/useSalesDates';

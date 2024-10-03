@@ -2,7 +2,7 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { auth } from '../../firebase';
 import { ISalesHistoryRowProps } from '../../Interfaces/PropsInterfaces';
-import { updateSalesHistory } from '../../utils/fetchFunctions';
+import { updateSalesHistory } from '../../utils/firebaseApi';
 import formatter from '../../utils/formatter';
 import { dateState, salesNumberAtom } from '../../atoms';
 import React, { useState } from 'react';

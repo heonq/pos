@@ -25,7 +25,7 @@ import {
   getCashCheckHistory,
   setCashCheckDate,
   setCashCheckHistory,
-} from '../../utils/fetchFunctions';
+} from '../../utils/firebaseApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PAYMENT_METHODS } from '../../constants/enums';
 import { useNavigate } from 'react-router-dom';

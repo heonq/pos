@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { FirebaseError } from 'firebase/app';
-import { setData } from '../utils/fetchFunctions';
+import { setData } from '../utils/firebaseApi';
 
 export default function CreateAccount() {
   const user = auth.currentUser;

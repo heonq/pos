@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { setSalesHistory } from '../utils/fetchFunctions';
+import { setSalesHistory } from '../utils/firebaseApi';
 import useSetSalesDatesMutation from './useSetSalesDatesMutation';
 
 const useSetSalesHistoryMutation = (uid: string, date: string, salesDates: string[]) => {

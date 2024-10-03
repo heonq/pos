@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProducts, getCategories } from '../utils/fetchFunctions';
+import { getProducts, getCategories } from '../utils/firebaseApi';
 import QUERY_KEYS from '../constants/queryKeys';
 
 const useProductsAndCategories = (uid: string) => {

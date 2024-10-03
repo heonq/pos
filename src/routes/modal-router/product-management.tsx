@@ -10,7 +10,7 @@ import {
 } from '../../components/Modal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, updateChangedData } from '../../utils/fetchFunctions';
+import { deleteData, updateChangedData } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {

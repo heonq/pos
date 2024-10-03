@@ -15,7 +15,7 @@ import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
-import { getSalesHistory, updateSalesQuantity } from '../utils/fetchFunctions';
+import { getSalesHistory, updateSalesQuantity } from '../utils/firebaseApi';
 import { useNavigate } from 'react-router-dom';
 import useSalesDates from '../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';

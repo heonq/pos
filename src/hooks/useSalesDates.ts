@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSalesDate } from '../utils/fetchFunctions';
+import { getSalesDate } from '../utils/firebaseApi';
 import QUERY_KEYS from '../constants/queryKeys';
 
 const useSalesDates = (uid: string) => {

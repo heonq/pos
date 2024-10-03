@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { setSalesDate } from '../utils/fetchFunctions';
+import { setSalesDate } from '../utils/firebaseApi';
 
 const useSetSalesDatesMutation = () => {
   const setSalesDatesMutation = useMutation({
