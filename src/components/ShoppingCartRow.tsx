@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { IShoppingCartProduct } from '../Interfaces/DataInterfaces';
 import formatter from '../utils/formatter';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { shoppingCartAtom } from '../atoms';
+import { useCallback } from 'react';
 
 const CartRow = styled.div`
   height: 90px;
@@ -57,47 +58,41 @@ const DeleteButton = styled.button`
 `;
 
 export default function ShoppingCartRow({ number, name, price, quantity }: IShoppingCartProduct) {
-  const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartAtom);
+  const setShoppingCart = useSetRecoilState(shoppingCartAtom);
 
-  const minusQuantity = (number: number) => {
-    if (shoppingCart.find((product) => product.number === number)?.quantity === 1) return deleteFromCart(number);
-    setShoppingCart((prevCart) => {
-      return prevCart.map((product) => {
-        return number === product.number ? { ...product, quantity: product.quantity - 1 } : product;
+  const updateQuantity = useCallback(
+    (number: number, change: number) => {
+      setShoppingCart((prevCart) => {
+        return prevCart
+          .map((product) =>
+            number === product.number ? { ...product, quantity: Math.max(product.quantity + change, 0) } : product,
+          )
+          .filter((product) => product.quantity > 0);
       });
-    });
-  };
+    },
+    [setShoppingCart],
+  );
 
-  const plusQuantity = (number: number) => {
-    setShoppingCart((prevCart) => {
-      return prevCart.map((product) => {
-        return number === product.number ? { ...product, quantity: product.quantity + 1 } : product;
-      });
-    });
-  };
-
-  const deleteFromCart = (number: number) => {
-    setShoppingCart((prevCart) => {
-      return prevCart.filter((product) => product.number !== number);
-    });
-  };
+  const minusQuantity = useCallback(() => updateQuantity(number, -1), [number, updateQuantity]);
+  const plusQuantity = useCallback(() => updateQuantity(number, 1), [number, updateQuantity]);
+  const deleteFromCart = useCallback(() => updateQuantity(number, -quantity), [number, quantity, updateQuantity]);
 
   return (
     <CartRow data-testid={name}>
       <CartProduct>
         <span data-testid={`${name}-name`}>{name}</span>
         <br />
-        <span data-testid={`${name}-price`}>{formatter.formatNumber(price * quantity)}원</span>
+        <span data-testid={`${name}-amount`}>{formatter.formatNumber(price * quantity)}원</span>
       </CartProduct>
       <QuantityBox>
-        <QuantityButton data-testid={`${name}-minus-button`} onClick={() => minusQuantity(number)}>
+        <QuantityButton data-testid={`${name}-minus-button`} onClick={minusQuantity}>
           -
         </QuantityButton>
         <div data-testid={`${name}-quantity`}>{quantity}</div>
-        <QuantityButton data-testid={`${name}-plus-button`} onClick={() => plusQuantity(number)}>
+        <QuantityButton data-testid={`${name}-plus-button`} onClick={plusQuantity}>
           +
         </QuantityButton>
-        <DeleteButton data-testid={`${name}-delete-button`} onClick={() => deleteFromCart(number)}>
+        <DeleteButton data-testid={`${name}-delete-button`} onClick={deleteFromCart}>
           x
         </DeleteButton>
       </QuantityBox>

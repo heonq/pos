@@ -285,7 +285,7 @@ export default function Payment() {
 
   return (
     <>
-      <PaymentMethodButtonsContainer>
+      <PaymentMethodButtonsContainer data-testid="payment-method-buttons-container">
         <div>
           {paymentMethodsFirstRow.map((method) => (
             <PaymentMethodButton
