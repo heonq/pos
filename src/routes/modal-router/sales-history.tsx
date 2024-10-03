@@ -72,9 +72,7 @@ export default function SalesHistory() {
                   <th>시간</th>
                   <th>환불</th>
                   <th>수정</th>
-                  {products?.map((product, index) => (
-                    <th key={index}>{product.name}</th>
-                  ))}
+                  {products?.map((product, index) => <th key={product.number}>{product.name}</th>)}
                 </tr>
               </TableHeader>
               <tbody>
@@ -82,9 +80,9 @@ export default function SalesHistory() {
                   <SalesHistoryTableSkeleton {...{ productLength: products?.length ?? 0 }} />
                 ) : null}
                 {products &&
-                  salesHistories?.map((_, index) => (
+                  salesHistories?.map((salesHistory, index) => (
                     <SalesHistoryTableRow
-                      key={index}
+                      key={salesHistory.number}
                       index={index}
                       products={products}
                       salesHistories={salesHistories}

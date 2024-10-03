@@ -84,9 +84,9 @@ export default function SalesStatistics() {
                 </tr>
               </TableHeader>
               <tbody>
-                {data?.pages.flat().map((data: ISalesHistory[]) => (
-                  <SalesStatisticTableRow key={data[0].date} salesHistory={data} />
-                ))}
+                {data?.pages
+                  .flat()
+                  .map((data: ISalesHistory[]) => <SalesStatisticTableRow key={data[0].date} salesHistory={data} />)}
                 {showSkeleton && (isLoading || isFetchingNextPage) ? <SalesStatisticTableSkeleton /> : null}
               </tbody>
             </SalesStatisticTable>
