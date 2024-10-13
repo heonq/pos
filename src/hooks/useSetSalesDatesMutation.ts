@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { setSalesDate } from '../utils/firebaseApi';
+import { historyApi } from '../apis/history';
 
 const useSetSalesDatesMutation = () => {
   const setSalesDatesMutation = useMutation({
-    mutationFn: setSalesDate,
+    mutationFn: historyApi.setSalesDate,
   });
   return setSalesDatesMutation;
 };

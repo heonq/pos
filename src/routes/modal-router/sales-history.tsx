@@ -9,7 +9,6 @@ import { Background, CloseButton, WideModalComponent } from '../../components/Mo
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
-import { getSalesHistory } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import { useEffect, useState } from 'react';
 import MyDatePicker from '../../utils/datePicker';
@@ -21,6 +20,7 @@ import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import useSalesDates from '../../hooks/useSalesDates';
 import QUERY_KEYS from '../../constants/queryKeys';
 import SalesHistoryTableSkeleton from '../../skeletons/salesHistoryTable';
+import { historyApi } from '../../apis/history';
 
 export default function SalesHistory() {
   const uid = auth.currentUser?.uid ?? '';
@@ -29,7 +29,7 @@ export default function SalesHistory() {
   const { salesDates } = useSalesDates(uid);
   const { data: salesHistories, isLoading: salesHistoryLoading } = useQuery<ISalesHistory[]>({
     queryKey: [QUERY_KEYS.salesHistory, criteriaDate],
-    queryFn: () => getSalesHistory(uid, criteriaDate),
+    queryFn: () => historyApi.getSalesHistory(uid, criteriaDate),
   });
   const salesNumber = useRecoilValue(salesNumberAtom);
 

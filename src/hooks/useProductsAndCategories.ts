@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProducts, getCategories } from '../utils/firebaseApi';
+import { productsAndCategoryApi } from '../apis/productsAndCategory';
 import QUERY_KEYS from '../constants/queryKeys';
 
 const useProductsAndCategories = (uid: string) => {
@@ -10,7 +10,7 @@ const useProductsAndCategories = (uid: string) => {
     refetch: refetchProducts,
   } = useQuery({
     queryKey: [QUERY_KEYS.products],
-    queryFn: () => getProducts(uid),
+    queryFn: () => productsAndCategoryApi.getProducts(uid),
   });
 
   const {
@@ -20,7 +20,7 @@ const useProductsAndCategories = (uid: string) => {
     refetch: refetchCategories,
   } = useQuery({
     queryKey: [QUERY_KEYS.categories],
-    queryFn: () => getCategories(uid),
+    queryFn: () => productsAndCategoryApi.getCategories(uid),
     enabled: !!products,
   });
 

@@ -12,12 +12,12 @@ import { Background, CloseButton, MediumModalComponent } from '../../components/
 import { SalesStatisticTableRow } from '../../components/formComponents/salesStatisticTableRow';
 import { auth } from '../../firebase';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getMultipleSalesHistory } from '../../utils/firebaseApi';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { useEffect, useState } from 'react';
 import useSalesDates from '../../hooks/useSalesDates';
 import { SalesStatisticTableSkeleton } from '../../skeletons/salesStatisticTable';
 import QUERY_KEYS from '../../constants/queryKeys';
+import { historyApi } from '../../apis/history';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
@@ -36,7 +36,7 @@ export default function SalesStatistics() {
       const dateArray =
         descSortedDates &&
         [...descSortedDates].slice((Number(pageParam) - 1) * DATES_PER_PAGE, DATES_PER_PAGE * Number(pageParam));
-      return getMultipleSalesHistory(uid, dateArray);
+      return historyApi.getMultipleSalesHistory(uid, dateArray);
     },
     getNextPageParam: (lastPage, pages, lastPageParam) => {
       const hasMore = lastPage.length === DATES_PER_PAGE && salesDates?.length !== pages.length * DATES_PER_PAGE;

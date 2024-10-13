@@ -2,7 +2,6 @@ import { Background, SubmitButtonsContainer, BigModalComponent } from '../../com
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
-import { setData } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import validator from '../../utils/validator';
 import { ERROR_MESSAGES } from '../../constants/enums';
@@ -21,6 +20,7 @@ import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
 import { BUTTON_MESSAGES } from '../../constants/messages';
+import { productsAndCategoryApi } from '../../apis/productsAndCategory';
 
 export default function ProductRegistration() {
   const uid = auth.currentUser?.uid ?? '';
@@ -29,7 +29,7 @@ export default function ProductRegistration() {
   const { products, categories } = useProductsAndCategories(uid);
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
   const { mutate: productRegistrationMutate, isPending } = useMutation({
-    mutationFn: setData,
+    mutationFn: productsAndCategoryApi.setData,
   });
 
   const methods = useForm<IProductRegistration>({

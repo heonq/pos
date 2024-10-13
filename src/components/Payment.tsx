@@ -15,13 +15,13 @@ import { PAYMENT_METHODS } from '../constants/enums';
 import { auth } from '../firebase';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IProduct, ISalesHistory } from '../Interfaces/DataInterfaces';
-import { getSalesHistory, updateSalesQuantity } from '../utils/firebaseApi';
 import { useNavigate } from 'react-router-dom';
 import useSalesDates from '../hooks/useSalesDates';
 import useSetSalesHistoryMutation from '../hooks/useSetSalesHistoryMutation';
 import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../constants/queryKeys';
 import { infiniteQueryData } from '../Interfaces/types';
+import { historyApi } from '../apis/history';
 
 const PaymentBox = styled.div`
   display: flex;
@@ -119,7 +119,7 @@ export default function Payment() {
   const { salesDates } = useSalesDates(uid);
   const { data } = useQuery<ISalesHistory[]>({
     queryKey: [QUERY_KEYS.salesHistory, date],
-    queryFn: () => getSalesHistory(uid, date),
+    queryFn: () => historyApi.getSalesHistory(uid, date),
   });
   const setSalesNumber = useSetRecoilState(salesNumberAtom);
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ export default function Payment() {
   const { products } = useProductsAndCategories(uid);
   const queryClient = useQueryClient();
   const salesQuantityMutation = useMutation({
-    mutationFn: updateSalesQuantity,
+    mutationFn: historyApi.updateSalesQuantity,
     scope: {
       id: 'salesHistoryAndQuantity',
     },

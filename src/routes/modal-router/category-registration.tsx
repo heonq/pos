@@ -18,7 +18,6 @@ import {
 import { ICategory, ICategoryRegistration } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { setData } from '../../utils/firebaseApi';
 import { useNavigate } from 'react-router-dom';
 import { CategoryRegistrationRow } from '../../components/formComponents/categoryRegistrationRow';
 import validator from '../../utils/validator';
@@ -26,13 +25,14 @@ import { ERROR_MESSAGES } from '../../constants/enums';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
 import { BUTTON_MESSAGES } from '../../constants/messages';
+import { productsAndCategoryApi } from '../../apis/productsAndCategory';
 
 export default function CategoryRegistration() {
   const uid = auth.currentUser?.uid ?? '';
   const queryClient = useQueryClient();
   const { categories } = useProductsAndCategories(uid);
   const { mutate: mutateCategory, isPending } = useMutation({
-    mutationFn: setData,
+    mutationFn: productsAndCategoryApi.setData,
   });
 
   const methods = useForm<ICategoryRegistration>({

@@ -15,17 +15,11 @@ import {
   WideModalComponent,
 } from '../../components/Modal';
 import formatter from '../../utils/formatter';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ICashCheckForm, ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
-import {
-  getSalesHistory,
-  getCashCheckDate,
-  getCashCheckHistory,
-  setCashCheckDate,
-  setCashCheckHistory,
-} from '../../utils/firebaseApi';
+import { historyApi } from '../../apis/history';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PAYMENT_METHODS } from '../../constants/enums';
 import { useNavigate } from 'react-router-dom';
@@ -74,19 +68,19 @@ export default function CashCheck() {
   const [criteriaDate, setCriteriaDate] = useState(date);
   const { data: salesHistory } = useQuery<ISalesHistory[]>({
     queryKey: [QUERY_KEYS.salesHistory, date],
-    queryFn: () => getSalesHistory(uid, date),
+    queryFn: () => historyApi.getSalesHistory(uid, date),
   });
   const { data: todayCashCheckHistory } = useQuery<ICashCheckForm[]>({
     queryKey: [QUERY_KEYS.cashCheck, date],
-    queryFn: () => getCashCheckHistory(uid, date),
+    queryFn: () => historyApi.getCashCheckHistory(uid, date),
   });
   const { data: cashCheckHistory } = useQuery<ICashCheckForm[]>({
     queryKey: [QUERY_KEYS.cashCheck, criteriaDate],
-    queryFn: () => getCashCheckHistory(uid, criteriaDate),
+    queryFn: () => historyApi.getCashCheckHistory(uid, criteriaDate),
   });
   const { data: cashCheckDates } = useQuery<string[]>({
     queryKey: [QUERY_KEYS.cashCheckDates],
-    queryFn: () => getCashCheckDate(uid),
+    queryFn: () => historyApi.getCashCheckDate(uid),
   });
   const queryClient = useQueryClient();
   const [cashSalesAmount, setCashSalesAmount] = useState(0);
@@ -100,10 +94,10 @@ export default function CashCheck() {
   const navigate = useNavigate();
 
   const cashCheckMutation = useMutation({
-    mutationFn: setCashCheckHistory,
+    mutationFn: historyApi.setCashCheckHistory,
   });
   const cashCheckDateMutation = useMutation({
-    mutationFn: setCashCheckDate,
+    mutationFn: historyApi.setCashCheckDate,
     onSuccess: () => {
       queryClient.setQueryData([QUERY_KEYS.cashCheckDates], (before: string[]) => {
         return [...before, date];

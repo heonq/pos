@@ -10,7 +10,6 @@ import {
 } from '../../components/Modal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IProduct, IProductManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, updateChangedData } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -29,6 +28,7 @@ import { shoppingCartSelector } from '../../atoms';
 import useProductsAndCategories from '../../hooks/useProductsAndCategories';
 import QUERY_KEYS from '../../constants/queryKeys';
 import { BUTTON_MESSAGES } from '../../constants/messages';
+import { productsAndCategoryApi } from '../../apis/productsAndCategory';
 
 const ManagementButtonsContainer = styled.div`
   display: flex;
@@ -80,11 +80,11 @@ export default function ProductManagement() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const { mutate: productChangeMutate, isPending } = useMutation({
-    mutationFn: updateChangedData,
+    mutationFn: productsAndCategoryApi.updateChangedData,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteData,
+    mutationFn: productsAndCategoryApi.deleteData,
   });
 
   useEffect(() => {

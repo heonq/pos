@@ -2,15 +2,15 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { auth } from '../../firebase';
 import { ISalesHistoryRowProps } from '../../Interfaces/PropsInterfaces';
-import { updateSalesHistory } from '../../utils/firebaseApi';
 import formatter from '../../utils/formatter';
 import { dateState, salesNumberAtom } from '../../atoms';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CONFIRM_MESSAGES, ERROR_MESSAGES } from '../../constants/enums';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useSetSalesHistoryMutation from '../../hooks/useSetSalesHistoryMutation';
 import QUERY_KEYS from '../../constants/queryKeys';
 import { ISalesHistory } from '../../Interfaces/DataInterfaces';
+import { historyApi } from '../../apis/history';
 
 export const SalesHistoryTableRow = ({
   index,
@@ -28,7 +28,7 @@ export const SalesHistoryTableRow = ({
   const queryClient = useQueryClient();
   const mutationTodayHistory = useSetSalesHistoryMutation(uid, date, salesDates ?? []);
   const mutationRowHistory = useMutation({
-    mutationFn: updateSalesHistory,
+    mutationFn: historyApi.updateSalesHistory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.salesHistory, salesHistory.date] });
     },

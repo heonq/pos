@@ -17,7 +17,6 @@ import {
 } from '../../components/formComponents/FormContainerComponents';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ICategory, ICategoryManagement } from '../../Interfaces/DataInterfaces';
-import { deleteData, updateChangedData } from '../../utils/firebaseApi';
 import { auth } from '../../firebase';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { CategoryManagementRow } from '../../components/formComponents/categoryManagementRow';
@@ -36,6 +35,7 @@ import { useResetRecoilState } from 'recoil';
 import { shoppingCartSelector } from '../../atoms';
 import QUERY_KEYS from '../../constants/queryKeys';
 import { BUTTON_MESSAGES } from '../../constants/messages';
+import { productsAndCategoryApi } from '../../apis/productsAndCategory';
 
 const SelectedManagingButtonContainer = styled.div`
   display: flex;
@@ -51,11 +51,11 @@ export default function CategoryManagement() {
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
 
   const { mutate: updateCategoryMutate, isPending } = useMutation({
-    mutationFn: updateChangedData,
+    mutationFn: productsAndCategoryApi.updateChangedData,
   });
 
   const deleteCategoryMutation = useMutation({
-    mutationFn: deleteData,
+    mutationFn: productsAndCategoryApi.deleteData,
   });
 
   const methods = useForm<ICategoryManagement>({

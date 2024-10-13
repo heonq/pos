@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { FirebaseError } from 'firebase/app';
-import { setData } from '../utils/firebaseApi';
+import { productsAndCategoryApi } from '../apis/productsAndCategory';
 
 export default function CreateAccount() {
   const user = auth.currentUser;
@@ -31,7 +31,7 @@ export default function CreateAccount() {
       setLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
       const uid = auth.currentUser?.uid;
-      if (uid) setData({ uid, data: [{ name: '카테고리없음', number: 1, display: true }] });
+      if (uid) productsAndCategoryApi.setData({ uid, data: [{ name: '카테고리없음', number: 1, display: true }] });
       navigate('/');
     } catch (e) {
       if (e instanceof FirebaseError) setError(e.message);
