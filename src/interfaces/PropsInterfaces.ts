@@ -53,3 +53,14 @@ export interface ISalesHistoryRowProps {
   salesNumber: number;
   salesDates: string[];
 }
+
+export interface IProductsComponentProps {
+  products: IProduct[] | undefined;
+  categories: ICategory[] | undefined;
+  isLoading: boolean;
+  productsLoadingError: boolean;
+  categoriesLoadingError: boolean;
+  refetchProducts(): void;
+  refetchCategories(): void;
+  viewMode: 'category' | 'total';
+}

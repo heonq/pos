@@ -5,10 +5,11 @@ import Products from '../components/Products';
 import ShoppingCart from '../components/ShoppingCart';
 import Payment from '../components/Payment';
 import { Outlet } from 'react-router-dom';
-import { useRecoilState, useResetRecoilState } from 'recoil';
-import { dateState, headerMenusDisplaySelector, shoppingCartSelector } from '../atoms';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { dateState, headerMenusDisplaySelector, shoppingCartSelector, viewModeAtom } from '../atoms';
 import { auth } from '../firebase';
 import formatter from '../utils/formatter';
+import useProductsAndCategories from '../hooks/useProductsAndCategories';
 
 const Wrapper = styled.div`
   top: 30px;
@@ -39,8 +40,11 @@ export default function Home() {
     headerMenusDisplay && setHeaderMenusDisplay(false);
   };
   const resetShoppingCart = useResetRecoilState(shoppingCartSelector);
-  const uid = auth.currentUser?.uid;
+  const uid = auth.currentUser?.uid ?? '';
   const [date, setDate] = useRecoilState(dateState);
+  const productsAndCategories = useProductsAndCategories(uid);
+  const viewMode = useRecoilValue(viewModeAtom) as 'category' | 'total';
+  const props = { ...productsAndCategories, viewMode };
 
   useEffect(() => {
     resetShoppingCart();
@@ -60,7 +64,7 @@ export default function Home() {
       <Wrapper onClick={onElseClick}>
         <Header></Header>
         <MainSection>
-          <Products></Products>
+          <Products {...props}></Products>
           <ShoppingCartContainer>
             <ShoppingCart></ShoppingCart>
             <Payment></Payment>

@@ -1,13 +1,10 @@
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { viewModeAtom } from '../atoms';
-import { auth } from '../firebase';
 import CategoryMode from './product-components/category-mode';
 import TotalMode from './product-components/total-mode';
 import { useEffect, useMemo, useState } from 'react';
-import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import { CategoryModeSkeleton } from '../skeletons/product';
 import { ReloadIcon } from './ReloadIcon';
+import { IProductsComponentProps } from '../Interfaces/PropsInterfaces';
 
 const ProductsContainer = styled.div`
   width: 75%;
@@ -22,18 +19,16 @@ const ProductsContainer = styled.div`
   margin-right: 20px;
 `;
 
-export default function Products() {
-  const viewMode = useRecoilValue(viewModeAtom);
-  const uid = auth.currentUser?.uid ?? '';
-  const {
-    products,
-    categories,
-    isLoading,
-    productsLoadingError,
-    categoriesLoadingError,
-    refetchProducts,
-    refetchCategories,
-  } = useProductsAndCategories(uid);
+export default function Products({
+  products,
+  categories,
+  isLoading,
+  productsLoadingError,
+  categoriesLoadingError,
+  refetchProducts,
+  refetchCategories,
+  viewMode,
+}: IProductsComponentProps) {
   const [showSkeleton, setShowSkeleton] = useState(true);
 
   useEffect(() => {
