@@ -15,7 +15,7 @@ import {
   WideModalComponent,
 } from '../../components/Modal';
 import formatter from '../../utils/formatter';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ICashCheckForm, ISalesHistory } from '../../Interfaces/DataInterfaces';
 import { auth } from '../../firebase';
@@ -83,14 +83,9 @@ export default function CashCheck() {
     queryFn: () => historyApi.getCashCheckDate(uid),
   });
   const queryClient = useQueryClient();
-  const [cashSalesAmount, setCashSalesAmount] = useState(0);
-  const [expectedAmount, setExpectedAmount] = useState(0);
-  const [countedAmount, setCountedAmount] = useState(0);
-  const [correct, setCorrect] = useState(false);
   const { control, watch, handleSubmit } = methods;
   const values = watch(['1000', '5000', '10000', '50000', 'reserveCash']);
   const [thousand, fiveThousand, tenThousand, fiftyThousand, reserveCash] = values;
-  const [newCashCheckNumber, setNewCashCheckNumber] = useState(1);
   const navigate = useNavigate();
 
   const cashCheckMutation = useMutation({
@@ -105,37 +100,40 @@ export default function CashCheck() {
     },
   });
 
+  const newCashCheckNumber = useMemo(() => {
+    return todayCashCheckHistory && todayCashCheckHistory.length > 0
+      ? todayCashCheckHistory[todayCashCheckHistory.length - 1].number + 1
+      : 1;
+  }, [todayCashCheckHistory]);
+
+  const cashSalesAmount = useMemo(() => {
+    return (
+      salesHistory
+        ?.filter((sales) => sales.method === PAYMENT_METHODS.Cash)
+        .reduce((acc, sales) => acc + sales.chargedAmount, 0) ?? 0
+    );
+  }, [salesHistory]);
+
+  const expectedAmount = useMemo(() => {
+    return cashSalesAmount + +reserveCash;
+  }, [cashSalesAmount, reserveCash]);
+
+  const { countedAmount, correct } = useMemo(() => {
+    const counted = thousand * 1000 + fiveThousand * 5000 + tenThousand * 10000 + fiftyThousand * 50000;
+    return {
+      countedAmount: counted,
+      correct: counted === expectedAmount,
+    };
+  }, [thousand, fiveThousand, tenThousand, fiftyThousand, expectedAmount]);
+
   useEffect(() => {
-    const newestNumber =
-      (todayCashCheckHistory &&
-        todayCashCheckHistory?.length > 0 &&
-        todayCashCheckHistory[todayCashCheckHistory.length - 1]?.number + 1) ||
-      1;
-    setNewCashCheckNumber(newestNumber);
-    todayCashCheckHistory &&
-      todayCashCheckHistory?.length > 0 &&
+    if (todayCashCheckHistory && todayCashCheckHistory.length > 0) {
       methods.reset({
         ...methods,
         reserveCash: todayCashCheckHistory[todayCashCheckHistory.length - 1]?.reserveCash ?? 0,
       });
-  }, [todayCashCheckHistory]);
-
-  useEffect(() => {
-    const cashSalesHistory = salesHistory?.filter((sales) => sales.method === PAYMENT_METHODS.Cash);
-    const newCashSalesAmount = cashSalesHistory?.reduce((acc, sales) => acc + sales.chargedAmount, 0) ?? 0;
-    setCashSalesAmount(newCashSalesAmount);
-  }, [salesHistory]);
-
-  useEffect(() => {
-    const newCountedAmount = thousand * 1000 + fiveThousand * 5000 + tenThousand * 10000 + fiftyThousand * 50000;
-    setCountedAmount(newCountedAmount);
-    setCorrect(newCountedAmount === expectedAmount);
-  }, [values, expectedAmount]);
-
-  useEffect(() => {
-    const newExpectedAmount = cashSalesAmount + +reserveCash;
-    setExpectedAmount(newExpectedAmount);
-  }, [cashSalesAmount, reserveCash]);
+    }
+  }, [todayCashCheckHistory, methods]);
 
   const submitCashCheck = (data: ICashCheckForm) => {
     if (confirm(CONFIRM_MESSAGES.saveCashCheck)) {
