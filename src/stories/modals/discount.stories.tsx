@@ -5,7 +5,6 @@ import { Container } from './container';
 export default {
   title: 'Modal/DiscountModal',
   component: DiscountModal,
-  tags: ['autodocs'],
   decorators: (Story) => (
     <Container>
       <Story />

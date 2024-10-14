@@ -1,7 +1,7 @@
 import TotalMode from '../../components/product-components/total-mode';
 import { Meta, StoryFn } from '@storybook/react/*';
 import { expect, within } from '@storybook/test';
-import { categories, products } from '../dummyData';
+import { categories, products } from '../../mocks/mockData';
 
 export default {
   title: 'Product/Total Mode',

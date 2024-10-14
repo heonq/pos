@@ -1,6 +1,6 @@
 import CategoryMode from '../../components/product-components/category-mode';
 import { Meta, StoryFn } from '@storybook/react/*';
-import { categories, products } from '../dummyData';
+import { categories, products } from '../../mocks/mockData';
 
 export default {
   title: 'Product/Category Mode',

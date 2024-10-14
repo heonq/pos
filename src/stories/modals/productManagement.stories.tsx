@@ -1,17 +1,21 @@
 import { Meta, StoryFn } from '@storybook/react/*';
 import ProductManagement from '../../routes/modal-router/product-management';
 import { Container } from './container';
+import { getProductsAndCategoriesMock, manageProductsAndCategoriesMock } from '../../mocks/storybookMock';
 
 export default {
   title: 'Modal/ProductManagement',
   component: ProductManagement,
-  tags: ['autodocs'],
   decorators: [
-    (Story) => (
-      <Container>
-        <Story />
-      </Container>
-    ),
+    (Story) => {
+      getProductsAndCategoriesMock();
+      manageProductsAndCategoriesMock();
+      return (
+        <Container>
+          <Story />
+        </Container>
+      );
+    },
   ],
 } as Meta<typeof ProductManagement>;
 

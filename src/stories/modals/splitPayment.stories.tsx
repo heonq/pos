@@ -5,7 +5,6 @@ import { Container } from './container';
 export default {
   title: 'Modal/SplitPaymentModal',
   component: SplitPaymentModal,
-  tags: ['autodocs'],
   decorators: (Story) => (
     <Container>
       <Story />

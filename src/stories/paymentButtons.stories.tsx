@@ -7,7 +7,7 @@ import { shoppingCartAtom } from '../atoms';
 import { expect, within, userEvent } from '@storybook/test';
 import { jest } from '@storybook/jest';
 import { PAYMENT_METHODS } from '../constants/enums';
-import { shoppingCartProducts } from './dummyData';
+import { shoppingCartProducts } from '../mocks/mockData';
 import ShoppingCart from '../components/ShoppingCart';
 
 const Container = styled.div`

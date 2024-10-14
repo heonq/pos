@@ -1,5 +1,4 @@
 import ProductButton from '../../components/product-components/product-button';
-import { RecoilRoot } from 'recoil';
 import { Meta, StoryFn } from '@storybook/react';
 
 const product = {

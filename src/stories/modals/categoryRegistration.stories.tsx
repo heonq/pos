@@ -1,17 +1,21 @@
 import { Meta, StoryFn } from '@storybook/react/*';
 import CategoryRegistration from '../../routes/modal-router/category-registration';
 import { Container } from './container';
+import { addProductAndCategoryMock, getProductsAndCategoriesMock } from '../../mocks/storybookMock';
 
 export default {
   title: 'Modal/CategoryRegistration',
   component: CategoryRegistration,
-  tags: ['autodocs'],
   decorators: [
-    (Story) => (
-      <Container>
-        <Story />
-      </Container>
-    ),
+    (Story) => {
+      getProductsAndCategoriesMock();
+      addProductAndCategoryMock();
+      return (
+        <Container>
+          <Story />
+        </Container>
+      );
+    },
   ],
 } as Meta<typeof CategoryRegistration>;
 
