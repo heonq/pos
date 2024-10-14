@@ -1,4 +1,4 @@
-import { Background, SubmitButtonsContainer, BigModalComponent } from '../../components/Modal';
+import { Background, SubmitButtonsContainer, BigModalComponent, SubmitButton } from '../../components/Modal';
 import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { IProduct, IProductRegistration } from '../../Interfaces/DataInterfaces';
@@ -175,14 +175,14 @@ export default function ProductRegistration() {
           <ErrorMessage className="big">{errors?.barcodeError && errors?.barcodeError?.message}</ErrorMessage>
           <ErrorMessage className="big">{errors?.otherError && errors?.otherError.message}</ErrorMessage>
           <SubmitButtonsContainer>
-            <button
+            <SubmitButton
               disabled={isPending}
               onClick={() => clearErrors(['barcodeError', 'namesError'])}
               type="submit"
               className="submit"
             >
               {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.confirm}
-            </button>
+            </SubmitButton>
             <Link to="/">
               <button>취소</button>
             </Link>

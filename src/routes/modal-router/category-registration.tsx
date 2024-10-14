@@ -143,7 +143,7 @@ export default function CategoryRegistration() {
           <ErrorMessage className="big"></ErrorMessage>
           <SubmitButtonsContainer>
             <SubmitButton disabled={isPending} onClick={() => clearErrors(['namesError', 'otherError'])}>
-              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.cancel}
+              {isPending ? BUTTON_MESSAGES.pending : BUTTON_MESSAGES.confirm}
             </SubmitButton>
             <CancelButton />
           </SubmitButtonsContainer>
