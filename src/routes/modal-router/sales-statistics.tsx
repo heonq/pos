@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MediumModalContainer,
@@ -21,10 +21,18 @@ import { historyApi } from '../../apis/history';
 
 export default function SalesStatistics() {
   const uid = auth.currentUser?.uid ?? '';
-  const [descSortedDates, setSortedDates] = useState<string[]>([]);
   const { salesDates } = useSalesDates(uid);
   const DATES_PER_PAGE = 50;
   const [showSkeleton, setShowSkeleton] = useState(false);
+
+  const descSortedDates = useMemo(() => {
+    return [...(salesDates ?? [])].sort((a, b) => {
+      if (a < b) return 1;
+      if (a > b) return -1;
+      return 0;
+    });
+  }, [salesDates]);
+
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteQuery<
     ISalesHistory[][],
     Error
@@ -51,15 +59,6 @@ export default function SalesStatistics() {
     }, 1000);
     return () => clearInterval(timer);
   }, [data, isLoading, isFetchingNextPage]);
-
-  useEffect(() => {
-    const sortedDates = [...(salesDates ?? [])].sort((a, b) => {
-      if (a < b) return 1;
-      if (a > b) return -1;
-      return 0;
-    });
-    setSortedDates(sortedDates);
-  }, [salesDates]);
 
   return (
     <>
